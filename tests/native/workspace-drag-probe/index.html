@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'unsafe-inline'">
+<title>隔离拖出验证</title>
+<style>
+body{font:15px system-ui;margin:24px;color:#333;background:#fafafa}h1{font-size:21px}
+main{display:grid;grid-template-columns:1fr 1fr;gap:16px}.column{background:white;padding:16px;border:1px solid #ddd;border-radius:10px}
+button{padding:9px 12px;margin:6px;border:1px solid #ccc;background:white;border-radius:7px;color:inherit}button[draggable]{display:block;width:95%;cursor:grab}
+#target{margin:20px 0;padding:36px;background:#eef4ff;border:2px dashed #8ba7cc;border-radius:10px}
+pre{white-space:pre-wrap;overflow-wrap:anywhere;font:12px monospace}#result{max-height:120px;overflow:auto}
+</style>
+<h1>Arkdown 原生拖出验证 · 合成文件</h1>
+<p>左侧为现有 HTML 载荷对照；右侧调用 Electron 原生拖出。仅真实鼠标操作能验证 Windows 行为。</p>
+<main><section class="column"><b>HTML 对照</b><div id="html-rows"></div></section>
+<section class="column"><b>原生文件拖出</b><div id="native-rows"></div></section></main>
+<div id="target">拖回此区域，记录实际 Files／MIME。此处只观察，不插入或打开文件。</div>
+<button id="checkpoint">核对源文件</button><button id="quit">正常退出</button>
+<pre id="result"></pre><pre id="info"></pre>
+<script src="renderer.js"></script>
+</html>

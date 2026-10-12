@@ -1,0 +1,87 @@
+.document-view-panel {
+  --view-ink: var(--arkdown-ink, #333);
+  --view-muted: var(--arkdown-muted, #777);
+  --view-line: var(--arkdown-line, #e6e6e6);
+  --view-paper: var(--arkdown-paper, #fff);
+  --view-surface: var(--arkdown-surface, #f7f7f7);
+  --view-accent: var(--arkdown-accent, rgb(var(--theme-color-rgb, 198 40 40)));
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--view-ink);
+  background: var(--view-paper);
+  font-size: 13px;
+  outline: none;
+}
+.document-view-panel button { color: inherit; background: transparent; border: 0; border-radius: 4px; cursor: pointer; font: inherit; }
+.document-view-panel button:hover:not(:disabled) { background: var(--control-hover-layer, rgb(0 0 0 / 5%)); }
+.document-view-panel button:focus-visible { outline: 1px solid var(--view-accent); outline-offset: -1px; }
+.document-view-panel button:disabled { opacity: .4; cursor: default; }
+.document-view-panel .document-view-toolbar { display: flex; align-items: center; gap: 5px; padding: 7px 10px 3px; }
+.document-view-panel .document-view-toolbar button { display: grid; place-items: center; width: 26px; height: 26px; }
+.document-view-panel .document-view-toolbar-spacer { flex: 1; }
+.document-view-panel .document-view-readonly { color: var(--view-muted); font-size: 11px; padding: 2px 6px; border: 1px solid var(--view-line); border-radius: 4px; }
+.document-view-panel .document-view-breadcrumbs { display: flex; flex-wrap: wrap; gap: 2px; padding: 4px 10px 8px; border-bottom: 1px solid var(--view-line); }
+.document-view-panel .document-view-crumb { display: inline-flex; align-items: center; min-width: 0; max-width: 100%; gap: 2px; color: var(--view-muted); }
+.document-view-panel .document-view-crumb button { padding: 3px 5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: left; }
+.document-view-panel .document-view-crumb button[aria-current] { color: var(--view-ink); }
+.document-view-panel .document-view-scroll { flex: 1; min-height: 0; min-width: 0; overflow: auto; overscroll-behavior: contain; }
+.document-view-panel .document-view-content { min-height: 100%; user-select: text; }
+.document-view-panel .document-view-empty { margin: 20px 16px; color: var(--view-muted); line-height: 1.7; }
+.document-view-panel .document-view-notice { padding: 8px 14px; background: var(--view-surface); color: var(--view-muted); overflow-wrap: anywhere; line-height: 1.5; }
+.document-view-panel .document-view-error { color: var(--view-accent); }
+.document-view-panel .document-view-target { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 28px 16px; text-align: center; }
+.document-view-panel .document-view-target span { color: var(--view-muted); overflow-wrap: anywhere; }
+.document-view-panel .document-view-target button { border: 1px solid var(--view-line); padding: 6px 12px; }
+.document-view-panel .document-view-find { display: flex; align-items: center; gap: 4px; padding: 6px 10px; background: var(--view-surface); border-bottom: 1px solid var(--view-line); }
+.document-view-panel .document-view-find input { min-width: 0; width: 100%; color: inherit; background: var(--view-paper); border: 1px solid var(--view-line); border-radius: 4px; padding: 4px 6px; }
+.document-view-panel .document-view-find span { color: var(--view-muted); font-size: 11px; white-space: nowrap; }
+.document-view-panel .document-view-find button { display: grid; place-items: center; padding: 4px; }
+.document-view-panel .document-view-markdown { padding: 16px; overflow-wrap: anywhere; line-height: 1.7; }
+.document-view-panel .document-view-markdown > :first-child { margin-top: 0; }
+.document-view-panel .document-view-markdown > :last-child { margin-bottom: 0; }
+.document-view-panel .document-view-markdown :is(p, ul, ol, pre, blockquote, table) { margin: 0 0 1em; }
+.document-view-panel .document-view-markdown :is(h1, h2, h3, h4, h5, h6) { line-height: 1.4; margin: 1.25em 0 .6em; color: inherit; }
+.document-view-panel .document-view-markdown h1 { font-size: 1.7em; }
+.document-view-panel .document-view-markdown h2 { font-size: 1.4em; }
+.document-view-panel .document-view-markdown h3 { font-size: 1.2em; }
+.document-view-panel .document-view-markdown :is(ul, ol) { padding-left: 1.6em; }
+.document-view-panel .document-view-markdown blockquote { border-left: 3px solid var(--view-line); margin-left: 0; padding-left: 12px; color: var(--view-muted); }
+.document-view-panel .document-view-markdown a { color: var(--view-accent); cursor: text; text-underline-offset: 3px; }
+.document-view-panel .document-view-markdown a.document-view-relative-link { color: #3978b8; }
+:root[data-arkdown-theme="dark"] .document-view-panel .document-view-markdown a.document-view-relative-link { color: #8ab4e8; }
+.document-view-panel .document-view-markdown a.arkdown-link-openable { cursor: pointer; }
+.document-view-panel .document-view-markdown a:hover { text-decoration-thickness: 2px; }
+.document-view-panel .document-view-markdown img { max-width: 100%; height: auto; }
+.document-view-panel .document-view-markdown pre { padding: 10px; overflow: auto; border-radius: 4px; background: var(--view-surface); }
+.document-view-panel .document-view-markdown code { font-family: Consolas, "Courier New", monospace; }
+.document-view-panel .document-view-markdown :not(pre) > code { padding: 1px 4px; background: var(--view-surface); border-radius: 3px; }
+.document-view-panel .document-view-markdown table { display: block; max-width: 100%; overflow-x: auto; border-collapse: collapse; }
+.document-view-panel .document-view-markdown :is(th, td) { padding: 6px 9px; border: 1px solid var(--view-line); text-align: left; }
+.document-view-panel .document-view-markdown hr { border: 0; border-top: 1px solid var(--view-line); }
+.document-view-panel .document-view-markdown .task-list-item { list-style: none; }
+.document-view-panel .document-view-markdown input[type="checkbox"] { accent-color: var(--view-accent); pointer-events: none; }
+.document-view-panel .document-view-code .cm-editor { color: var(--view-ink); background: var(--view-paper); outline: none; }
+.document-view-panel .document-view-code .cm-scroller { overflow: visible; font: 12px/1.65 Consolas, "Courier New", monospace; }
+.document-view-panel .document-view-code .cm-content { padding: 12px 0; }
+.document-view-panel .document-view-code .cm-line { padding: 0 12px; }
+.document-view-panel .document-view-code .cm-gutters { color: var(--view-muted); background: var(--view-surface); border-color: var(--view-line); user-select: none; }
+.document-view-panel .document-view-code .cm-panels { color: inherit; background: var(--view-surface); border-color: var(--view-line); }
+.document-view-panel .document-view-code .cm-textfield { color: inherit; background: var(--view-paper); border-color: var(--view-line); }
+.document-view-panel .document-view-code .cm-button { color: inherit; background: var(--view-paper); border-color: var(--view-line); }
+.document-view-panel .document-view-code .cm-searchMatch { background: rgb(var(--theme-color-rgb, 198 40 40) / 20%); }
+.document-view-panel .document-view-code .cm-searchMatch-selected { background: rgb(var(--theme-color-rgb, 198 40 40) / 38%); }
+.document-view-panel .document-view-token-keyword { color: #8f329c; }
+.document-view-panel .document-view-token-string { color: #337438; }
+.document-view-panel .document-view-token-number { color: #98621d; }
+.document-view-panel .document-view-token-comment { color: var(--view-muted); font-style: italic; }
+.document-view-panel .document-view-token-type { color: #256e83; }
+.document-view-panel .document-view-token-property { color: #245fa5; }
+:root[data-arkdown-theme="dark"] .document-view-panel .document-view-token-keyword { color: #dba3e6; }
+:root[data-arkdown-theme="dark"] .document-view-panel .document-view-token-string { color: #a8ce9b; }
+:root[data-arkdown-theme="dark"] .document-view-panel .document-view-token-number { color: #e6bd83; }
+:root[data-arkdown-theme="dark"] .document-view-panel .document-view-token-type { color: #91cbd4; }
+:root[data-arkdown-theme="dark"] .document-view-panel .document-view-token-property { color: #a2c5f0; }

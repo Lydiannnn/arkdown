@@ -1,0 +1,148 @@
+.preferences-select-root {
+  position: relative;
+  width: 240px;
+  height: 32px;
+  max-width: 100%;
+}
+
+.preferences-select-trigger {
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  width: 100%;
+  height: 32px;
+  min-height: 32px;
+  padding: 0 10px;
+  border: 1px solid #e8e8e8;
+  border-radius: 8px;
+  background: #fff;
+  color: #333;
+  font-family: var(--ui-font-family);
+  font-size: 13px;
+  line-height: 1.2;
+  text-align: left;
+  cursor: default;
+}
+
+.preferences-select-trigger:hover:not(:disabled),
+.preferences-select-trigger:focus-visible {
+  outline: none;
+  border-color: #dedede;
+  background: var(--control-hover-layer);
+}
+
+.preferences-select-trigger:active:not(:disabled),
+.preferences-select-trigger[aria-expanded="true"]:not(:disabled) {
+  border-color: #d4d4d4;
+  background: var(--control-pressed-layer);
+}
+
+.preferences-select-trigger:disabled {
+  opacity: var(--control-disabled-opacity);
+  pointer-events: none;
+}
+
+.preferences-select-value {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.preferences-select-chevron {
+  display: grid;
+  width: 14px;
+  height: 14px;
+  margin-left: 10px;
+  color: #777;
+  line-height: 0;
+  place-items: center;
+  pointer-events: none;
+}
+
+.preferences-select-menu {
+  position: fixed;
+  z-index: 23000;
+  display: grid;
+  padding: 5px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  border: 1px solid rgb(0 0 0 / 9%);
+  border-radius: 8px;
+  background: rgb(255 255 255 / 98%);
+  box-shadow: 0 10px 28px rgb(0 0 0 / 16%);
+  app-region: no-drag;
+  -webkit-app-region: no-drag;
+}
+
+.preferences-select-menu-title {
+  padding: 5px 10px;
+  color: var(--text-secondary, #666);
+  font: var(--ui-font-weight-normal, 400) 12px / 20px var(--ui-font-family);
+}
+
+.preferences-select-menu.ai-composer-menu button { font-size: 12px; }
+
+.preferences-select-menu button {
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr);
+  align-items: center;
+  height: 32px;
+  min-height: 32px;
+  padding: 3px 10px 3px 5px;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: #333;
+  font-family: var(--ui-font-family);
+  font-size: 13px;
+  text-align: left;
+}
+
+.preferences-select-menu button:hover:not(:disabled),
+.preferences-select-menu button:focus-visible {
+  outline: none;
+  background: var(--control-hover-layer);
+}
+
+.preferences-select-menu button:active:not(:disabled) {
+  background: var(--control-pressed-layer);
+}
+
+.preferences-select-menu button:disabled {
+  opacity: var(--control-disabled-opacity);
+  pointer-events: none;
+}
+
+.preferences-select-option-label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.preferences-select-check {
+  color: rgb(var(--theme-color-rgb, 198 40 40) / 80%);
+  text-align: center;
+}
+
+.preferences-select-menu::-webkit-scrollbar {
+  width: 12px;
+}
+
+.preferences-select-menu::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.preferences-select-menu::-webkit-scrollbar-thumb {
+  border: 3px solid transparent;
+  border-radius: 999px;
+  background: rgb(0 0 0 / 10%);
+  background-clip: padding-box;
+}
+
+.preferences-select-menu::-webkit-scrollbar-thumb:hover {
+  background: rgb(0 0 0 / 20%);
+  background-clip: padding-box;
+}

@@ -1,0 +1,286 @@
+/* Only Arkdown's main document sets this attribute. Arknote and printing do not.
+   The editor selectors deliberately exclude note previews embedded in the box. */
+:root[data-arkdown-theme="minimal"] { color-scheme: light; }
+:root[data-arkdown-theme="dark"] {
+  color-scheme: dark;
+  --arkdown-paper: #181818;
+  --arkdown-surface: #222;
+  --arkdown-raised: #292929;
+  --arkdown-ink: #e3e3e3;
+  --arkdown-muted: #b5b5b5;
+  --arkdown-line: #3b3b3b;
+  --arkdown-accent: color-mix(in srgb, rgb(var(--theme-color-rgb, 198 40 40)) 62%, white);
+  --control-hover-layer: rgb(255 255 255 / 7%);
+  --control-pressed-layer: rgb(255 255 255 / 12%);
+  --control-selected-layer: rgb(var(--theme-color-rgb, 198 40 40) / 24%);
+  --menu-divider-color: #3b3b3b;
+  --text-primary: var(--arkdown-ink);
+  --text-secondary: var(--arkdown-muted);
+  --text-disabled: #838383;
+  --border-subtle: var(--arkdown-line);
+  --control-background: var(--arkdown-raised);
+  --surface-background: var(--arkdown-paper);
+  --surface-raised: var(--arkdown-raised);
+  --panel-background: var(--arkdown-paper);
+}
+
+/* Tint the chrome above the material without changing the native backdrop. */
+:root[data-arkdown-theme="dark"] .app-shell {
+  --mica-shell-tint: rgb(0 0 0 / 60%);
+  background: var(--mica-shell-tint);
+}
+:root[data-arkdown-theme="dark"] :is(.app-titlebar, .sidebar) { background: transparent; }
+:root[data-arkdown-theme="dark"] :is(.app-titlebar, .sidebar) { color: var(--arkdown-muted); }
+:root[data-arkdown-theme="dark"] :is(.app-menu-button, .window-controls button, .tree-row,
+  .outline-list button, .search-results button, .search-results strong, .workspace-search-submit button) { color: var(--arkdown-muted); }
+:root[data-arkdown-theme="dark"] :is(.app-menu-button, .window-controls button):hover:not(:disabled) { color: var(--arkdown-ink); }
+:root[data-arkdown-theme="dark"] .window-controls .window-close-button:hover { color: #fff; }
+:root[data-arkdown-theme="dark"] :is(.sidebar-title, .search-scope, .search-results small, .search-more-directories) { color: var(--arkdown-accent); }
+:root[data-arkdown-theme="dark"] :is(.workspace-search-field, .document-find-bar) {
+  color: var(--arkdown-muted); background: var(--arkdown-raised); border-color: var(--arkdown-line);
+}
+:root[data-arkdown-theme="dark"] :is(.workspace-search-field input, .document-find-bar input) { color: var(--arkdown-ink); }
+:root[data-arkdown-theme="dark"] :is(.document-find-nav, .document-find-close, .document-find-count,
+  .sidebar-empty, .search-results span) { color: var(--arkdown-muted); }
+:root[data-arkdown-theme="dark"] .document-find-divider { background: var(--arkdown-line); }
+:root[data-arkdown-theme="dark"] :is(.document-find-nav, .document-find-close):hover:not(:disabled) { background: var(--control-hover-layer); }
+:root[data-arkdown-theme="dark"] .search-failure { color: #ffaaa2; }
+
+:root[data-arkdown-theme="dark"] :is(.editor-host, .editor-content .editor-pane,
+  .editor-content .editor-surface, .editor-content .source-editor .cm-editor,
+  .editor-content .source-editor .cm-scroller) { background: var(--arkdown-paper); color: var(--arkdown-ink); }
+:root[data-arkdown-theme="dark"] .editor-content :is(.visual-editor, .visual-editor .milkdown, .visual-editor .ProseMirror) {
+  background-color: var(--arkdown-paper) !important; color: var(--arkdown-ink);
+}
+/* User background images still compose behind the document, in both modes. */
+:root[data-arkdown-theme="dark"] .editor-content.background-image-present :is(.editor-pane, .editor-surface,
+  .visual-editor, .milkdown, .ProseMirror, .source-editor-context, .source-editor, .cm-editor, .cm-scroller) {
+  background: transparent !important;
+}
+:root[data-arkdown-theme="dark"] .editor-content .milkdown {
+  --crepe-color-background: #181818;
+  --crepe-color-on-background: #e3e3e3;
+  --crepe-color-surface: #252525;
+  --crepe-color-surface-low: #292929;
+  --crepe-color-on-surface: #e3e3e3;
+  --crepe-color-on-surface-variant: #b5b5b5;
+  --crepe-color-outline: #545454;
+  --crepe-color-primary: var(--arkdown-accent);
+  --crepe-color-secondary: #363030;
+  --crepe-color-on-secondary: #f0dcdc;
+  --crepe-color-inverse: #ddd;
+  --crepe-color-on-inverse: #202020;
+  --crepe-color-inline-code: #f1afb3;
+  --crepe-color-error: #ffaaa2;
+  --crepe-color-hover: #323232;
+  --crepe-color-selected: #443034;
+}
+:root[data-arkdown-theme="dark"] .editor-content .ProseMirror :is(h1, h2, h3, h4, h5, h6) { color: var(--arkdown-ink); border-color: var(--arkdown-line); }
+:root[data-arkdown-theme="dark"] .editor-content .ProseMirror :is(a, .arkdown-welcome-action) { color: var(--arkdown-accent) !important; }
+:root[data-arkdown-theme="dark"] .editor-content .ProseMirror :is(blockquote, hr, th, td, table) { border-color: var(--arkdown-line); }
+:root[data-arkdown-theme="dark"] .editor-content .ProseMirror blockquote { color: var(--arkdown-muted); }
+:root[data-arkdown-theme="dark"] .editor-content .ProseMirror :is(th, tr:nth-child(2n)) { background: #222; }
+:root[data-arkdown-theme="dark"] .editor-content .ProseMirror :is(p, li, td, th) { color: inherit; }
+:root[data-arkdown-theme="dark"] .editor-content .ProseMirror :not(pre) > code { color: #efb6bd; background: #292929; }
+:root[data-arkdown-theme="dark"] .editor-content .source-editor .cm-gutters { background: #181818; color: #929292; border-color: var(--arkdown-line); }
+:root[data-arkdown-theme="dark"] .editor-content .source-editor :is(.cm-activeLine, .cm-activeLineGutter) { background: rgb(255 255 255 / 4%); }
+:root[data-arkdown-theme="dark"] .editor-content :is(.cm-cursor, .cm-dropCursor) { border-left-color: var(--arkdown-ink); }
+:root[data-arkdown-theme="dark"] .editor-content .ProseMirror { caret-color: var(--arkdown-ink); }
+:root[data-arkdown-theme="dark"] .editor-content .arkdown-input-caret { background: var(--arkdown-ink); }
+:root[data-arkdown-theme="dark"] .document-outline-trigger { color: var(--arkdown-muted); }
+:root[data-arkdown-theme="dark"] .document-outline-trigger[aria-expanded="true"] { color: var(--arkdown-accent); }
+:root[data-arkdown-theme="dark"] .document-outline-content { border-color: var(--arkdown-line); }
+
+:root[data-arkdown-theme="dark"] .document-header { background: #1d1d1d; border-color: #303030; }
+:root[data-arkdown-theme="dark"] :is(.document-identity h1, .document-file-name-input) { color: var(--arkdown-ink); }
+:root[data-arkdown-theme="dark"] .document-file-name-input { background: var(--arkdown-raised); }
+:root[data-arkdown-theme="dark"] :is(.document-toolbar button, .document-save-button) { color: var(--arkdown-muted); }
+:root[data-arkdown-theme="dark"] :is(.document-toolbar button, .document-save-button):hover:not(:disabled) { color: var(--arkdown-ink); background: var(--control-hover-layer); }
+:root[data-arkdown-theme="dark"] .document-toolbar button[aria-pressed="true"] { color: var(--arkdown-accent); }
+:root[data-arkdown-theme="dark"] .document-toolbar-divider { background: var(--arkdown-line); }
+:root[data-arkdown-theme="dark"] .editor-right-sidebar { color: var(--arkdown-ink); background: #202020; border-color: var(--arkdown-line); }
+
+/* Main-window popovers, including those portalled directly to document.body. */
+:root[data-arkdown-theme="dark"] :is(.application-menu-popover, .global-tooltip, .ai-quote-tooltip,
+  .document-file-name-tooltip, .translation-popover:not(.translation-popover--ready)) {
+  color: var(--arkdown-ink); background: var(--arkdown-raised); border-color: var(--arkdown-line);
+  box-shadow: 0 6px 24px rgb(0 0 0 / 32%);
+}
+:root[data-arkdown-theme="dark"] .application-menu-popover button { color: var(--arkdown-ink); }
+:root[data-arkdown-theme="dark"] .application-menu-popover button.application-menu-theme-state { color: var(--arkdown-accent); }
+:root[data-arkdown-theme="dark"] :is(.application-menu-accelerator, .application-menu-arrow, .ai-quote-tooltip-label) { color: var(--arkdown-muted); }
+:root[data-arkdown-theme="dark"] :is(.translation-status, .translation-history-counter, .translation-history-empty-state) { color: var(--arkdown-muted); }
+:root[data-arkdown-theme="dark"] .translation-error { color: #ffaaa2; }
+:root[data-arkdown-theme="dark"] :is(.translation-actions button, .translation-history-entry button,
+  .translation-sidebar-footer button, .translation-sidebar-stop-bar button):not(.translation-primary-action) {
+  color: var(--arkdown-muted); background: transparent; border-color: var(--arkdown-line);
+}
+:root[data-arkdown-theme="dark"] :is(.translation-actions button, .translation-history-entry button,
+  .translation-sidebar-footer button, .translation-sidebar-stop-bar button):not(.translation-primary-action):hover:not(:disabled) { background: var(--control-hover-layer); }
+:root[data-arkdown-theme="dark"] :is(.translation-actions button, .translation-history-entry button,
+  .translation-sidebar-footer button, .translation-sidebar-stop-bar button):not(.translation-primary-action):active:not(:disabled) { background: var(--control-pressed-layer); }
+:root[data-arkdown-theme="dark"] .translation-popover-trigger { color: var(--arkdown-accent); }
+
+:root[data-arkdown-theme="dark"] .editor-right-sidebar-tab { color: var(--arkdown-muted); }
+:root[data-arkdown-theme="dark"] .editor-right-sidebar-tabs { border-bottom-color: var(--arkdown-line); }
+:root[data-arkdown-theme="dark"] .preferences-page--arkdown .preferences-toc a[aria-current] { color: var(--arkdown-accent); }
+:root[data-arkdown-theme="dark"] .preferences-select-menu .preferences-select-check { color: var(--arkdown-accent); }
+:root[data-arkdown-theme="dark"] .arkdown-link-editor-popover {
+  color: var(--arkdown-ink); background: var(--arkdown-raised); border-color: var(--arkdown-line);
+}
+:root[data-arkdown-theme="dark"] .arkdown-link-editor-popover :is(input, button) {
+  color: var(--arkdown-ink); background: var(--arkdown-surface); border-color: var(--arkdown-line);
+}
+:root[data-arkdown-theme="dark"] .editor-right-sidebar-tab[aria-selected="true"] { color: var(--arkdown-accent); border-bottom-color: var(--arkdown-accent); }
+:root[data-arkdown-theme="dark"] .model-configuration-actions button:not(.model-configuration-primary) { color: var(--arkdown-ink); background: var(--arkdown-raised); border-color: #555; }
+:root[data-arkdown-theme="dark"] .model-configuration-actions button:not(.model-configuration-primary):hover { background: #333; }
+:root[data-arkdown-theme="dark"] .model-configuration-actions button:not(.model-configuration-primary):active { background: #3d3d3d; }
+:root[data-arkdown-theme="dark"] .editor-content .visual-editor .label.ordered::before { color: var(--arkdown-ink) !important; }
+:root[data-arkdown-theme="dark"] :is(.document-toolbar img, .sidebar .file-type-icon--folder) { filter: invert(.8); }
+:root[data-arkdown-theme="dark"] .toolbar-separator { background: var(--arkdown-line); }
+:root[data-arkdown-theme="dark"] .editor-content .arkdown-visual-input-caret { color: var(--arkdown-ink) !important; }
+:root[data-arkdown-theme="dark"] .editor-content .arkdown-mermaid-block button { background: var(--arkdown-raised); color: var(--arkdown-muted); }
+:root[data-arkdown-theme="dark"] .editor-content .arkdown-mermaid-block button:hover { background: #363636; color: var(--arkdown-ink); }
+:root[data-arkdown-theme="dark"] .editor-content .arkdown-mermaid-block button:active { background: #414141; }
+:root[data-arkdown-theme="dark"] .translation-history-rail-button { background: var(--arkdown-raised); color: var(--arkdown-accent); }
+:root[data-arkdown-theme="dark"] .translation-history-rail-button:hover { background: #333; color: var(--arkdown-accent); }
+:root[data-arkdown-theme="dark"] .translation-history-rail-button:active { background: #3d3d3d; color: var(--arkdown-accent); }
+:root[data-arkdown-theme="dark"] :is(.ai-conversation-error, .ai-conversation-context-error) { color: #ffaaa2; }
+:root[data-arkdown-theme="dark"] .ai-conversation-error { color: #ffaaa2 !important; }
+:root[data-arkdown-theme="dark"] .ai-conversation-composer { --ai-control-hover: #303030; --ai-control-pressed: #393939; }
+:root[data-arkdown-theme="dark"] .ai-conversation-access {
+  color: var(--arkdown-muted);
+}
+:root[data-arkdown-theme="dark"] .ai-conversation-access[aria-pressed="true"] {
+  color: #f2f2f2;
+  background: rgb(255 255 255 / 12%);
+  border-color: transparent;
+}
+:root[data-arkdown-theme="dark"] .ai-conversation-composer .ai-conversation-send {
+  --ai-primary-background: #dedede;
+  color: #181818;
+  border-color: #dedede !important;
+}
+:root[data-arkdown-theme="dark"] :is(.workspace-tree-context, .workspace-search, .editor-surface,
+  .source-editor .cm-scroller, .translation-sidebar-scroll, .preferences-page-content)::-webkit-scrollbar-thumb {
+  background: rgb(255 255 255 / 20%); background-clip: padding-box;
+}
+:root[data-arkdown-theme="dark"] :is(.workspace-tree-context, .workspace-search, .editor-surface,
+  .source-editor .cm-scroller, .translation-sidebar-scroll, .preferences-page-content)::-webkit-scrollbar-thumb:hover {
+  background: rgb(255 255 255 / 30%); background-clip: padding-box;
+}
+
+/* Box chrome follows the host; individual card recipes retain their own colors. */
+:root[data-arkdown-theme="dark"] .sticky-note-box-panel {
+  color-scheme: dark; color: var(--arkdown-ink); background: var(--arkdown-paper);
+  border-color: var(--arkdown-line);
+}
+:root[data-arkdown-theme="dark"] .sticky-note-box-panel :is(.sticky-note-box-header, .sticky-note-box-tabs, .archived-sticky-note-preview > header) { border-color: var(--arkdown-line); }
+:root[data-arkdown-theme="dark"] .sticky-note-box-panel :is(.sticky-note-box-header button, .sticky-note-box-tabs button, .sticky-note-search-field button, .sticky-note-box-message) { color: var(--arkdown-muted); }
+:root[data-arkdown-theme="dark"] .sticky-note-box-panel .sticky-note-box-tabs button[aria-selected="true"] { color: var(--arkdown-accent); }
+:root[data-arkdown-theme="dark"] .sticky-note-box-panel :is(.sticky-note-create-card, .sticky-note-search-field, .sticky-note-search-results > button, .sticky-note-startup-hint) { background: var(--arkdown-raised); border-color: var(--arkdown-line); color: var(--arkdown-ink); }
+:root[data-arkdown-theme="dark"] .sticky-note-box-panel :is(.sticky-note-recycle-target, .sticky-note-permanent-delete-target, .sticky-note-archive-toast) { background: var(--arkdown-raised) !important; color: var(--arkdown-ink); border-color: var(--arkdown-line); }
+:root[data-arkdown-theme="dark"] .sticky-note-box-panel :is(.sticky-note-recycle-target, .sticky-note-permanent-delete-target):hover:not(:disabled) { background: var(--control-hover-layer) !important; }
+:root[data-arkdown-theme="dark"] .sticky-note-box-panel :is(.sticky-note-recycle-target, .sticky-note-permanent-delete-target):active:not(:disabled) { background: var(--control-pressed-layer) !important; }
+:root[data-arkdown-theme="dark"] .sticky-note-box-panel :is(.sticky-note-box-error, .sticky-note-box-capacity) { color: #ffaaa2; }
+:root[data-arkdown-theme="dark"] .sticky-note-box-panel .sticky-note-box-feedback { color: #e8c385; }
+:root[data-arkdown-theme="dark"] .sticky-note-box-panel .sticky-note-search-field input { color: var(--arkdown-ink); }
+
+/* Reuse existing component dark palettes for explicit main-window selection. */
+:root[data-arkdown-theme="dark"] .preferences-page--arkdown, :root[data-arkdown-theme="dark"] .preferences-dialog, :root[data-arkdown-theme="dark"] .preferences-select-menu {
+    color-scheme: dark;
+    --preferences-paper: #242424;
+    --preferences-surface: #2a2a2a;
+    --preferences-ink: #e6e6e6;
+    --preferences-helper: #b5b5b5;
+    --preferences-line: #404040;
+    --preferences-button-line: #656565;
+    --preferences-input-line: color-mix(in srgb, #858585 60%, var(--preferences-paper));
+    --preferences-hover: #303030;
+    --preferences-pressed: #383838;
+    --preferences-error: #ff9999;
+  }
+:root[data-arkdown-theme="dark"] .preferences-page--arkdown .preferences-select-trigger,
+  :root[data-arkdown-theme="dark"] .preferences-page--arkdown .large-model-manager .preferences-compact-select,
+  :root[data-arkdown-theme="dark"] .large-model-dialog .preferences-compact-select { color: #e6e6e6; background: #242424; border-color: #404040; }
+:root[data-arkdown-theme="dark"] .preferences-page--arkdown .preferences-select-trigger:hover:not(:disabled), :root[data-arkdown-theme="dark"] .preferences-page--arkdown .preferences-select-trigger:focus-visible { background: #303030; border-color: #535353; }
+:root[data-arkdown-theme="dark"] .preferences-page--arkdown .preferences-select-trigger[aria-expanded="true"]:not(:disabled), :root[data-arkdown-theme="dark"] .preferences-page--arkdown .preferences-select-trigger:active:not(:disabled) { background: #383838; border-color: #666; }
+:root[data-arkdown-theme="dark"] .preferences-select-menu { background: #242424; border-color: rgb(255 255 255 / 12%); }
+:root[data-arkdown-theme="dark"] .preferences-select-menu button { color: #e6e6e6; }
+:root[data-arkdown-theme="dark"] .preferences-select-menu button:hover:not(:disabled), :root[data-arkdown-theme="dark"] .preferences-select-menu button:focus-visible { background: #303030; }
+:root[data-arkdown-theme="dark"] .preferences-select-menu button:active:not(:disabled) { background: #383838; }
+:root[data-arkdown-theme="dark"] .preferences-page--arkdown :is(.large-model-empty-state, .large-model-assignment, .large-model-codex-cli-explanation), :root[data-arkdown-theme="dark"] .preferences-dialog .large-model-capability-settings { background: var(--preferences-surface); color: var(--preferences-helper); border-color: var(--preferences-line); }
+:root[data-arkdown-theme="dark"] .preferences-page--arkdown :is(.large-model-card, .large-model-feature-row) { background: var(--preferences-paper); border-color: var(--preferences-line); }
+:root[data-arkdown-theme="dark"] .preferences-page--arkdown .large-model-manager button:not(.preferences-select-trigger):not(.large-model-primary-action):not(.large-model-card-disclosure),
+  :root[data-arkdown-theme="dark"] .preferences-dialog .large-model-catalog-controls > button { background: var(--preferences-paper); color: var(--preferences-ink); border-color: var(--preferences-button-line); }
+:root[data-arkdown-theme="dark"] .preferences-page--arkdown .large-model-manager button:not(.preferences-select-trigger):not(.large-model-primary-action):not(.large-model-card-disclosure):hover:not(:disabled) { background: var(--preferences-hover); }
+:root[data-arkdown-theme="dark"] .preferences-page--arkdown .large-model-manager button:not(.preferences-select-trigger):not(.large-model-primary-action):active:not(:disabled) { background: var(--preferences-pressed); }
+:root[data-arkdown-theme="dark"] .preferences-page--arkdown .large-model-readonly-setting strong,
+  :root[data-arkdown-theme="dark"] .preferences-dialog .large-model-capability-readonly-grid output { color: var(--preferences-helper); background: var(--preferences-surface); border-color: var(--preferences-line); }
+:root[data-arkdown-theme="dark"] .preferences-page--arkdown .large-model-status { color: #ddd; background: #414141; }
+:root[data-arkdown-theme="dark"] .preferences-page--arkdown .large-model-status.is-connected { color: #a9e5bb; background: #204c30; }
+:root[data-arkdown-theme="dark"] .preferences-page--arkdown .large-model-connection-status.is-connected { color: #a9e5bb; }
+:root[data-arkdown-theme="dark"] .preferences-page--arkdown .large-model-connection-status:not(.is-connected) { color: #ffb5b5; }
+:root[data-arkdown-theme="dark"] .preferences-page--arkdown .large-model-status:not(.is-connected):not(.is-unknown) { color: #ffb5b5; background: #502630; }
+:root[data-arkdown-theme="dark"] .preferences-page--arkdown .large-model-card-actions button:last-child:not(:disabled) { color: #ff9999; }
+:root[data-arkdown-theme="dark"] .preferences-dialog .preferences-actions { background: var(--preferences-paper); }
+:root[data-arkdown-theme="dark"] .preferences-page--arkdown .preferences-range-input::-webkit-slider-runnable-track { background: linear-gradient(to right, rgb(var(--theme-color-rgb, 198 40 40)) 0 var(--preferences-range-progress, 0%), #454545 var(--preferences-range-progress, 0%) 100%); }
+:root[data-arkdown-theme="dark"] .context-menu-list {
+    color-scheme: dark;
+    --context-menu-surface: #202124;
+    --context-menu-foreground: #f1f3f4;
+    --context-menu-border: rgb(255 255 255 / 36%);
+    --context-menu-icon: #e8eaed;
+    --context-menu-muted-foreground: #bdc1c6;
+    --context-menu-arrow: #dadce0;
+    --context-menu-grid-surface: #292a2d;
+    --context-menu-grid-border: var(--context-menu-border);
+    --context-menu-swatch-border: rgb(255 255 255 / 28%);
+    --context-menu-danger: #f28b82;
+    --context-menu-theme-accent-icon: color-mix(
+      in srgb,
+      rgb(var(--theme-color-rgb, 198 40 40)) 55%,
+      var(--context-menu-foreground) 45%
+    );
+    --context-menu-theme-accent-text: color-mix(
+      in srgb,
+      rgb(var(--theme-color-rgb, 198 40 40)) 40%,
+      var(--context-menu-foreground) 60%
+    );
+    --context-menu-neutral-checked-surface: rgb(255 255 255 / 12%);
+    --context-menu-neutral-checked-hover-surface: rgb(255 255 255 / 18%);
+    --context-menu-neutral-checked-pressed-surface: rgb(255 255 255 / 24%);
+    --context-menu-neutral-checked-border: rgb(255 255 255 / 32%);
+    --context-menu-neutral-checked-inset: rgb(255 255 255 / 8%);
+    --context-menu-neutral-checked-icon: rgb(255 255 255 / 92%);
+    --control-hover-layer: rgb(255 255 255 / 8%);
+    --control-pressed-layer: rgb(255 255 255 / 14%);
+    --menu-divider-color: rgb(255 255 255 / 18%);
+  }
+:root[data-arkdown-theme="dark"] .arkdown-dialog-backdrop {
+    color-scheme: dark;
+    --arkdown-dialog-surface: #202124;
+    --arkdown-dialog-border: rgb(255 255 255 / 36%);
+    --arkdown-dialog-text: #f1f3f4;
+    --arkdown-dialog-helper: #bdc1c6;
+    --arkdown-dialog-error: #ffb4ab;
+    --arkdown-dialog-action-surface: #292a2d;
+    --arkdown-dialog-action-border: rgb(255 255 255 / 36%);
+    --arkdown-dialog-action-text: #f1f3f4;
+    --arkdown-dialog-action-hover: #34363a;
+    --arkdown-dialog-action-pressed: #3d4045;
+    --arkdown-dialog-disabled-opacity: 0.45;
+    --arkdown-dialog-danger-surface: #b3261e;
+    --arkdown-dialog-danger-hover: #c3372c;
+    --arkdown-dialog-danger-pressed: #8c1d18;
+    --arkdown-dialog-danger-text: #fff;
+    --arkdown-dialog-shadow: 0 20px 56px rgb(0 0 0 / 52%);
+  }
+:root[data-arkdown-theme="dark"] .arknote-settings-page {
+    --preferences-ink: #e6e6e6;
+    --preferences-helper: #aaa;
+    --preferences-paper: #252525;
+    --preferences-button-line: #656565;
+    --preferences-hover: #303030;
+    --preferences-pressed: #383838;
+  }

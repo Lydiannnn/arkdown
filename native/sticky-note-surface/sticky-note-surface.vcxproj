@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations"><ProjectConfiguration Include="Release|x64"><Configuration>Release</Configuration><Platform>x64</Platform></ProjectConfiguration></ItemGroup>
+  <PropertyGroup Label="Globals"><ProjectGuid>{07CC22DA-6FE3-4306-947C-B16D285D0F99}</ProjectGuid><WindowsTargetPlatformVersion Condition="'$(WindowsTargetPlatformVersion)' == ''">10.0.22621.0</WindowsTargetPlatformVersion></PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Label="Configuration"><ConfigurationType>DynamicLibrary</ConfigurationType><UseDebugLibraries>false</UseDebugLibraries><PlatformToolset>v143</PlatformToolset><CharacterSet>Unicode</CharacterSet></PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <PropertyGroup><TargetName>surface</TargetName><TargetExt>.node</TargetExt><OutDir Condition="'$(OutDir)' == ''">$(ProjectDir)dist\x64\</OutDir><IntDir Condition="'$(IntDir)' == ''">$(ProjectDir)obj\x64\</IntDir></PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile><LanguageStandard>stdcpp20</LanguageStandard><RuntimeLibrary>MultiThreaded</RuntimeLibrary><WarningLevel>Level4</WarningLevel><TreatWarningAsError>true</TreatWarningAsError><PreprocessorDefinitions>WIN32_LEAN_AND_MEAN;NOMINMAX;NAPI_VERSION=9;%(PreprocessorDefinitions)</PreprocessorDefinitions><AdditionalIncludeDirectories>$(NodeHeadersDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories><AdditionalOptions>/permissive- /bigobj %(AdditionalOptions)</AdditionalOptions></ClCompile>
+    <Link><AdditionalDependencies>$(NodeLibPath);windowsapp.lib;dxguid.lib;dwmapi.lib;comctl32.lib;delayimp.lib;ole32.lib;shell32.lib;uuid.lib;%(AdditionalDependencies)</AdditionalDependencies><DelayLoadDLLs>node.exe;%(DelayLoadDLLs)</DelayLoadDLLs><SubSystem>Windows</SubSystem></Link>
+  </ItemDefinitionGroup>
+  <ItemGroup><ClCompile Include="src\addon.cpp" /><ClCompile Include="src\delay_hook.cpp" /><ClCompile Include="src\workspace_shell_drag.cpp" /></ItemGroup>
+  <ItemGroup><ClInclude Include="src\material_effects.h" /><ClInclude Include="src\glass_resize_hit_test.h" /><ClInclude Include="src\workspace_shell_drag.h" /></ItemGroup>
+  <Target Name="ValidateNativeInputs" BeforeTargets="PrepareForBuild"><Error Condition="'$(NodeHeadersDir)' == '' Or !Exists('$(NodeHeadersDir)\node_api.h')" Text="NodeHeadersDir must name verified Electron headers containing node_api.h." /><Error Condition="'$(NodeLibPath)' == '' Or !Exists('$(NodeLibPath)')" Text="NodeLibPath must name the verified Electron x64 node.lib." /><Error Condition="'$(Platform)' != 'x64'" Text="The native sticky-note surface supports x64 only." /></Target>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+</Project>

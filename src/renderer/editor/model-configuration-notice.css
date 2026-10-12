@@ -1,0 +1,94 @@
+.model-configuration-region {
+  display: flex;
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: 20px;
+  align-items: center;
+  justify-content: center;
+}
+
+.model-configuration-footer-space {
+  flex: 0 0 var(--editor-right-sidebar-footer-height, 53px);
+}
+
+.model-configuration-notice {
+  max-width: 100%;
+  text-align: center;
+}
+
+.model-configuration-notice h2 {
+  margin: 0;
+  color: var(--text-primary, #333);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+.model-configuration-notice p {
+  margin: 6px 0 0;
+  color: var(--text-secondary, #666);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.model-configuration-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.model-configuration-actions button {
+  box-sizing: border-box;
+  height: 32px;
+  padding: 0 12px;
+  border: 1px solid #c9c9c9;
+  border-radius: 8px;
+  background: #fff;
+  color: #444;
+  font-family: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.model-configuration-actions button:not(:disabled):hover {
+  background: var(--control-hover-layer);
+}
+
+.model-configuration-actions button:not(:disabled):focus-visible {
+  border-color: rgb(var(--theme-color-rgb) / 45%);
+  background: var(--control-hover-layer);
+}
+
+.model-configuration-actions button:not(:disabled):active {
+  background: var(--control-pressed-layer);
+}
+
+.model-configuration-actions .model-configuration-primary {
+  min-width: 117px;
+  border-color: rgb(var(--theme-color-rgb));
+  background: rgb(var(--theme-color-rgb));
+  color: #fff;
+  font-size: 13px;
+}
+
+.model-configuration-actions .model-configuration-primary:not(:disabled):hover,
+.model-configuration-actions .model-configuration-primary:not(:disabled):focus-visible {
+  border-color: rgb(var(--theme-color-rgb));
+  background: rgb(var(--theme-color-rgb) / 88%);
+}
+
+.model-configuration-actions .model-configuration-primary:not(:disabled):active {
+  background: rgb(var(--theme-color-rgb) / 76%);
+}
+
+.model-configuration-actions button:focus-visible {
+  outline: 2px solid rgb(var(--theme-color-rgb) / 45%);
+  outline-offset: -3px;
+}
+
+.model-configuration-actions button:disabled {
+  opacity: var(--control-disabled-opacity);
+  pointer-events: none;
+}

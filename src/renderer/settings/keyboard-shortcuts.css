@@ -1,0 +1,25 @@
+.keyboard-shortcuts-dialog { width: min(720px, calc(100vw - 40px)); }
+.keyboard-shortcuts-scroll { max-height: min(58vh, 560px); overflow: auto; }
+.keyboard-shortcuts-table { border-collapse: collapse; width: 100%; text-align: left; font-size: 13px; }
+.keyboard-shortcuts-table th, .keyboard-shortcuts-table td { padding: 8px 10px; border-bottom: 1px solid var(--arkdown-dialog-border); }
+.keyboard-shortcuts-table th { font-weight: 500; }
+.keyboard-shortcuts-table thead th { font-weight: 600; }
+.keyboard-shortcuts-table th:first-child { width: 43%; }
+.keyboard-shortcuts-group th { padding-top: 18px; font-weight: 600; }
+.keyboard-shortcut-key { white-space: nowrap; font-variant-numeric: tabular-nums; }
+.keyboard-shortcut-actions { display: flex; gap: 4px; }
+.keyboard-shortcut-actions button {
+  padding: 3px 7px; min-width: 0; min-height: 26px; font: inherit;
+  border: 1px solid var(--arkdown-dialog-action-border); border-radius: 4px;
+  color: var(--arkdown-dialog-action-text); background: var(--arkdown-dialog-action-surface);
+}
+.keyboard-shortcut-actions button:hover:not(:disabled) { background: var(--arkdown-dialog-action-hover); }
+.keyboard-shortcut-actions button:active:not(:disabled) { background: var(--arkdown-dialog-action-pressed); }
+.keyboard-shortcut-actions button:focus-visible { outline: 2px solid var(--arkdown-dialog-focus); outline-offset: 1px; }
+.keyboard-shortcut-actions button:disabled { opacity: var(--arkdown-dialog-disabled-opacity); }
+.keyboard-shortcut-fixed { color: var(--arkdown-dialog-helper); }
+.keyboard-shortcuts-table tr[data-recording] { background: rgba(var(--theme-color-rgb), .1); }
+@media (max-width: 600px) {
+  .keyboard-shortcuts-table th, .keyboard-shortcuts-table td { padding-inline: 5px; }
+  .keyboard-shortcut-actions { flex-wrap: wrap; }
+}

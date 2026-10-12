@@ -1,0 +1,30 @@
+.screenshot-text-context-menu {
+  position: fixed;
+  z-index: 10000;
+  display: grid;
+  min-width: 120px;
+  padding: 4px;
+  border: 1px solid rgba(255, 255, 255, .14);
+  border-radius: 6px;
+  color: #f3f3f3;
+  background: #2b2b2b;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .4);
+  font: var(--ui-font-weight-normal, 400) 14px/1.5 var(--ui-font-family, sans-serif);
+  animation: screenshot-text-menu-enter 250ms ease-out both;
+  -webkit-app-region: no-drag;
+}
+.screenshot-text-context-menu button {
+  min-height: 32px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 4px;
+  color: inherit;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+.screenshot-text-context-menu button:hover:not(:disabled) { background: rgba(255, 255, 255, .09); }
+.screenshot-text-context-menu button:disabled { opacity: .45; cursor: default; }
+.screenshot-text-context-menu button:focus-visible { outline: 2px solid #b9d7ff; outline-offset: -2px; }
+@keyframes screenshot-text-menu-enter { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .screenshot-text-context-menu { animation: none; } }

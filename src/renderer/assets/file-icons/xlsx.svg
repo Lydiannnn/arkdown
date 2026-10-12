@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22">
+  <title>XLSX</title>
+  <path d="M5.75 1.75H14L18.25 6V18.25C18.25 19.35 17.35 20.25 16.25 20.25H5.75C4.65 20.25 3.75 19.35 3.75 18.25V3.75C3.75 2.65 4.65 1.75 5.75 1.75Z" fill="#FFFFFF" stroke="#AEA9A4" stroke-width="1.1" stroke-linejoin="round"/>
+  <path d="M14 1.75V4.5C14 5.33 14.67 6 15.5 6H18.25" fill="none" stroke="#AEA9A4" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M7.3 9.6Q10.3 13.6 14.9 17.2M14.9 9.5 7.1 17.2" fill="none" stroke="#738F77" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

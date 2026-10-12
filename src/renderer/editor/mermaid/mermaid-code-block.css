@@ -1,0 +1,135 @@
+.visual-editor .arkdown-mermaid-block {
+  --arkdown-mermaid-border: color-mix(
+    in srgb,
+    var(--crepe-color-on-surface, #262626) 22%,
+    transparent
+  );
+  --arkdown-mermaid-surface: rgb(var(--theme-color-rgb, 198 40 40) / 5%);
+  --arkdown-mermaid-status-color: var(
+    --crepe-color-on-surface-variant,
+    rgb(0 0 0 / 68%)
+  );
+  --arkdown-mermaid-error-color: var(--crepe-color-error, #b3261e);
+  box-sizing: border-box;
+  display: block;
+  min-inline-size: 0;
+  max-inline-size: 100%;
+  margin-block: 12px;
+  overflow: hidden;
+  border: 1px solid var(--arkdown-mermaid-border);
+  border-radius: 8px;
+  background: var(--arkdown-mermaid-surface);
+  color: var(--crepe-color-on-surface, rgb(0 0 0 / 88%));
+}
+
+.visual-editor .arkdown-mermaid-block.selected {
+  outline: 2px solid rgb(var(--theme-color-rgb, 198 40 40) / 38%);
+  outline-offset: 1px;
+}
+
+.visual-editor .arkdown-mermaid-block .arkdown-mermaid-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  min-block-size: 32px;
+  padding: 8px 10px 0;
+}
+
+.visual-editor .arkdown-mermaid-block button {
+  min-block-size: 32px;
+  padding-inline: 10px;
+  border: 1px solid var(--arkdown-mermaid-border);
+  border-radius: 7px;
+  background: color-mix(in srgb, #fff 95%, #000 5%);
+  color: var(--crepe-color-on-surface, rgb(0 0 0 / 88%));
+  font: inherit;
+  font-size: 13px;
+  line-height: 18px;
+  cursor: pointer;
+  transition: background-color 150ms ease, border-color 150ms ease,
+    color 150ms ease, box-shadow 150ms ease;
+}
+
+.visual-editor .arkdown-mermaid-block [data-action="return-code-block"] {
+  margin-inline-end: auto;
+  min-inline-size: 32px;
+  padding-inline: 0;
+}
+
+.visual-editor .arkdown-mermaid-block button:hover {
+  border-color: rgb(var(--theme-color-rgb, 198 40 40) / 30%);
+  background: rgb(var(--theme-color-rgb, 198 40 40) / 8%);
+  color: rgb(var(--theme-color-rgb, 198 40 40) / 88%);
+  box-shadow: 0 0 0 3px rgb(var(--theme-color-rgb, 198 40 40) / 5%);
+}
+
+.visual-editor .arkdown-mermaid-block button:focus-visible {
+  outline: 2px solid rgb(var(--theme-color-rgb, 198 40 40) / 55%);
+  outline-offset: 2px;
+}
+
+.visual-editor .arkdown-mermaid-block .arkdown-mermaid-preview {
+  box-sizing: border-box;
+  display: grid;
+  min-inline-size: 0;
+  min-block-size: 96px;
+  max-inline-size: 100%;
+  place-items: center;
+  padding: 12px;
+  overflow: auto;
+}
+
+.visual-editor .arkdown-mermaid-block .arkdown-mermaid-preview[role="status"] {
+  color: var(
+    --arkdown-mermaid-status-color,
+    var(--crepe-color-on-surface-variant, rgb(0 0 0 / 68%))
+  );
+}
+
+.visual-editor .arkdown-mermaid-block .arkdown-mermaid-preview[role="alert"] {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  color: var(--arkdown-mermaid-error-color, var(--crepe-color-error, #b3261e));
+}
+
+.visual-editor .arkdown-mermaid-block .arkdown-mermaid-preview img {
+  display: block;
+  inline-size: auto;
+  max-inline-size: 100%;
+  height: auto;
+  margin-inline: auto;
+  object-fit: contain;
+  cursor: zoom-in;
+}
+
+.visual-editor .arkdown-mermaid-block .arkdown-mermaid-preview img:focus-visible {
+  outline: 2px solid rgb(var(--theme-color-rgb, 198 40 40) / 55%);
+  outline-offset: 3px;
+}
+
+.visual-editor .arkdown-mermaid-block .arkdown-mermaid-source {
+  box-sizing: border-box;
+  min-inline-size: 0;
+  max-inline-size: 100%;
+  padding: 8px 12px 12px;
+  overflow: auto;
+}
+
+.visual-editor .arkdown-mermaid-block .arkdown-mermaid-source .cm-editor {
+  min-inline-size: 0;
+  max-inline-size: 100%;
+  border-radius: 6px;
+}
+
+.visual-editor .arkdown-mermaid-block [hidden] {
+  display: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .visual-editor .arkdown-mermaid-block,
+  .visual-editor .arkdown-mermaid-block button {
+    scroll-behavior: auto;
+    transition: none;
+  }
+}

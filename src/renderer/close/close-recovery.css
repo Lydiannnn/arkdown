@@ -1,0 +1,13 @@
+.close-recovery-surface { padding: 0; background: var(--arkdown-dialog-surface); display: block; overflow: auto; }
+.close-recovery-surface .arkdown-dialog { width: 100%; height: auto; max-height: none; overflow: visible; border-radius: 10px; box-shadow: none; }
+.close-recovery-surface .arkdown-dialog__header { -webkit-app-region: drag; }
+.close-recovery-surface[data-arkdown-theme="dark"] {
+  color-scheme: dark;
+  --arkdown-dialog-surface: #202020;
+  --arkdown-dialog-border: rgb(255 255 255 / 18%);
+  --arkdown-dialog-text: #eeeeee;
+  --arkdown-dialog-helper: #bdbdbd;
+  --arkdown-dialog-action-surface: #2b2b2b;
+  --arkdown-dialog-action-border: #555;
+  --arkdown-dialog-action-text: #eeeeee;
+}

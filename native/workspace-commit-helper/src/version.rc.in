@@ -1,0 +1,31 @@
+#pragma code_page(65001)
+#include <winver.h>
+
+1 VERSIONINFO
+ FILEVERSION @ARKDOWN_VERSION_NUMERIC@
+ PRODUCTVERSION @ARKDOWN_VERSION_NUMERIC@
+ FILEFLAGSMASK VS_FFI_FILEFLAGSMASK
+ FILEFLAGS 0
+ FILEOS VOS_NT_WINDOWS32
+ FILETYPE VFT_APP
+ FILESUBTYPE 0
+BEGIN
+  BLOCK "StringFileInfo"
+  BEGIN
+    BLOCK "080404b0"
+    BEGIN
+      VALUE "ProductName", "Arkdown\0"
+      VALUE "FileDescription", "Arkdown 文档保存与工作区文件提交组件\0"
+      VALUE "InternalName", "arkdown-workspace-commit\0"
+      VALUE "OriginalFilename", "arkdown-workspace-commit.exe\0"
+      VALUE "FileVersion", "@ARKDOWN_HELPER_VERSION@\0"
+      VALUE "ProductVersion", "@ARKDOWN_HELPER_VERSION@\0"
+      VALUE "CompanyName", "Miterh\0"
+      VALUE "LegalCopyright", "Copyright (c) 2026 Miterh\0"
+    END
+  END
+  BLOCK "VarFileInfo"
+  BEGIN
+    VALUE "Translation", 0x0804, 1200
+  END
+END

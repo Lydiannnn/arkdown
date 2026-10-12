@@ -1,0 +1,7 @@
+.large-model-codex-login-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.large-model-codex-login-actions button:not(.large-model-primary-action) {
+  box-sizing: border-box; height: 32px; padding: 0 12px; border-radius: 8px;
+  font: inherit; font-size: 13px; color: var(--preferences-ink, #333);
+  background: var(--preferences-paper, #fff); border: 1px solid var(--preferences-button-line, #c9c9c9);
+}
+.large-model-codex-login-actions button:not(.large-model-primary-action):hover { background: var(--preferences-hover, #f4f4f4); }

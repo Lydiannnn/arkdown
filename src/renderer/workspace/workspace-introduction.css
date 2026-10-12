@@ -1,0 +1,32 @@
+.workspace-introduction-demo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 20px 8px 8px;
+  color: var(--arkdown-dialog-helper, #777);
+  font-size: 13px;
+  line-height: 22px;
+}
+.workspace-introduction-folder {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  color: rgb(var(--theme-color-rgb, 198 40 40));
+}
+.workspace-introduction-tree { display: grid; gap: 4px; }
+.workspace-introduction-tree span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  animation: workspace-introduction-reveal 1.4s ease both;
+}
+.workspace-introduction-tree span:nth-child(2) { animation-delay: 180ms; }
+.workspace-introduction-tree span:nth-child(3) { animation-delay: 360ms; }
+@keyframes workspace-introduction-reveal {
+  0%, 25% { opacity: 0; transform: translateX(-8px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .workspace-introduction-tree span { animation: none; }
+}

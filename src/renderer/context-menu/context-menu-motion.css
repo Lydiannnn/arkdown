@@ -1,0 +1,12 @@
+.context-menu-fade-in {
+  animation: arkdown-context-menu-fade-in 250ms ease-out;
+}
+
+@keyframes arkdown-context-menu-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .context-menu-fade-in { animation: none; }
+}

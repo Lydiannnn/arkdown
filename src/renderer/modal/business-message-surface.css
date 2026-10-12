@@ -1,0 +1,46 @@
+.business-message-surface { padding: 0; background: var(--arkdown-dialog-surface); }
+.business-message-surface .business-message-dialog {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: auto;
+  max-height: 100vh;
+  border-radius: 10px;
+  box-shadow: none;
+}
+.business-message-dialog .arkdown-dialog__header {
+  flex-shrink: 0;
+  margin-bottom: 16px;
+  padding-right: 20px;
+  -webkit-app-region: drag;
+}
+.business-message-dialog .arkdown-dialog__description { -webkit-app-region: no-drag; }
+.business-message-dialog .arkdown-dialog__content { flex: 0 1 auto; min-height: 0; overflow-y: auto; }
+.business-message-dialog .arkdown-dialog__actions,
+.business-message-dialog .arkdown-dialog__error { flex-shrink: 0; }
+.business-message-dialog__message {
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.business-message-dialog__close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--arkdown-dialog-helper);
+  cursor: pointer;
+  -webkit-app-region: no-drag;
+}
+.business-message-dialog__close:hover { background: var(--arkdown-dialog-action-hover); }
+.business-message-dialog__close:focus-visible { outline: 2px solid var(--arkdown-dialog-focus); outline-offset: -2px; }

@@ -1,0 +1,64 @@
+.safe-readonly-markdown {
+  overflow-wrap: anywhere;
+}
+
+.translation-output.safe-readonly-markdown {
+  white-space: normal;
+}
+
+.safe-readonly-markdown > :first-child {
+  margin-top: 0;
+}
+
+.safe-readonly-markdown > :last-child {
+  margin-bottom: 0;
+}
+
+.safe-readonly-markdown p,
+.safe-readonly-markdown blockquote,
+.safe-readonly-markdown ol,
+.safe-readonly-markdown ul,
+.safe-readonly-markdown pre,
+.safe-readonly-markdown table {
+  margin: 0 0 0.75em;
+}
+
+.safe-readonly-markdown ol,
+.safe-readonly-markdown ul {
+  padding-inline-start: 1.5em;
+}
+
+.safe-readonly-markdown blockquote {
+  border-inline-start: 3px solid rgb(var(--theme-color-rgb) / 28%);
+  color: #777;
+  padding-inline-start: 0.75em;
+}
+
+.safe-readonly-markdown pre {
+  max-width: 100%;
+  overflow: auto;
+  padding: 0.75em;
+}
+
+.safe-readonly-markdown code {
+  font-family: Consolas, "Courier New", monospace;
+}
+
+.safe-readonly-markdown table {
+  border-collapse: collapse;
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.safe-readonly-markdown th,
+.safe-readonly-markdown td {
+  border: 1px solid #e4e4e4;
+  padding: 0.35em 0.55em;
+  text-align: start;
+}
+
+.safe-readonly-markdown img {
+  height: auto;
+  max-width: 100%;
+}

@@ -1,0 +1,9 @@
+.file-type-icon {
+  display: block;
+  flex: 0 0 auto;
+  object-fit: contain;
+}
+
+.file-type-icon--folder {
+  opacity: .7;
+}

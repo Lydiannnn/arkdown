@@ -1,0 +1,184 @@
+:root:has(.print-document-surface),
+:root:has(.print-document-loading),
+:root:has(.print-document-error),
+body:has(.print-document-surface),
+body:has(.print-document-loading),
+body:has(.print-document-error),
+#root:has(.print-document-surface),
+#root:has(.print-document-loading),
+#root:has(.print-document-error) {
+  min-height: 100%;
+  margin: 0;
+  overflow: visible;
+  background: #fff;
+}
+
+.print-document-loading,
+.print-document-error,
+.print-document-surface {
+  box-sizing: border-box;
+  min-height: 100vh;
+  background: #fff;
+  color: #222;
+}
+
+.print-document-error {
+  padding: 32px;
+  font-family: var(--ui-font-family);
+}
+
+.print-document-surface .visual-editor,
+.print-document-surface .visual-editor .milkdown,
+.print-document-surface .visual-editor .ProseMirror {
+  height: auto;
+  min-height: 0;
+  overflow: visible;
+  background: #fff !important;
+  color: #222;
+}
+
+.print-document-surface .visual-editor .milkdown {
+  box-sizing: border-box;
+  width: min(100%, var(--editor-maximum-width, 800px));
+  margin: 0 auto;
+  padding: 0;
+}
+
+.print-document-surface .visual-editor .ProseMirror {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 24px max(24px, var(--editor-minimum-margin, 30px));
+  outline: 0;
+  font-family: var(--body-latin-font), var(--body-cjk-font), var(--ui-font-family);
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+  word-break: normal;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.print-document-surface .visual-editor .ProseMirror :is(h1, h2, h3, h4, h5, h6) {
+  break-after: avoid-page;
+  page-break-after: avoid;
+  font-family: var(--heading-latin-font), var(--heading-cjk-font), var(--ui-font-family);
+}
+
+.print-document-surface .visual-editor .ProseMirror :is(img, hr, .arkdown-local-image) {
+  max-width: 100% !important;
+  break-inside: avoid-page;
+  page-break-inside: avoid;
+}
+
+.print-document-surface .visual-editor .ProseMirror img {
+  height: auto !important;
+  object-fit: contain;
+}
+
+.print-document-surface .visual-editor .ProseMirror table {
+  width: 100%;
+  max-width: 100%;
+  table-layout: auto;
+  break-inside: auto;
+}
+
+.print-document-surface .visual-editor .ProseMirror tr {
+  break-inside: avoid-page;
+  page-break-inside: avoid;
+}
+
+.print-document-surface .visual-editor .ProseMirror :is(th, td) {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.print-document-surface .visual-editor .ProseMirror :is(pre, blockquote, ul, ol) {
+  break-inside: auto;
+  white-space: normal;
+}
+
+.print-document-surface .visual-editor .ProseMirror pre,
+.print-document-surface .visual-editor .ProseMirror pre code {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.print-document-surface .visual-editor .ProseMirror li,
+.print-document-surface .visual-editor .ProseMirror .footnote-definition {
+  break-inside: avoid-page;
+  page-break-inside: avoid;
+}
+
+.print-document-surface .visual-editor .arkdown-mermaid-block {
+  max-inline-size: 100%;
+  overflow: hidden;
+  break-inside: avoid-page;
+  page-break-inside: avoid;
+}
+
+.print-document-surface .visual-editor .arkdown-mermaid-block .arkdown-mermaid-toolbar,
+.print-document-surface .visual-editor .arkdown-mermaid-block .arkdown-mermaid-source {
+  display: none !important;
+}
+
+.print-document-surface .visual-editor .arkdown-mermaid-block .arkdown-mermaid-preview img {
+  display: block;
+  max-inline-size: 100%;
+  height: auto;
+}
+
+.print-document-surface .visual-editor .arkdown-mermaid-block .arkdown-mermaid-preview[role="alert"] {
+  display: flex;
+}
+
+.print-document-surface :is(
+  .arkdown-image-alignment-toolbar,
+  .column-resize-handle
+),
+.print-document-surface .selectedCell::after {
+  display: none !important;
+}
+
+.print-media-fallback {
+  margin: .8em 0;
+  padding: .6em .8em;
+  border: 1px solid #dfe2e5;
+  background: #f8f8f8;
+  color: #555;
+  overflow-wrap: anywhere;
+  break-inside: avoid-page;
+}
+
+@page {
+  margin: 16mm;
+}
+
+@media print {
+  .print-document-surface,
+  .print-document-surface .visual-editor {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    background: #fff !important;
+    box-shadow: none !important;
+  }
+
+  .print-document-surface .visual-editor .milkdown {
+    width: min(100%, var(--editor-maximum-width, 800px));
+    max-width: var(--editor-maximum-width, 800px);
+    margin: 0 auto;
+    padding: 0;
+    background: #fff !important;
+    box-shadow: none !important;
+  }
+
+  .print-document-surface .visual-editor .ProseMirror {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding-block: 0;
+    padding-inline: min(var(--editor-minimum-margin, 30px), 12.5%);
+    background: #fff !important;
+    box-shadow: none !important;
+  }
+}

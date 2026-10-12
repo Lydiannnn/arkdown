@@ -1,0 +1,106 @@
+.app-titlebar {
+  z-index: 20;
+  display: flex;
+  grid-row: 1;
+  grid-column: 1 / -1;
+  align-items: center;
+  min-width: 0;
+  height: 40px;
+  padding: 0 0 0 4px;
+  background: var(--mica-shell-tint);
+  color: #4d5057;
+  app-region: drag;
+  -webkit-app-region: drag;
+}
+
+.app-titlebar.is-fullscreen {
+  app-region: no-drag;
+  -webkit-app-region: no-drag;
+}
+
+.app-menu-button {
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: default;
+  app-region: no-drag;
+  -webkit-app-region: no-drag;
+}
+
+.window-controls {
+  display: flex;
+  align-self: stretch;
+  margin-left: auto;
+  app-region: no-drag;
+  -webkit-app-region: no-drag;
+}
+
+.window-controls button {
+  display: grid;
+  width: 46px;
+  height: 40px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: #4d5057;
+  cursor: default;
+  transition: background-color var(--control-state-duration), color var(--control-state-duration);
+  place-items: center;
+}
+
+.window-controls button:hover:not(:disabled) { background: var(--control-hover-layer); color: #25272b; }
+.window-controls .window-close-button:hover:not(:disabled) { background: #c42b1c; color: #fff; }
+.window-controls button:not(.window-close-button):active:not(:disabled) { background: var(--control-pressed-layer); }
+.window-controls .window-close-button:active:not(:disabled) { background: #a52a1d; color: #fff; }
+
+.app-menu-button:hover:not(:disabled) {
+  background: var(--control-hover-layer);
+  color: #25272b;
+}
+
+.app-menu-button:active:not(:disabled) { background: var(--control-pressed-layer); }
+.app-menu-button:disabled,
+.window-controls button:disabled { opacity: var(--control-disabled-opacity); pointer-events: none; }
+
+.app-menu-bar {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  margin-left: 10px;
+}
+
+.app-menu-button {
+  height: 26px;
+  padding: 0 11px;
+  border-radius: 7px;
+  font-size: 13px;
+  color: rgb(0 0 0 / 60%);
+  transition: background-color var(--control-state-duration), color var(--control-state-duration);
+}
+
+.app-sidebar-toggle {
+  transform: translateX(2px);
+  display: grid;
+  flex: 0 0 26px;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  place-items: center;
+  app-region: no-drag;
+  -webkit-app-region: no-drag;
+}
+
+.app-sidebar-toggle:hover { background: var(--control-hover-layer); }
+.app-sidebar-toggle[aria-pressed="true"] > .app-icon { opacity: var(--app-icon-opacity, .72); }
+.app-sidebar-toggle[aria-pressed="true"]:is(:hover, :focus-visible) > .app-icon { opacity: var(--app-icon-hover-opacity, .95); }
+.app-sidebar-toggle:active { background: var(--control-pressed-layer); }
+.app-sidebar-toggle:focus-visible {
+  outline: 2px solid rgb(var(--theme-color-rgb, 198 40 40) / 35%);
+  outline-offset: -2px;
+}

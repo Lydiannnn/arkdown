@@ -1,0 +1,17 @@
+.worktrees/
+/worktreesBK/
+.superpowers/
+/node_modules/
+/.vite/
+/out/
+/out-next/
+/user-guide/dist/
+/pandoc/
+/test-results/
+/.components/
+/.native-cache/
+/.shortcut-fixture/
+/native/sticky-note-surface/dist/
+/native/sticky-note-surface/obj/
+__pycache__/
+*.py[cod]

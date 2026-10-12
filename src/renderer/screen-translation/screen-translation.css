@@ -1,0 +1,86 @@
+.screen-translation-surface {
+  --screen-translation-line: var(--arkdown-line, #e8e8e8);
+  --screen-translation-muted: var(--arkdown-muted, #777);
+  --screen-translation-control: var(--arkdown-raised, #fff);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100dvh;
+  overflow: hidden;
+  background: var(--arkdown-paper, #fff);
+  color: var(--arkdown-ink, #333);
+  font-family: var(--ui-font-family);
+  font-size: 11px;
+  line-height: 18px;
+  user-select: none;
+}
+.screen-translation-surface * { box-sizing: border-box; }
+.screen-translation-header { display: flex; align-items: center; justify-content: space-between; flex: 0 0 auto; min-height: 42px; padding: 5px 10px 5px 14px; border-bottom: 1px solid var(--screen-translation-line); app-region: drag; -webkit-app-region: drag; }
+.screen-translation-header h1 { display: flex; align-items: center; gap: 9px; margin: 0; font-size: 13px; line-height: 24px; font-weight: 600; }
+.screen-translation-surface button, .screen-translation-surface input, .screen-translation-surface summary { app-region: no-drag; -webkit-app-region: no-drag; }
+.screen-translation-close { display: grid; place-items: center; width: 32px; height: 28px; padding: 0; border: 0; border-radius: 8px; color: var(--screen-translation-muted); background: transparent; }
+.screen-translation-body { flex: 1 1 auto; min-height: 0; padding: 10px 14px 12px; overflow-x: hidden; overflow-y: auto; scrollbar-width: thin; }
+.screen-translation-guide { display: flex; align-items: center; gap: 10px; margin: 0 0 10px; color: var(--screen-translation-muted); }
+.screen-translation-guide svg { flex: 0 0 auto; }
+.screen-translation-section { display: grid; gap: 8px; padding-bottom: 10px; margin-bottom: 10px; border-bottom: 1px solid var(--screen-translation-line); }
+.screen-translation-field { display: grid; grid-template-columns: 58px minmax(0, 1fr); align-items: center; gap: 10px; min-width: 0; }
+.screen-translation-label { color: var(--arkdown-ink, #333); white-space: nowrap; }
+.screen-translation-field > .preferences-select-root { width: 100%; }
+.screen-translation-model { display: grid; gap: 12px; }
+.screen-translation-model .screen-translation-text-button { justify-self: end; }
+.screen-translation-surface .model-thinking-controls { justify-content: flex-end; gap: 8px; }
+.screen-translation-surface .model-thinking-controls .preferences-select-root { flex: 1 1 64px; width: auto; height: 28px; }
+.screen-translation-surface .model-thinking-controls .preferences-select-trigger { height: 28px; min-height: 28px; padding: 0 10px; font-size: 11px; }
+.screen-translation-surface .preferences-select-trigger { background: var(--screen-translation-control); color: var(--arkdown-ink, #333); border-color: var(--screen-translation-line); }
+.screen-translation-credentials { border: 1px solid var(--screen-translation-line); border-radius: 8px; }
+.screen-translation-credentials summary { display: flex; align-items: center; gap: 8px; min-height: 28px; padding: 5px 10px; border-radius: 8px; list-style: none; cursor: default; }
+.screen-translation-credentials summary::-webkit-details-marker { display: none; }
+.screen-translation-credentials summary > svg { flex: 0 0 auto; color: var(--screen-translation-muted); }
+.screen-translation-credentials[open] summary > svg { transform: rotate(180deg); }
+.screen-translation-credential-state { margin-left: auto; color: var(--screen-translation-muted); font-size: 11px; }
+.screen-translation-credentials form { display: grid; gap: 6px; padding: 4px 10px 12px; }
+.screen-translation-credentials form .screen-translation-note { margin-bottom: 6px; }
+.screen-translation-credentials input { width: 100%; height: 28px; padding: 0 10px; margin-bottom: 4px; border: 1px solid var(--screen-translation-line); border-radius: 8px; background: var(--screen-translation-control); color: inherit; font: inherit; user-select: text; }
+.screen-translation-credentials form .screen-translation-button { justify-self: end; margin-top: 6px; }
+.screen-translation-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.screen-translation-actions > button { flex: 1 1 112px; }
+.screen-translation-button { display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-width: 0; height: 28px; padding: 0 12px; border: 1px solid var(--screen-translation-line); border-radius: 8px; color: inherit; background: var(--screen-translation-control); font: inherit; white-space: nowrap; cursor: default; }
+.screen-translation-text-button { min-height: 28px; padding: 0 8px; border: 0; border-radius: 8px; color: var(--arkdown-accent, rgb(var(--theme-color-rgb, 198 40 40))); background: transparent; font: inherit; cursor: default; }
+.screen-translation-surface .screen-translation-primary { background: rgb(var(--theme-color-rgb, 198 40 40)); border-color: transparent; color: #fff; }
+.screen-translation-surface :is(button, input, summary):focus { outline: none; }
+.screen-translation-surface :is(button, input, summary):focus-visible { outline: 2px solid var(--arkdown-accent, rgb(var(--theme-color-rgb, 198 40 40))); outline-offset: 2px; }
+.screen-translation-surface :is(.screen-translation-button, .screen-translation-close, .screen-translation-text-button, .preferences-select-trigger):hover:not(:disabled), .screen-translation-credentials summary:hover { background: var(--control-hover-layer, rgb(0 0 0 / 4%)); }
+.screen-translation-surface :is(.screen-translation-button, .screen-translation-close, .screen-translation-text-button, .preferences-select-trigger):active:not(:disabled), .screen-translation-credentials summary:active { background: var(--control-pressed-layer, rgb(0 0 0 / 8%)); }
+.screen-translation-surface .screen-translation-primary:hover:not(:disabled) { background: color-mix(in srgb, rgb(var(--theme-color-rgb, 198 40 40)) 92%, black); }
+.screen-translation-surface .screen-translation-primary:active:not(:disabled) { background: color-mix(in srgb, rgb(var(--theme-color-rgb, 198 40 40)) 82%, black); }
+.screen-translation-surface :is(button, input):disabled { opacity: var(--control-disabled-opacity, .45); cursor: default; }
+.screen-translation-note { margin: 0; color: var(--screen-translation-muted); font-size: 11px; line-height: 18px; overflow-wrap: anywhere; }
+.screen-translation-status { display: flex; align-items: flex-start; gap: 7px; min-height: 18px; color: var(--screen-translation-muted); }
+.screen-translation-status-dot { flex: 0 0 auto; width: 6px; height: 6px; margin-top: 6px; border-radius: 50%; background: var(--screen-translation-muted); }
+.screen-translation-status-dot.is-active { background: var(--arkdown-accent, rgb(var(--theme-color-rgb, 198 40 40))); }
+.screen-translation-error { margin: 0; color: #b42318; line-height: 18px; overflow-wrap: anywhere; user-select: text; }
+:root[data-arkdown-theme='dark'] .screen-translation-error { color: #ffaaa2; }
+.screen-translation-result { display: grid; gap: 10px; }
+@media (max-width: 350px) {
+  .screen-translation-body { padding: 14px; }
+  .screen-translation-field { grid-template-columns: 65px minmax(0, 1fr); gap: 8px; }
+}
+
+.screen-translation-shortcut { color: #c62828; }
+.screen-translation-shortcut { font-weight: 600; }
+.screen-translation-surface .preferences-select-root { height: 28px; }
+.screen-translation-surface .preferences-select-trigger { height: 28px; min-height: 28px; font-size: 11px; }
+.screen-translation-menu button { height: 28px; min-height: 28px; font-size: 11px; }
+body:has(.screen-translation-surface) .preferences-select-menu button { font-size: 11px; }
+.screen-translation-result { gap: 4px; }
+.screen-translation-result > .screen-translation-text-button { justify-self: end; }
+.screen-translation-installer { display: grid; justify-items: start; gap: 18px; padding: 24px 6px; }
+.screen-translation-install-icon { color: rgb(var(--theme-color-rgb, 198 40 40)); }
+.screen-translation-installer h2 { margin: 0; font-size: 14px; line-height: 22px; font-weight: 500; }
+.screen-translation-installer .screen-translation-note { font-size: 12px; line-height: 20px; }
+.screen-translation-installer > .screen-translation-button { height: 32px; font-size: 12px; }
+.screen-translation-install-progress { display: grid; gap: 8px; width: 100%; }
+.screen-translation-install-progress progress { display: block; width: 100%; height: 5px; appearance: none; border: 0; border-radius: 4px; overflow: hidden; accent-color: rgb(var(--theme-color-rgb, 198 40 40)); }
+.screen-translation-install-progress progress::-webkit-progress-bar { background: var(--screen-translation-line); }
+.screen-translation-install-progress progress::-webkit-progress-value { background: rgb(var(--theme-color-rgb, 198 40 40)); }

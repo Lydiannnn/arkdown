@@ -1,0 +1,992 @@
+{
+  "schemaVersion": 1,
+  "revision": "2026-09-12",
+  "rules": [
+    {
+      "id": "openai-gpt56",
+      "protocol": "openai",
+      "baseUrls": [
+        "https://api.openai.com/v1"
+      ],
+      "modelIds": [
+        "gpt-5.6-sol",
+        "gpt-5.6-terra",
+        "gpt-5.6-luna",
+        "gpt-5.6"
+      ],
+      "capability": {
+        "thinking": "toggle",
+        "encoding": "openai-effort",
+        "efforts": [
+          "low",
+          "medium",
+          "high",
+          "xhigh",
+          "max"
+        ],
+        "defaultThinking": "enabled",
+        "defaultEffort": "medium",
+        "disabledEfforts": []
+      },
+      "recommendation": 20
+    },
+    {
+      "id": "openai-astra",
+      "protocol": "openai",
+      "baseUrls": [
+        "https://api.openai.com/v1"
+      ],
+      "modelIds": [
+        "gpt-6-astra"
+      ],
+      "capability": {
+        "thinking": "fixed",
+        "encoding": "openai-effort",
+        "efforts": [
+          "low",
+          "medium",
+          "high",
+          "xhigh",
+          "max"
+        ],
+        "defaultThinking": "enabled",
+        "defaultEffort": "default",
+        "disabledEfforts": []
+      },
+      "recommendation": 10,
+      "transport": "responses"
+    },
+    {
+      "id": "deepseek-flash",
+      "protocol": "openai",
+      "baseUrls": [
+        "https://api.deepseek.com",
+        "https://api.deepseek.com/v1"
+      ],
+      "modelIds": [
+        "deepseek-flash",
+        "deepseek-v4-flash",
+        "deepseek-v4-flash-vision-exp"
+      ],
+      "capability": {
+        "thinking": "toggle",
+        "encoding": "thinking-effort",
+        "efforts": [
+          "low",
+          "high",
+          "max"
+        ],
+        "defaultThinking": "enabled",
+        "defaultEffort": "high",
+        "disabledEfforts": []
+      },
+      "provider": "deepseek",
+      "recommendation": 10
+    },
+    {
+      "id": "deepseek-pro",
+      "protocol": "openai",
+      "baseUrls": [
+        "https://api.deepseek.com",
+        "https://api.deepseek.com/v1"
+      ],
+      "modelIds": [
+        "deepseek-v4-pro"
+      ],
+      "capability": {
+        "thinking": "toggle",
+        "encoding": "thinking-effort",
+        "efforts": [
+          "low",
+          "high",
+          "max"
+        ],
+        "defaultThinking": "enabled",
+        "defaultEffort": "high",
+        "disabledEfforts": []
+      },
+      "provider": "deepseek",
+      "recommendation": 20
+    },
+    {
+      "id": "qwen38-toggle",
+      "protocol": "openai",
+      "endpointGroup": "dashscope",
+      "modelIds": [
+        "qwen3.8-max",
+        "qwen3.8-flash",
+        "qwen3.8-max-0902",
+        "qwen3.8-max-2026-09-02",
+        "qwen3.8-max-preview",
+        "qwen3.8-27b"
+      ],
+      "capability": {
+        "thinking": "toggle",
+        "encoding": "openai-effort",
+        "efforts": [
+          "low",
+          "medium",
+          "xhigh"
+        ],
+        "defaultThinking": "enabled",
+        "defaultEffort": "xhigh",
+        "disabledEfforts": [],
+        "effortAliases": {
+          "high": "xhigh",
+          "max": "xhigh"
+        }
+      },
+      "provider": "qwen",
+      "recommendation": 10,
+      "outputTokenField": "max_completion_tokens"
+    },
+    {
+      "id": "qwen38-fixed",
+      "protocol": "openai",
+      "endpointGroup": "dashscope",
+      "modelIds": [
+        "qwen3.8-2.4t-a95b"
+      ],
+      "capability": {
+        "thinking": "fixed",
+        "encoding": "openai-effort",
+        "efforts": [
+          "low",
+          "medium",
+          "xhigh"
+        ],
+        "defaultThinking": "enabled",
+        "defaultEffort": "xhigh",
+        "disabledEfforts": [],
+        "effortAliases": {
+          "high": "xhigh",
+          "max": "xhigh"
+        }
+      },
+      "provider": "qwen",
+      "recommendation": 20,
+      "outputTokenField": "max_completion_tokens"
+    },
+    {
+      "id": "qwen-toggle",
+      "protocol": "openai",
+      "endpointGroup": "dashscope",
+      "modelIds": [
+        "qwen3.7-max",
+        "qwen3.7-max-2026-05-20",
+        "qwen3.7-max-2026-06-08",
+        "qwen3.7-plus",
+        "qwen3.7-plus-2026-05-26",
+        "qwen3.7-flash",
+        "qwen3.7-flash-2026-07-15",
+        "qwen3.6-max-preview",
+        "qwen3.6-plus",
+        "qwen3.6-plus-2026-04-02",
+        "qwen3.6-flash",
+        "qwen3.6-flash-2026-04-16",
+        "qwen3.5-plus",
+        "qwen3.5-plus-2026-02-15",
+        "qwen3.5-flash",
+        "qwen3.5-flash-2026-02-23"
+      ],
+      "capability": {
+        "thinking": "toggle",
+        "encoding": "enable-thinking",
+        "efforts": [],
+        "defaultThinking": "enabled",
+        "defaultEffort": "default",
+        "disabledEfforts": []
+      },
+      "provider": "qwen"
+    },
+    {
+      "id": "qwen37-fixed",
+      "protocol": "openai",
+      "endpointGroup": "dashscope",
+      "modelIds": [
+        "qwen3.7-max-preview",
+        "qwen3.7-max-2026-05-17"
+      ],
+      "capability": {
+        "thinking": "fixed",
+        "encoding": "enable-thinking",
+        "efforts": [],
+        "defaultThinking": "enabled",
+        "defaultEffort": "default",
+        "disabledEfforts": []
+      },
+      "provider": "qwen"
+    },
+    {
+      "id": "glm53",
+      "protocol": "openai",
+      "baseUrls": [
+        "https://open.bigmodel.cn/api/paas/v4",
+        "https://open.bigmodel.cn/api/coding/paas/v4",
+        "https://api.z.ai/api/paas/v4",
+        "https://api.z.ai/api/coding/paas/v4"
+      ],
+      "modelIds": [
+        "glm-5.3",
+        "glm-5.3-flash"
+      ],
+      "capability": {
+        "thinking": "fixed",
+        "encoding": "thinking-effort",
+        "efforts": [
+          "low",
+          "high",
+          "max"
+        ],
+        "defaultThinking": "enabled",
+        "defaultEffort": "max",
+        "disabledEfforts": [],
+        "effortAliases": {
+          "medium": "high",
+          "xhigh": "max"
+        }
+      },
+      "provider": "zhipu",
+      "recommendation": 10
+    },
+    {
+      "id": "kimi-k3",
+      "protocol": "openai",
+      "baseUrls": [
+        "https://api.moonshot.ai/v1",
+        "https://api.moonshot.cn/v1"
+      ],
+      "modelIds": [
+        "kimi-k3"
+      ],
+      "capability": {
+        "thinking": "fixed",
+        "encoding": "openai-effort",
+        "efforts": [
+          "low",
+          "high",
+          "max"
+        ],
+        "defaultThinking": "enabled",
+        "defaultEffort": "max",
+        "disabledEfforts": []
+      },
+      "provider": "kimi",
+      "recommendation": 10
+    },
+    {
+      "id": "kimi-k2-toggle",
+      "protocol": "openai",
+      "baseUrls": [
+        "https://api.moonshot.ai/v1",
+        "https://api.moonshot.cn/v1"
+      ],
+      "modelIds": [
+        "kimi-k2.6"
+      ],
+      "capability": {
+        "thinking": "toggle",
+        "encoding": "thinking",
+        "efforts": [],
+        "defaultThinking": "enabled",
+        "defaultEffort": "default",
+        "disabledEfforts": []
+      },
+      "provider": "kimi",
+      "recommendation": 30
+    },
+    {
+      "id": "mimo25-openai",
+      "protocol": "openai",
+      "baseUrls": [
+        "https://api.xiaomimimo.com/v1"
+      ],
+      "modelIds": [
+        "mimo-v2.5-pro",
+        "mimo-v2.5"
+      ],
+      "capability": {
+        "thinking": "toggle",
+        "encoding": "thinking",
+        "efforts": [],
+        "defaultThinking": "enabled",
+        "defaultEffort": "default",
+        "disabledEfforts": []
+      },
+      "provider": "xiaomi-mimo",
+      "recommendation": 10,
+      "outputTokenField": "max_completion_tokens"
+    },
+    {
+      "id": "mimo25-anthropic",
+      "protocol": "anthropic",
+      "baseUrls": [
+        "https://api.xiaomimimo.com/anthropic/v1"
+      ],
+      "modelIds": [
+        "mimo-v2.5-pro",
+        "mimo-v2.5"
+      ],
+      "capability": {
+        "thinking": "toggle",
+        "encoding": "thinking",
+        "efforts": [],
+        "defaultThinking": "enabled",
+        "defaultEffort": "default",
+        "disabledEfforts": []
+      },
+      "provider": "xiaomi-mimo",
+      "recommendation": 10
+    },
+    {
+      "id": "minimax-m3-openai",
+      "protocol": "openai",
+      "baseUrls": [
+        "https://api.minimax.io/v1",
+        "https://api.minimaxi.com/v1",
+        "https://api.minimax.cn/v1"
+      ],
+      "modelIds": [
+        "MiniMax-M3"
+      ],
+      "capability": {
+        "thinking": "toggle",
+        "encoding": "adaptive",
+        "efforts": [],
+        "defaultThinking": "enabled",
+        "defaultEffort": "default",
+        "disabledEfforts": []
+      },
+      "provider": "minimax",
+      "recommendation": 10,
+      "outputTokenField": "max_completion_tokens"
+    },
+    {
+      "id": "minimax-m27-openai",
+      "protocol": "openai",
+      "baseUrls": [
+        "https://api.minimax.io/v1",
+        "https://api.minimaxi.com/v1",
+        "https://api.minimax.cn/v1"
+      ],
+      "modelIds": [
+        "MiniMax-M2.7",
+        "MiniMax-M2.7-highspeed"
+      ],
+      "capability": {
+        "thinking": "fixed",
+        "encoding": "none",
+        "efforts": [],
+        "defaultThinking": "enabled",
+        "defaultEffort": "default",
+        "disabledEfforts": []
+      },
+      "provider": "minimax",
+      "recommendation": 20
+    },
+    {
+      "id": "minimax-m2-legacy-openai",
+      "protocol": "openai",
+      "baseUrls": [
+        "https://api.minimax.io/v1",
+        "https://api.minimaxi.com/v1",
+        "https://api.minimax.cn/v1"
+      ],
+      "modelIds": [
+        "MiniMax-M2",
+        "MiniMax-M2.1",
+        "MiniMax-M2.5",
+        "MiniMax-M2.1-highspeed",
+        "MiniMax-M2.5-highspeed"
+      ],
+      "capability": {
+        "thinking": "fixed",
+        "encoding": "none",
+        "efforts": [],
+        "defaultThinking": "enabled",
+        "defaultEffort": "default",
+        "disabledEfforts": []
+      },
+      "provider": "minimax"
+    },
+    {
+      "id": "minimax-m3-anthropic",
+      "protocol": "anthropic",
+      "baseUrls": [
+        "https://api.minimax.io/anthropic/v1",
+        "https://api.minimaxi.com/anthropic/v1",
+        "https://api.minimax.cn/anthropic/v1"
+      ],
+      "modelIds": [
+        "MiniMax-M3"
+      ],
+      "capability": {
+        "thinking": "toggle",
+        "encoding": "adaptive",
+        "efforts": [],
+        "defaultThinking": "disabled",
+        "defaultEffort": "default",
+        "disabledEfforts": []
+      },
+      "provider": "minimax",
+      "recommendation": 10
+    },
+    {
+      "id": "minimax-m27-anthropic",
+      "protocol": "anthropic",
+      "baseUrls": [
+        "https://api.minimax.io/anthropic/v1",
+        "https://api.minimaxi.com/anthropic/v1",
+        "https://api.minimax.cn/anthropic/v1"
+      ],
+      "modelIds": [
+        "MiniMax-M2.7",
+        "MiniMax-M2.7-highspeed"
+      ],
+      "capability": {
+        "thinking": "fixed",
+        "encoding": "none",
+        "efforts": [],
+        "defaultThinking": "enabled",
+        "defaultEffort": "default",
+        "disabledEfforts": []
+      },
+      "provider": "minimax",
+      "recommendation": 20
+    },
+    {
+      "id": "minimax-m2-legacy-anthropic",
+      "protocol": "anthropic",
+      "baseUrls": [
+        "https://api.minimax.io/anthropic/v1",
+        "https://api.minimaxi.com/anthropic/v1",
+        "https://api.minimax.cn/anthropic/v1"
+      ],
+      "modelIds": [
+        "MiniMax-M2",
+        "MiniMax-M2.1",
+        "MiniMax-M2.5",
+        "MiniMax-M2.1-highspeed",
+        "MiniMax-M2.5-highspeed"
+      ],
+      "capability": {
+        "thinking": "fixed",
+        "encoding": "none",
+        "efforts": [],
+        "defaultThinking": "enabled",
+        "defaultEffort": "default",
+        "disabledEfforts": []
+      },
+      "provider": "minimax"
+    },
+    {
+      "id": "claude-fable51",
+      "protocol": "anthropic",
+      "baseUrls": [
+        "https://api.anthropic.com/v1"
+      ],
+      "modelIds": [
+        "claude-fable-5-1"
+      ],
+      "capability": {
+        "thinking": "fixed",
+        "encoding": "claude-adaptive",
+        "efforts": [
+          "low",
+          "medium",
+          "high",
+          "xhigh",
+          "max"
+        ],
+        "defaultThinking": "enabled",
+        "defaultEffort": "high",
+        "disabledEfforts": [
+          "low",
+          "medium",
+          "high",
+          "xhigh",
+          "max"
+        ],
+        "bindingControls": true
+      },
+      "recommendation": 30
+    },
+    {
+      "id": "claude5-fixed",
+      "protocol": "anthropic",
+      "baseUrls": [
+        "https://api.anthropic.com/v1"
+      ],
+      "modelIds": [
+        "claude-fable-5",
+        "claude-mythos-5-1",
+        "claude-mythos-5"
+      ],
+      "capability": {
+        "thinking": "fixed",
+        "encoding": "claude-adaptive",
+        "efforts": [
+          "low",
+          "medium",
+          "high",
+          "xhigh",
+          "max"
+        ],
+        "defaultThinking": "enabled",
+        "defaultEffort": "high",
+        "disabledEfforts": [
+          "low",
+          "medium",
+          "high",
+          "xhigh",
+          "max"
+        ]
+      }
+    },
+    {
+      "id": "claude-mythos-preview",
+      "protocol": "anthropic",
+      "baseUrls": [
+        "https://api.anthropic.com/v1"
+      ],
+      "modelIds": [
+        "claude-mythos-preview"
+      ],
+      "capability": {
+        "thinking": "fixed",
+        "encoding": "claude-adaptive",
+        "efforts": [
+          "low",
+          "medium",
+          "high",
+          "max"
+        ],
+        "defaultThinking": "enabled",
+        "defaultEffort": "high",
+        "disabledEfforts": [
+          "low",
+          "medium",
+          "high",
+          "max"
+        ]
+      }
+    },
+    {
+      "id": "claude-opus5",
+      "protocol": "anthropic",
+      "baseUrls": [
+        "https://api.anthropic.com/v1"
+      ],
+      "modelIds": [
+        "claude-opus-5"
+      ],
+      "capability": {
+        "thinking": "toggle",
+        "encoding": "claude-adaptive",
+        "efforts": [
+          "low",
+          "medium",
+          "high",
+          "xhigh",
+          "max"
+        ],
+        "defaultThinking": "enabled",
+        "defaultEffort": "high",
+        "disabledEfforts": [
+          "low",
+          "medium",
+          "high"
+        ]
+      },
+      "recommendation": 10
+    },
+    {
+      "id": "claude-sonnet5",
+      "protocol": "anthropic",
+      "baseUrls": [
+        "https://api.anthropic.com/v1"
+      ],
+      "modelIds": [
+        "claude-sonnet-5"
+      ],
+      "capability": {
+        "thinking": "toggle",
+        "encoding": "claude-adaptive",
+        "efforts": [
+          "low",
+          "medium",
+          "high",
+          "xhigh",
+          "max"
+        ],
+        "defaultThinking": "enabled",
+        "defaultEffort": "high",
+        "disabledEfforts": [
+          "low",
+          "medium",
+          "high",
+          "xhigh",
+          "max"
+        ]
+      },
+      "recommendation": 20
+    },
+    {
+      "id": "claude-opus47-48",
+      "protocol": "anthropic",
+      "baseUrls": [
+        "https://api.anthropic.com/v1"
+      ],
+      "modelIds": [
+        "claude-opus-4-8",
+        "claude-opus-4-7"
+      ],
+      "capability": {
+        "thinking": "toggle",
+        "encoding": "claude-adaptive",
+        "efforts": [
+          "low",
+          "medium",
+          "high",
+          "xhigh",
+          "max"
+        ],
+        "defaultThinking": "disabled",
+        "defaultEffort": "high",
+        "disabledEfforts": [
+          "low",
+          "medium",
+          "high",
+          "xhigh",
+          "max"
+        ]
+      }
+    },
+    {
+      "id": "claude46",
+      "protocol": "anthropic",
+      "baseUrls": [
+        "https://api.anthropic.com/v1"
+      ],
+      "modelIds": [
+        "claude-opus-4-6",
+        "claude-sonnet-4-6"
+      ],
+      "capability": {
+        "thinking": "toggle",
+        "encoding": "claude-adaptive",
+        "efforts": [
+          "low",
+          "medium",
+          "high",
+          "max"
+        ],
+        "defaultThinking": "disabled",
+        "defaultEffort": "high",
+        "disabledEfforts": [
+          "low",
+          "medium",
+          "high",
+          "max"
+        ]
+      }
+    },
+    {
+      "id": "claude-opus45",
+      "protocol": "anthropic",
+      "baseUrls": [
+        "https://api.anthropic.com/v1"
+      ],
+      "modelIds": [
+        "claude-opus-4-5",
+        "claude-opus-4-5-20251101"
+      ],
+      "capability": {
+        "thinking": "toggle",
+        "encoding": "claude-budget",
+        "efforts": [
+          "low",
+          "medium",
+          "high"
+        ],
+        "defaultThinking": "disabled",
+        "defaultEffort": "high",
+        "disabledEfforts": [
+          "low",
+          "medium",
+          "high"
+        ]
+      }
+    },
+    {
+      "id": "claude45-budget",
+      "protocol": "anthropic",
+      "baseUrls": [
+        "https://api.anthropic.com/v1"
+      ],
+      "modelIds": [
+        "claude-sonnet-4-5",
+        "claude-sonnet-4-5-20250929",
+        "claude-haiku-4-5",
+        "claude-haiku-4-5-20251001"
+      ],
+      "capability": {
+        "thinking": "toggle",
+        "encoding": "claude-budget",
+        "efforts": [],
+        "defaultThinking": "disabled",
+        "defaultEffort": "default",
+        "disabledEfforts": []
+      }
+    },
+    {
+      "id": "tokenhub-hy4",
+      "protocol": "openai",
+      "baseUrls": [
+        "https://tokenhub.tencentmaas.com/v1"
+      ],
+      "modelIds": [
+        "hy4-preview"
+      ],
+      "capability": {
+        "thinking": "toggle",
+        "encoding": "thinking-effort",
+        "efforts": [
+          "high"
+        ],
+        "defaultThinking": "enabled",
+        "defaultEffort": "high",
+        "disabledEfforts": []
+      },
+      "provider": "hy",
+      "recommendation": 20
+    },
+    {
+      "id": "tokenhub-hy3",
+      "protocol": "openai",
+      "baseUrls": [
+        "https://tokenhub.tencentmaas.com/v1"
+      ],
+      "modelIds": [
+        "hy3",
+        "hy3-preview"
+      ],
+      "capability": {
+        "thinking": "toggle",
+        "encoding": "thinking-effort",
+        "efforts": [
+          "low",
+          "high"
+        ],
+        "defaultThinking": "enabled",
+        "defaultEffort": "high",
+        "disabledEfforts": []
+      },
+      "provider": "hy",
+      "recommendation": 10
+    },
+    {
+      "id": "tokenhub-minimax-m3",
+      "protocol": "openai",
+      "baseUrls": [
+        "https://tokenhub.tencentmaas.com/v1"
+      ],
+      "modelIds": [
+        "minimax-m3"
+      ],
+      "capability": {
+        "thinking": "toggle",
+        "encoding": "adaptive",
+        "efforts": [],
+        "defaultThinking": "enabled",
+        "defaultEffort": "default",
+        "disabledEfforts": []
+      },
+      "provider": "hy",
+      "recommendation": 30,
+      "outputTokenField": "max_completion_tokens"
+    },
+    {
+      "id": "tokenhub-minimax-m27",
+      "protocol": "openai",
+      "baseUrls": [
+        "https://tokenhub.tencentmaas.com/v1"
+      ],
+      "modelIds": [
+        "minimax-m2.7"
+      ],
+      "capability": {
+        "thinking": "fixed",
+        "encoding": "none",
+        "efforts": [],
+        "defaultThinking": "enabled",
+        "defaultEffort": "default",
+        "disabledEfforts": []
+      },
+      "provider": "hy",
+      "recommendation": 40
+    },
+    {
+      "id": "kimi-k25-retired",
+      "protocol": "openai",
+      "baseUrls": [
+        "https://api.moonshot.ai/v1",
+        "https://api.moonshot.cn/v1"
+      ],
+      "modelIds": [
+        "kimi-k2.5"
+      ],
+      "capability": {
+        "thinking": "toggle",
+        "encoding": "thinking",
+        "efforts": [],
+        "defaultThinking": "enabled",
+        "defaultEffort": "default",
+        "disabledEfforts": []
+      },
+      "provider": "kimi"
+    },
+    {
+      "id": "kimi-code27",
+      "protocol": "openai",
+      "baseUrls": [
+        "https://api.moonshot.ai/v1",
+        "https://api.moonshot.cn/v1"
+      ],
+      "modelIds": [
+        "kimi-k2.7-code",
+        "kimi-k2.7-code-highspeed"
+      ],
+      "capability": {
+        "thinking": "fixed",
+        "encoding": "none",
+        "efforts": [],
+        "defaultEffort": "default",
+        "defaultThinking": "enabled",
+        "disabledEfforts": []
+      },
+      "provider": "kimi",
+      "recommendation": 20
+    },
+    {
+      "id": "glm52",
+      "protocol": "openai",
+      "baseUrls": [
+        "https://open.bigmodel.cn/api/paas/v4",
+        "https://open.bigmodel.cn/api/coding/paas/v4",
+        "https://api.z.ai/api/paas/v4",
+        "https://api.z.ai/api/coding/paas/v4"
+      ],
+      "modelIds": [
+        "glm-5.2"
+      ],
+      "capability": {
+        "thinking": "toggle",
+        "encoding": "thinking-effort",
+        "efforts": [
+          "high",
+          "max"
+        ],
+        "defaultEffort": "max",
+        "defaultThinking": "enabled",
+        "disabledEfforts": [],
+        "effortAliases": {
+          "low": "high",
+          "medium": "high",
+          "xhigh": "max"
+        }
+      },
+      "provider": "zhipu",
+      "recommendation": 30
+    },
+    {
+      "provider": "doubao",
+      "protocol": "openai",
+      "baseUrls": [
+        "https://ark.cn-beijing.volces.com/api/v3"
+      ],
+      "id": "doubao-seed-current",
+      "modelIds": [
+        "doubao-seed-evolving",
+        "doubao-seed-2-1-pro-260628",
+        "doubao-seed-2-1-turbo-260628"
+      ],
+      "recommendation": 10,
+      "capability": {
+        "thinking": "toggle",
+        "encoding": "thinking-effort",
+        "efforts": [
+          "low",
+          "medium",
+          "high"
+        ],
+        "defaultEffort": "high",
+        "defaultThinking": "enabled",
+        "disabledEfforts": [],
+        "effortAliases": {
+          "xhigh": "high",
+          "max": "high"
+        }
+      }
+    },
+    {
+      "provider": "doubao",
+      "protocol": "openai",
+      "baseUrls": [
+        "https://ark.cn-beijing.volces.com/api/v3"
+      ],
+      "id": "doubao-seed20",
+      "modelIds": [
+        "doubao-seed-2-0-lite-260428",
+        "doubao-seed-2-0-mini-260428"
+      ],
+      "capability": {
+        "thinking": "toggle",
+        "encoding": "thinking-effort",
+        "efforts": [
+          "low",
+          "medium",
+          "high"
+        ],
+        "defaultEffort": "medium",
+        "defaultThinking": "enabled",
+        "disabledEfforts": [],
+        "effortAliases": {
+          "xhigh": "high",
+          "max": "high"
+        }
+      }
+    },
+    {
+      "id": "qwen38-anthropic",
+      "provider": "qwen",
+      "protocol": "anthropic",
+      "modelIds": [
+        "qwen3.8-max",
+        "qwen3.8-flash",
+        "qwen3.8-max-0902",
+        "qwen3.8-max-2026-09-02",
+        "qwen3.8-max-preview",
+        "qwen3.8-27b"
+      ],
+      "capability": {
+        "thinking": "toggle",
+        "encoding": "thinking-output-effort",
+        "efforts": [
+          "low",
+          "medium",
+          "xhigh"
+        ],
+        "defaultEffort": "xhigh",
+        "defaultThinking": "enabled",
+        "disabledEfforts": [],
+        "effortAliases": {
+          "high": "xhigh",
+          "max": "xhigh"
+        }
+      },
+      "recommendation": 10,
+      "endpointGroup": "dashscope"
+    }
+  ]
+}

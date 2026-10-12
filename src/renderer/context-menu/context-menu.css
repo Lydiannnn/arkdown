@@ -1,0 +1,346 @@
+.context-menu-list {
+  --context-menu-surface: #fff;
+  --context-menu-foreground: #3d3d3d;
+  --context-menu-border: #e6e6e6;
+  --context-menu-icon: #444;
+  --context-menu-muted-foreground: #888;
+  --context-menu-arrow: #555;
+  --context-menu-grid-surface: #fafbfc;
+  --context-menu-grid-border: #dfe3e7;
+  --context-menu-swatch-border: rgb(0 0 0 / 10%);
+  --context-menu-danger: #c93c37;
+  --context-menu-theme-accent-icon: rgb(var(--theme-color-rgb, 198 40 40) / 80%);
+  --context-menu-theme-accent-text: rgb(var(--theme-color-rgb, 198 40 40) / 100%);
+  --context-menu-neutral-checked-surface: #eef0f2;
+  --context-menu-neutral-checked-hover-surface: #e5e8eb;
+  --context-menu-neutral-checked-pressed-surface: #d9dde1;
+  --context-menu-neutral-checked-border: #c5c9cd;
+  --context-menu-neutral-checked-inset: rgb(0 0 0 / 4%);
+  --context-menu-neutral-checked-icon: #444;
+  position: fixed;
+  z-index: 24000;
+  width: 272px;
+  max-width: calc(100vw - 16px);
+  padding: 5px 0;
+  color: var(--context-menu-foreground);
+  background: var(--context-menu-surface);
+  border: 1px solid var(--context-menu-border);
+  border-radius: 7px;
+  box-shadow: 0 7px 24px rgb(0 0 0 / 13%);
+  font-family: var(--ui-font-family);
+  font-size: 13px;
+  line-height: 1.2;
+  user-select: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-arkdown-theme]) .context-menu-list {
+    color-scheme: dark;
+    --context-menu-surface: #202124;
+    --context-menu-foreground: #f1f3f4;
+    --context-menu-border: rgb(255 255 255 / 36%);
+    --context-menu-icon: #e8eaed;
+    --context-menu-muted-foreground: #bdc1c6;
+    --context-menu-arrow: #dadce0;
+    --context-menu-grid-surface: #292a2d;
+    --context-menu-grid-border: var(--context-menu-border);
+    --context-menu-swatch-border: rgb(255 255 255 / 28%);
+    --context-menu-danger: #f28b82;
+    --context-menu-theme-accent-icon: color-mix(
+      in srgb,
+      rgb(var(--theme-color-rgb, 198 40 40)) 55%,
+      var(--context-menu-foreground) 45%
+    );
+    --context-menu-theme-accent-text: color-mix(
+      in srgb,
+      rgb(var(--theme-color-rgb, 198 40 40)) 40%,
+      var(--context-menu-foreground) 60%
+    );
+    --context-menu-neutral-checked-surface: rgb(255 255 255 / 12%);
+    --context-menu-neutral-checked-hover-surface: rgb(255 255 255 / 18%);
+    --context-menu-neutral-checked-pressed-surface: rgb(255 255 255 / 24%);
+    --context-menu-neutral-checked-border: rgb(255 255 255 / 32%);
+    --context-menu-neutral-checked-inset: rgb(255 255 255 / 8%);
+    --context-menu-neutral-checked-icon: rgb(255 255 255 / 92%);
+    --control-hover-layer: rgb(255 255 255 / 8%);
+    --control-pressed-layer: rgb(255 255 255 / 14%);
+    --menu-divider-color: rgb(255 255 255 / 18%);
+  }
+}
+
+.context-menu-submenu {
+  z-index: 24001;
+  isolation: isolate;
+}
+
+.context-menu-submenu::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0 -8px;
+  content: "";
+  pointer-events: auto;
+}
+
+.context-menu-entry {
+  position: relative;
+}
+
+.context-menu-command {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr) auto;
+  align-items: center;
+  width: 100%;
+  min-height: 30px;
+  padding: 5px 14px 5px 16px;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font: inherit;
+  text-align: left;
+  cursor: default;
+}
+
+.context-menu-command:not(:disabled):hover,
+.context-menu-command:not(:disabled):focus-visible {
+  background: var(--control-hover-layer);
+  outline: 0;
+}
+
+.context-menu-command:not(:disabled):active { background: var(--control-pressed-layer); }
+
+.context-menu-command:disabled {
+  opacity: .4;
+  pointer-events: none;
+}
+
+.context-menu-command:disabled[data-tooltip] {
+  pointer-events: auto;
+}
+
+.context-menu-grid .context-menu-icon-command:disabled {
+  pointer-events: auto;
+}
+
+.context-menu-label {
+  grid-column: 2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.context-menu-rule-preview-command {
+  grid-template-columns: minmax(0, 1fr);
+  min-height: 30px;
+  padding: 7px 16px;
+}
+
+.context-menu-rule-preview {
+  display: block;
+  grid-column: 1;
+  width: 100%;
+  min-width: 0;
+  flex: none;
+}
+
+.context-menu-swatch {
+  grid-column: 1;
+  width: 12px;
+  height: 12px;
+  margin-left: -3px;
+  border: 1px solid var(--context-menu-swatch-border);
+  border-radius: 2px;
+}
+
+.context-menu-icon {
+  grid-column: 1;
+  color: var(--context-menu-icon);
+  font-size: 17px;
+  text-align: center;
+}
+
+.context-menu-command.context-menu-accent-icon:not(.context-menu-icon-command) .context-menu-icon {
+  color: var(--context-menu-theme-accent-icon);
+  opacity: 1;
+}
+
+.context-menu-command:not(.context-menu-icon-command) .context-menu-icon {
+  transform: translateX(-7px);
+  opacity: 0.7;
+}
+
+.context-menu-command.context-menu-icon-choice .context-menu-icon {
+  opacity: 0.5;
+}
+
+.context-menu-command.context-menu-icon-choice[aria-checked="true"] .context-menu-icon {
+  opacity: 1;
+}
+
+.context-menu-shortcut,
+.context-menu-arrow {
+  grid-column: 3;
+  margin-left: 14px;
+  color: var(--context-menu-muted-foreground);
+  font-size: 13px;
+}
+
+.context-menu-arrow {
+  color: var(--context-menu-arrow);
+  font-size: 20px;
+  line-height: 1;
+}
+
+.context-menu-separator {
+  margin: 4px 0;
+}
+
+.context-menu-grid {
+  display: grid;
+  gap: 4px;
+  padding: 5px 16px;
+}
+
+.context-menu-grid .context-menu-icon-command {
+  display: flex;
+  justify-content: center;
+  min-width: 0;
+  height: 25px;
+  min-height: 25px;
+  padding: 0 4px;
+  background: var(--context-menu-grid-surface);
+  border: 1px solid var(--context-menu-grid-border);
+  border-radius: 4px;
+}
+
+.context-menu-grid .context-menu-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+}
+
+.context-menu-grid .context-menu-shortcut {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+}
+
+.context-menu-icon img {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: none;
+  max-height: none;
+  margin: auto;
+}
+
+.context-menu-danger {
+  color: var(--context-menu-danger);
+}
+
+.context-menu-check-indicator {
+  display: grid;
+  color: var(--context-menu-theme-accent-icon);
+  place-items: center;
+}
+
+.context-menu-checked-theme-text {
+  color: var(--context-menu-theme-accent-text);
+}
+
+.context-menu-grid .context-menu-checked {
+  border-color: #aebdca;
+  background: var(--control-selected-layer);
+  box-shadow: inset 0 0 0 1px rgb(65 131 196 / 12%);
+}
+
+.context-menu-grid .context-menu-checked:hover:not(:disabled),
+.context-menu-grid .context-menu-checked:focus-visible { background: var(--control-hover-layer); }
+.context-menu-grid .context-menu-checked:active:not(:disabled) { background: var(--control-pressed-layer); }
+
+.context-menu-grid .context-menu-checked-neutral-surface {
+  border-color: var(--context-menu-neutral-checked-border);
+  background: var(--context-menu-neutral-checked-surface);
+  box-shadow: inset 0 0 0 1px var(--context-menu-neutral-checked-inset);
+}
+
+.context-menu-grid .context-menu-checked-neutral-surface .context-menu-icon {
+  color: var(--context-menu-neutral-checked-icon);
+  opacity: 1;
+}
+
+.context-menu-grid .context-menu-checked-neutral-surface:hover:not(:disabled),
+.context-menu-grid .context-menu-checked-neutral-surface:focus-visible {
+  background: var(--context-menu-neutral-checked-hover-surface);
+}
+.context-menu-grid .context-menu-checked-neutral-surface:active:not(:disabled) {
+  background: var(--context-menu-neutral-checked-pressed-surface);
+}
+
+.context-menu-list.context-menu-root-no-icon-gutter {
+  width: max-content;
+}
+
+.context-menu-list.context-menu-root-no-icon-gutter
+  > .context-menu-entry
+  > .context-menu-command {
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.context-menu-list.context-menu-root-no-icon-gutter
+  > .context-menu-entry
+  > .context-menu-command
+  > .context-menu-label {
+  grid-column: 1;
+}
+
+.context-menu-list.context-menu-root-no-icon-gutter
+  > .context-menu-entry
+  > .context-menu-command
+  > :is(.context-menu-shortcut, .context-menu-arrow) {
+  grid-column: 2;
+}
+
+.external-context-menu[data-color-scheme="dark"] {
+  --control-hover-layer: rgb(255 255 255 / 8%);
+  --control-pressed-layer: rgb(255 255 255 / 14%);
+  --control-selected-layer: rgb(255 255 255 / 10%);
+  --menu-divider-color: rgb(255 255 255 / 11%);
+}
+
+.external-context-menu[data-color-scheme="dark"] .context-menu-list {
+  color: #F5F7FA;
+  background: rgb(31 33 36 / 97%);
+  border-color: rgb(255 255 255 / 12%);
+  box-shadow: 0 8px 28px rgb(0 0 0 / 34%);
+}
+
+.external-context-menu[data-color-scheme="dark"] .context-menu-icon {
+  color: #D7DCE2;
+}
+
+.external-context-menu[data-color-scheme="dark"] .context-menu-icon img {
+  filter: brightness(0) invert(1);
+  opacity: .86;
+}
+
+.external-context-menu[data-color-scheme="dark"] :is(.context-menu-shortcut, .context-menu-arrow) {
+  color: #AEB5BD;
+}
+
+.external-context-menu[data-color-scheme="dark"] .context-menu-grid .context-menu-icon-command {
+  color: #F5F7FA;
+  background: rgb(255 255 255 / 5%);
+  border-color: rgb(255 255 255 / 11%);
+}
+
+.external-context-menu[data-color-scheme="dark"] .context-menu-swatch {
+  border-color: rgb(255 255 255 / 22%);
+}
+
+.external-context-menu[data-color-scheme="dark"] .context-menu-danger {
+  color: #FFAAA5;
+}

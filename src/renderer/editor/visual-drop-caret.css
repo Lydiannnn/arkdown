@@ -1,0 +1,31 @@
+.arkdown-visual-drop-caret {
+  position: fixed;
+  z-index: 6;
+  width: 2px;
+  animation: arkdown-visual-caret-blink 1.06s step-end infinite;
+  background: currentColor;
+  pointer-events: none;
+}
+
+.ProseMirror.arkdown-visual-input-caret-active {
+  caret-color: transparent;
+}
+
+.arkdown-visual-input-caret {
+  position: fixed;
+  z-index: 6;
+  width: 2px;
+  animation: arkdown-visual-caret-blink 1.06s step-end infinite;
+  background: currentColor;
+  transform: translateX(-1px);
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.arkdown-visual-input-caret[data-visible='true'] {
+  visibility: visible;
+}
+
+@keyframes arkdown-visual-caret-blink {
+  50% { opacity: 0; }
+}

@@ -1,0 +1,79 @@
+.about-dialog {
+  display: flex;
+  flex-direction: column;
+  width: min(620px, calc(100vw - 32px));
+  overflow: hidden;
+  font-size: 13px;
+  line-height: 22px;
+}
+
+.about-dialog .arkdown-dialog__header,
+.about-dialog .arkdown-dialog__actions {
+  flex: none;
+}
+
+.about-dialog .arkdown-dialog__content {
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+
+.about-dialog__accessible-title {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.about-dialog__logo {
+  display: block;
+  width: 210px;
+  max-width: 100%;
+  height: auto;
+}
+
+.about-dialog p { margin: 0; }
+
+.about-dialog__metadata {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 20px;
+  color: var(--arkdown-dialog-helper);
+}
+
+.about-dialog .about-dialog__credit { margin-top: 12px; }
+
+.about-dialog__acknowledgements {
+  margin-top: 22px;
+  padding-top: 20px;
+  border-top: 1px solid var(--arkdown-dialog-border);
+}
+
+.about-dialog__acknowledgements h3 {
+  margin: 0 0 8px;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 22px;
+}
+
+.about-dialog__credits {
+  font-size: 12px;
+  line-height: 16.5px;
+  color: var(--arkdown-dialog-helper);
+  overflow-wrap: anywhere;
+}
+
+.about-dialog .arkdown-dialog__actions { justify-content: center; }
+
+.about-dialog .arkdown-dialog__actions button:focus {
+  border-color: var(--arkdown-dialog-action-border);
+  outline: none;
+  box-shadow: none;
+}
+
+.about-dialog .arkdown-dialog__actions button:focus-visible:not(:active) {
+  background: var(--arkdown-dialog-action-hover);
+}

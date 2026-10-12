@@ -1,0 +1,9 @@
+.model-thinking-controls { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; min-width: 0; font: inherit; }
+.model-thinking-controls .preferences-select-root { width: 62px; min-width: 0; }
+.model-thinking-controls .preferences-select-trigger { height: 26px; min-height: 26px; padding: 3px 7px; font: inherit; }
+.model-thinking-controls .model-thinking-switch { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; padding: 3px 5px; border: 0; background: transparent; color: inherit; font: inherit; cursor: pointer; }
+.model-thinking-switch-track { width: 22px; height: 13px; border-radius: 9px; background: var(--border-subtle, #aaa); position: relative; }
+.model-thinking-switch-track::after { content: ''; position: absolute; width: 9px; height: 9px; top: 2px; left: 2px; border-radius: 50%; background: var(--surface-raised, white); }
+.model-thinking-switch[aria-checked='true'] .model-thinking-switch-track { background: rgb(var(--theme-color-rgb, 198 40 40)); }
+.model-thinking-switch[aria-checked='true'] .model-thinking-switch-track::after { left: 11px; }
+.model-thinking-switch:disabled { opacity: .45; cursor: default; }

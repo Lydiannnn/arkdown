@@ -1,0 +1,261 @@
+.arkdown-dialog-backdrop {
+  --arkdown-dialog-surface: #fff;
+  --arkdown-dialog-border: rgb(0 0 0 / 12%);
+  --arkdown-dialog-text: #333;
+  --arkdown-dialog-helper: #666;
+  --arkdown-dialog-error: #b42318;
+  --arkdown-dialog-action-surface: #f8f8f8;
+  --arkdown-dialog-action-border: #c9c9c9;
+  --arkdown-dialog-action-text: #333;
+  --arkdown-dialog-action-hover: var(--control-hover-layer, rgb(0 0 0 / 5%));
+  --arkdown-dialog-action-pressed: var(--control-pressed-layer, rgb(0 0 0 / 11%));
+  --arkdown-dialog-disabled-opacity: var(--control-disabled-opacity, 0.45);
+  --arkdown-dialog-focus: #4183c4;
+  --arkdown-dialog-primary-surface: #4183c4;
+  --arkdown-dialog-primary-hover: #3677b7;
+  --arkdown-dialog-primary-pressed: #2f699f;
+  --arkdown-dialog-primary-text: #fff;
+  --arkdown-dialog-danger-surface: #b42318;
+  --arkdown-dialog-danger-hover: #a51f15;
+  --arkdown-dialog-danger-pressed: #8f1b12;
+  --arkdown-dialog-danger-text: #fff;
+  --arkdown-dialog-shadow: 0 20px 56px rgb(0 0 0 / 24%);
+  position: fixed;
+  inset: 0;
+  z-index: 22000;
+  display: grid;
+  box-sizing: border-box;
+  place-items: center;
+  padding: 16px;
+  background: rgb(0 0 0 / 48%);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-arkdown-theme]) .arkdown-dialog-backdrop {
+    color-scheme: dark;
+    --arkdown-dialog-surface: #202124;
+    --arkdown-dialog-border: rgb(255 255 255 / 36%);
+    --arkdown-dialog-text: #f1f3f4;
+    --arkdown-dialog-helper: #bdc1c6;
+    --arkdown-dialog-error: #ffb4ab;
+    --arkdown-dialog-action-surface: #292a2d;
+    --arkdown-dialog-action-border: rgb(255 255 255 / 36%);
+    --arkdown-dialog-action-text: #f1f3f4;
+    --arkdown-dialog-action-hover: #34363a;
+    --arkdown-dialog-action-pressed: #3d4045;
+    --arkdown-dialog-disabled-opacity: 0.45;
+    --arkdown-dialog-danger-surface: #b3261e;
+    --arkdown-dialog-danger-hover: #c3372c;
+    --arkdown-dialog-danger-pressed: #8c1d18;
+    --arkdown-dialog-danger-text: #fff;
+    --arkdown-dialog-shadow: 0 20px 56px rgb(0 0 0 / 52%);
+  }
+}
+
+.arkdown-dialog-backdrop[data-state="open"] {
+  animation: arkdown-dialog-backdrop-in 160ms ease-out both;
+}
+
+.arkdown-dialog-backdrop[data-state="closing"] {
+  pointer-events: none;
+  animation: arkdown-dialog-backdrop-out 120ms ease-in both;
+}
+
+.arkdown-dialog {
+  box-sizing: border-box;
+  width: min(460px, calc(100vw - 32px));
+  max-height: calc(100vh - 32px);
+  padding: 24px;
+  overflow: auto;
+  border: 1px solid var(--arkdown-dialog-border);
+  border-radius: 10px;
+  outline: none;
+  background: var(--arkdown-dialog-surface);
+  box-shadow: var(--arkdown-dialog-shadow);
+  color: var(--arkdown-dialog-text);
+  font-family: var(--ui-font-family);
+}
+
+.arkdown-dialog-backdrop[data-state="open"] .arkdown-dialog {
+  animation: arkdown-dialog-surface-in 160ms ease-out both;
+}
+
+.arkdown-dialog-backdrop[data-state="closing"] .arkdown-dialog {
+  animation: arkdown-dialog-surface-out 120ms ease-in both;
+}
+
+.arkdown-dialog--small { width: min(360px, calc(100vw - 32px)); }
+.arkdown-dialog--large { width: min(680px, calc(100vw - 32px)); }
+
+.arkdown-dialog__header { margin: 0 0 20px; }
+
+.arkdown-dialog__title {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.arkdown-dialog__description {
+  margin: 8px 0 0;
+  color: var(--arkdown-dialog-helper);
+  font-size: 13px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+.arkdown-dialog__content { min-width: 0; }
+
+.arkdown-dialog__prompt-field {
+  display: grid;
+  gap: 8px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.arkdown-dialog__prompt-field input {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  height: 32px;
+  padding: 0 10px;
+  border: 1px solid var(--arkdown-dialog-action-border);
+  border-radius: 8px;
+  outline: none;
+  background: var(--arkdown-dialog-surface);
+  color: var(--arkdown-dialog-text);
+  font: inherit;
+}
+
+/* Dialog fields retain their resting/error border; the caret indicates text focus.
+   Keep this scoped to fields so action/select buttons retain keyboard feedback. */
+.arkdown-dialog :is(input, textarea):is(:focus, :focus-visible) {
+  outline: none;
+  box-shadow: none;
+}
+
+.arkdown-dialog__error {
+  margin: 10px 0 0;
+  color: var(--arkdown-dialog-error);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.arkdown-dialog__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 22px;
+}
+
+/* Own action metrics even inside preference pages with denser form controls. */
+.arkdown-dialog.arkdown-dialog .arkdown-dialog__actions > button {
+  box-sizing: border-box;
+  height: 32px;
+  min-width: 76px;
+  padding: 0 14px;
+  font: var(--ui-font-weight-normal, 400) 14px/1.4 var(--ui-font-family, sans-serif);
+  flex-shrink: 0;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.arkdown-dialog__actions button {
+  border: 1px solid var(--arkdown-dialog-action-border);
+  border-radius: 8px;
+  background: var(--arkdown-dialog-action-surface);
+  color: var(--arkdown-dialog-action-text);
+  cursor: pointer;
+}
+
+.arkdown-dialog__actions button:hover:not(:disabled) { background: var(--arkdown-dialog-action-hover); }
+.arkdown-dialog__actions button:active:not(:disabled) { background: var(--arkdown-dialog-action-pressed); }
+.arkdown-dialog__actions button:disabled {
+  cursor: default;
+  opacity: var(--arkdown-dialog-disabled-opacity);
+  pointer-events: none;
+}
+
+.arkdown-dialog__actions .arkdown-dialog__primary:not(:disabled) {
+  border-color: var(--arkdown-dialog-primary-surface);
+  background: var(--arkdown-dialog-primary-surface);
+  color: var(--arkdown-dialog-primary-text);
+}
+
+.arkdown-dialog__actions .arkdown-dialog__primary:hover:not(:disabled) {
+  border-color: var(--arkdown-dialog-primary-hover);
+  background: var(--arkdown-dialog-primary-hover);
+}
+
+.arkdown-dialog__actions .arkdown-dialog__primary:active:not(:disabled) {
+  border-color: var(--arkdown-dialog-primary-pressed);
+  background: var(--arkdown-dialog-primary-pressed);
+}
+
+.arkdown-dialog__actions .arkdown-dialog__danger:not(.arkdown-dialog__primary):not(:disabled) {
+  border-color: var(--arkdown-dialog-danger-surface);
+  background: var(--arkdown-dialog-danger-surface);
+  color: var(--arkdown-dialog-danger-text);
+}
+
+.arkdown-dialog__actions .arkdown-dialog__danger:not(.arkdown-dialog__primary):hover:not(:disabled) {
+  border-color: var(--arkdown-dialog-danger-hover);
+  background: var(--arkdown-dialog-danger-hover);
+}
+
+.arkdown-dialog__actions .arkdown-dialog__danger:not(.arkdown-dialog__primary):active:not(:disabled) {
+  border-color: var(--arkdown-dialog-danger-pressed);
+  background: var(--arkdown-dialog-danger-pressed);
+}
+
+.arkdown-dialog__actions button:focus-visible {
+  outline: none;
+  border-color: var(--arkdown-dialog-focus);
+  box-shadow: inset 0 0 0 1px var(--arkdown-dialog-focus);
+}
+
+.arkdown-dialog__actions .arkdown-dialog__primary:focus-visible {
+  box-shadow: inset 0 0 0 2px var(--arkdown-dialog-primary-text);
+}
+
+@media (forced-colors: active) {
+  .arkdown-dialog :is(input, textarea) {
+    /* An explicit system color prevents Chromium from forcing Highlight on focus.
+       Override the later, more specific per-dialog field/error border palettes. */
+    border-color: CanvasText !important;
+  }
+
+  .arkdown-dialog__actions button:focus-visible {
+    outline: 2px solid Highlight;
+    outline-offset: -3px;
+    box-shadow: none;
+  }
+}
+
+@keyframes arkdown-dialog-backdrop-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes arkdown-dialog-surface-in {
+  from { opacity: 0; transform: scale(0.98) translateY(4px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@keyframes arkdown-dialog-backdrop-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes arkdown-dialog-surface-out {
+  from { opacity: 1; transform: scale(1) translateY(0); }
+  to { opacity: 0; transform: scale(0.98) translateY(4px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .arkdown-dialog-backdrop,
+  .arkdown-dialog { animation: none; }
+}

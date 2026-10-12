@@ -1,0 +1,510 @@
+html,
+body,
+#root {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  background: transparent;
+}
+
+body {
+  overflow: hidden;
+}
+
+.sticky-note-window {
+  display: grid;
+  grid-template-rows: 34px minmax(0, 1fr);
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  color: var(--sticky-note-text-color, #252525);
+  background-color: var(--sticky-note-background-color, #fff3b3);
+  background-image: var(--sticky-note-background-image, none);
+  background-size: var(--sticky-note-background-size, 16px 16px);
+  opacity: var(--sticky-note-opacity, 1);
+  font-family: var(--ui-font-family);
+  isolation: isolate;
+}
+
+.sticky-note-window[data-material-preset] {
+  background-color: transparent;
+}
+
+.sticky-note-window:is([data-material-preset="warm-frosted-glass"], [data-material-preset="clear-glass"], [data-material-preset="flowing-glass"]) {
+  border-radius: 8px;
+}
+
+.sticky-note-window[data-color-scheme="dark"] {
+  color-scheme: dark;
+}
+
+.sticky-note-window[data-material-preset] .sticky-note-titlebar h1 {
+  color: var(--sticky-note-muted-text-color);
+}
+
+.sticky-note-window[data-material-preset] .sticky-note-toolbar {
+  border-top-color: var(--sticky-note-border-color);
+  background-color: var(--sticky-note-toolbar-layer);
+}
+
+.sticky-note-window[data-material-preset] .sticky-note-editor .ProseMirror {
+  color: var(--sticky-note-text-color);
+  caret-color: var(--sticky-note-text-color);
+}
+
+.sticky-note-window[data-color-scheme="dark"] .sticky-note-toolbar img {
+  filter: brightness(0) invert(1);
+  opacity: .84;
+}
+
+.sticky-note-window[data-material-preset] .sticky-note-editor .ProseMirror ::selection {
+  color: var(--sticky-note-text-color);
+  background: var(--sticky-note-selection-layer);
+}
+
+/* Keep the hidden source marker transparent when its visible counter is selected. */
+.sticky-note-window .sticky-note-editor .ProseMirror .label.ordered::selection {
+  color: transparent;
+}
+
+.sticky-note-window[data-material-preset] .sticky-note-editor .ProseMirror :is(code, pre) {
+  background-color: var(--sticky-note-hover-layer);
+}
+
+.sticky-note-window[data-material-preset] .sticky-note-editor .ProseMirror blockquote {
+  border-color: var(--sticky-note-border-color);
+}
+
+.sticky-note-window[data-material-preset] .sticky-note-overlay-scrollbar-thumb {
+  background: color-mix(in srgb, var(--sticky-note-text-color) 35%, transparent);
+}
+
+.sticky-note-window[data-material-preset] .sticky-note-overlay-scrollbar-thumb:hover {
+  background: color-mix(in srgb, var(--sticky-note-text-color) 58%, transparent);
+}
+
+.sticky-note-window[data-material-preset] .sticky-note-save-status {
+  background: var(--sticky-note-surface-layer);
+}
+
+.sticky-note-window[data-color-scheme="dark"] .sticky-note-save-status.is-error {
+  color: color-mix(
+    in srgb,
+    var(--sticky-note-text-color) 88%,
+    var(--sticky-note-background-color)
+  );
+}
+
+.sticky-note-window:is([data-material-preset="warm-frosted-glass"], [data-material-preset="clear-glass"])::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  box-sizing: border-box;
+  pointer-events: none;
+  border: 1px solid rgb(255 251 241 / 64%);
+  border-radius: inherit;
+  background: none;
+}
+
+.sticky-note-window[data-material-preset="clear-glass"]::before {
+  border-color: rgb(255 255 255 / 72%);
+}
+
+.sticky-note-window:is([data-material-preset="warm-frosted-glass"], [data-material-preset="clear-glass"], [data-material-preset="flowing-glass"])::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  box-sizing: border-box;
+  pointer-events: none;
+  border: 0;
+  border-radius: inherit;
+  background: none;
+  box-shadow: var(--sticky-note-inner-glow, none);
+}
+
+.sticky-note-editor-region {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.sticky-note-editor-region > .background-image-layer {
+  z-index: 0;
+}
+
+.sticky-note-editor-region > .sticky-note-editor-shell {
+  height: 100%;
+}
+
+.sticky-note-titlebar {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  padding: 0 7px;
+  -webkit-app-region: drag;
+}
+
+.sticky-note-titlebar h1 {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  font-size: 13px;
+  font-weight: var(--ui-font-weight-normal);
+  line-height: 34px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sticky-note-title-text {
+  -webkit-app-region: no-drag;
+  user-select: none;
+}
+
+.sticky-note-titlebar button,
+.sticky-note-toolbar button,
+.sticky-note-save-status button {
+  -webkit-app-region: no-drag;
+}
+
+.sticky-note-titlebar button,
+.sticky-note-toolbar button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  color: inherit;
+  background: transparent;
+}
+
+.sticky-note-titlebar button:hover:not(:disabled),
+.sticky-note-toolbar button:hover:not(:disabled),
+.sticky-note-save-status button:hover:not(:disabled) {
+  background: var(--control-hover-layer);
+}
+
+.sticky-note-titlebar button:active:not(:disabled),
+.sticky-note-toolbar button:active:not(:disabled),
+.sticky-note-save-status button:active:not(:disabled) { background: var(--control-pressed-layer); }
+.sticky-note-titlebar button:disabled,
+.sticky-note-toolbar button:disabled,
+.sticky-note-save-status button:disabled { opacity: var(--control-disabled-opacity); pointer-events: none; }
+
+.sticky-note-editor-shell {
+  position: relative;
+  z-index: 1;
+  min-height: 0;
+  overflow: hidden;
+  background: transparent;
+}
+
+.sticky-note-editor {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  overflow: auto;
+  background: transparent;
+  scrollbar-width: none;
+}
+
+.sticky-note-editor::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
+}
+
+.sticky-note-overlay-scrollbar {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 3;
+  width: 5px;
+  pointer-events: none;
+}
+
+.sticky-note-overlay-scrollbar-thumb {
+  width: 5px;
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.35);
+  pointer-events: auto;
+  touch-action: none;
+}
+
+.sticky-note-overlay-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.58);
+}
+
+.sticky-note-window .sticky-note-editor .visual-editor,
+.sticky-note-window .sticky-note-editor .milkdown,
+.sticky-note-window .sticky-note-editor .ProseMirror {
+  min-height: 100%;
+  box-sizing: border-box;
+  background-color: transparent !important;
+}
+
+.sticky-note-window .sticky-note-editor .milkdown {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+
+.sticky-note-window .sticky-note-editor .ProseMirror {
+  padding: 8px 12px;
+  font-family: var(--ui-font-family);
+  font-size: var(--sticky-note-font-size, 14px);
+  line-height: 1.65;
+  background: transparent;
+  outline: none;
+}
+
+.sticky-note-window .sticky-note-editor .ProseMirror p {
+  font-size: inherit;
+  line-height: inherit;
+}
+
+.sticky-note-window .sticky-note-editor .ProseMirror blockquote {
+  font-size: 13px;
+}
+
+.sticky-note-window .sticky-note-editor .ProseMirror hr {
+  margin: calc(16px - .3em) 0;
+}
+
+.sticky-note-window .visual-editor .ProseMirror .list-item {
+  gap: 2px;
+}
+
+.sticky-note-window .visual-editor .ProseMirror ol
+  > .milkdown-list-item-block
+  > .list-item
+  > .label-wrapper
+  > .label.ordered::before {
+  color: var(--sticky-note-text-color, #252525);
+}
+
+.sticky-note-window .visual-editor .ProseMirror > ul
+  > .milkdown-list-item-block
+  > .list-item
+  > .label-wrapper
+  > .label.bullet {
+  transform: translate(1px, 0);
+}
+
+.sticky-note-window .visual-editor .ProseMirror .list-item > .label-wrapper {
+  position: relative;
+  width: 14px;
+}
+
+.sticky-note-window .visual-editor .ProseMirror .milkdown-list-item-block
+  > .list-item
+  > .label-wrapper
+  > .label:is(.checked, .unchecked) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  right: 0;
+  width: 22px;
+  height: 22px;
+  transform: none;
+}
+
+.sticky-note-window .visual-editor .ProseMirror .milkdown-list-item-block
+  > .list-item
+  > .label-wrapper
+  > .label:is(.checked, .unchecked)
+  > svg {
+  width: 14px;
+  height: 14px;
+  transform: translateX(3px);
+}
+
+.sticky-note-window .visual-editor .ProseMirror .task-list-item > input[type="checkbox"] {
+  width: 14px;
+  height: 14px;
+}
+
+.sticky-note-window[data-line-spacing-mode="compact"] .sticky-note-editor .ProseMirror,
+.sticky-note-window[data-line-spacing-mode="compact"] .sticky-note-editor .ProseMirror :is(p, h1, h2, h3, h4, h5, h6, blockquote, ul, ol, li) {
+  line-height: 1.5;
+}
+
+.sticky-note-window[data-line-spacing-mode="compact"] .sticky-note-editor .ProseMirror p {
+  margin: 0;
+}
+
+.sticky-note-window[data-line-spacing-mode="compact"] .sticky-note-editor .ProseMirror :is(h1, h2, h3, h4, h5, h6) {
+  margin: .25em 0 .05em;
+}
+
+.sticky-note-window[data-line-spacing-mode="compact"] .sticky-note-editor .ProseMirror
+  .milkdown-list-item-block + .milkdown-list-item-block {
+  margin-top: 0;
+}
+
+.sticky-note-window[data-line-spacing-mode="standard"] .sticky-note-editor .ProseMirror {
+  line-height: 1.65;
+}
+
+.sticky-note-window[data-line-spacing-mode="standard"] .sticky-note-editor .ProseMirror :is(h1, h2, h3, h4, h5, h6) {
+  margin: .9em 0 .7em;
+}
+
+.sticky-note-window[data-line-spacing-mode="standard"] .sticky-note-editor .ProseMirror p {
+  margin: .8em 0;
+}
+
+.sticky-note-window[data-line-spacing-mode="standard"] .sticky-note-editor .ProseMirror
+  .milkdown-list-item-block + .milkdown-list-item-block {
+  margin-top: 10px;
+}
+
+.sticky-note-window[data-focused="true"] .sticky-note-editor .ProseMirror {
+  padding-bottom: 46px;
+}
+
+.sticky-note-save-status {
+  position: absolute;
+  right: 10px;
+  bottom: 42px;
+  z-index: 2;
+  max-width: calc(100% - 20px);
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  line-height: 20px;
+  background: rgb(255 255 255 / 88%);
+}
+
+.sticky-note-save-status.is-error {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #b3261e;
+}
+
+.sticky-note-save-status.is-error span {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sticky-note-toolbar {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 2px;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 34px;
+  padding: 0 4px;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  background-color: inherit;
+}
+
+.sticky-note-toolbar-toggle {
+  margin-left: auto;
+  transition: opacity 120ms ease;
+}
+
+.sticky-note-toolbar[data-collapsed="true"] {
+  right: 0;
+  left: 0;
+  justify-content: flex-end;
+  width: 100%;
+  border-top-color: transparent;
+  background-color: transparent;
+  pointer-events: none;
+}
+
+.sticky-note-window[data-material-preset] .sticky-note-toolbar[data-collapsed="true"] {
+  border-top-color: transparent;
+  background-color: transparent;
+}
+
+.sticky-note-toolbar[data-collapsed="true"] .sticky-note-toolbar-toggle {
+  margin-left: auto;
+  pointer-events: auto;
+}
+
+.sticky-note-window[data-focused="false"] .sticky-note-toolbar {
+  visibility: hidden;
+}
+
+/* Reserve the native 6 DIP glass resize band without changing its surface.
+   The scrollbar has an extra CSS pixel for fractional-DPI host rounding. */
+.sticky-note-window:is([data-material-preset="warm-frosted-glass"], [data-material-preset="clear-glass"], [data-material-preset="flowing-glass"]) .sticky-note-overlay-scrollbar {
+  right: 7px;
+}
+
+.sticky-note-window:is([data-material-preset="warm-frosted-glass"], [data-material-preset="clear-glass"], [data-material-preset="flowing-glass"]) .sticky-note-toolbar {
+  min-height: 40px;
+  /* Leave 2px between the rightmost button and the inset scrollbar. */
+  padding: 0 14px 6px 8px;
+}
+
+.sticky-note-window:is([data-material-preset="warm-frosted-glass"], [data-material-preset="clear-glass"], [data-material-preset="flowing-glass"])[data-focused="true"] .sticky-note-editor .ProseMirror {
+  padding-bottom: 52px;
+}
+
+.sticky-note-window:is([data-material-preset="warm-frosted-glass"], [data-material-preset="clear-glass"], [data-material-preset="flowing-glass"]) .sticky-note-save-status {
+  bottom: 48px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sticky-note-toolbar-toggle {
+    transition: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .sticky-note-window,
+  .sticky-note-window[data-material-preset] {
+    color: CanvasText;
+    background: Canvas;
+    forced-color-adjust: auto;
+  }
+
+  .sticky-note-window[data-material-preset]::before,
+  .sticky-note-window[data-material-preset]::after {
+    display: none;
+  }
+
+  .sticky-note-window[data-material-preset] .sticky-note-toolbar {
+    border-top-color: CanvasText;
+  }
+
+  .sticky-note-titlebar button,
+  .sticky-note-toolbar button,
+  .sticky-note-save-status button {
+    border: 1px solid ButtonText;
+    color: ButtonText;
+    background: ButtonFace;
+  }
+
+  .sticky-note-window[data-material-preset] .sticky-note-save-status,
+  .sticky-note-window[data-color-scheme="dark"] .sticky-note-save-status.is-error {
+    color: CanvasText;
+    background: Canvas;
+  }
+}

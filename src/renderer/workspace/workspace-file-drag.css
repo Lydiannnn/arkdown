@@ -1,0 +1,31 @@
+.workspace-file-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.workspace-file-row > .tree-row { flex: 1; min-width: 0; width: auto; }
+
+.workspace-file-drag {
+  display: grid;
+  place-items: center;
+  flex: 0 0 24px;
+  width: 24px;
+  height: 24px;
+  margin-right: 3px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  color: var(--text-secondary, #888);
+  background: transparent;
+  cursor: grab;
+  opacity: 0;
+}
+
+.workspace-file-row:is(:hover, :focus-within) > .workspace-file-drag { opacity: 1; }
+.workspace-file-drag:hover:not(:disabled) { background: var(--control-hover-layer); }
+.workspace-file-drag:active:not(:disabled) { background: var(--control-pressed-layer); cursor: grabbing; }
+.workspace-file-drag:focus-visible { outline: 1px solid currentColor; outline-offset: -2px; }
+.workspace-file-drag:disabled { cursor: default; opacity: var(--control-disabled-opacity); }
+.workspace-file-drag-error { flex-basis: 100%; padding: 3px 8px; font-size: 12px; color: var(--text-secondary, #888); }

@@ -1,0 +1,86 @@
+.editor-surface {
+  position: relative;
+}
+
+.editor-surface.has-visual-translation-history-rail > .visual-editor {
+  box-sizing: border-box;
+  padding-right: 20px;
+}
+
+.editor-surface.has-source-translation-history-rail > .source-editor-context {
+  box-sizing: border-box;
+  width: 100%;
+  padding-right: 50px;
+}
+
+.translation-history-rail-layer {
+  position: absolute;
+  z-index: 12;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.translation-history-rail-button {
+  position: absolute;
+  display: grid;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  place-items: center;
+  border: 1px solid rgb(var(--theme-color-rgb) / 24%);
+  border-radius: 6px;
+  background: #fff;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 8%);
+  color: rgb(var(--theme-color-rgb));
+  cursor: pointer;
+  opacity: 0.8;
+  pointer-events: auto;
+  transition: border-color 120ms ease, box-shadow 120ms ease, background 120ms ease, opacity 120ms ease;
+}
+
+.translation-history-rail-button:hover {
+  border-color: rgb(var(--theme-color-rgb) / 36%);
+  background: #fff;
+  box-shadow: 0 0 0 1px rgb(var(--theme-color-rgb) / 8%), 0 0 5px rgb(var(--theme-color-rgb) / 12%);
+  color: rgb(var(--theme-color-rgb));
+  opacity: 1;
+}
+
+.translation-history-rail-button:active {
+  border-color: rgb(var(--theme-color-rgb));
+  background: color-mix(in srgb, rgb(var(--theme-color-rgb)) 10%, #fff 90%);
+  box-shadow: none;
+  color: rgb(var(--theme-color-rgb));
+  opacity: 1;
+}
+
+.translation-history-rail-button:active > .app-icon {
+  opacity: 1;
+}
+
+.translation-history-rail-button:focus-visible {
+  outline: 2px solid rgb(var(--theme-color-rgb) / 52%);
+  outline-offset: 2px;
+}
+
+.translation-history-rail-connector-horizontal,
+.translation-history-rail-connector-vertical {
+  position: absolute;
+  pointer-events: none;
+}
+
+.translation-history-rail-connector-horizontal {
+  height: 0;
+  border-top: 1px dashed rgb(var(--theme-color-rgb) / 48%);
+}
+
+.translation-history-rail-connector-vertical {
+  width: 0;
+  border-left: 1px dashed rgb(var(--theme-color-rgb) / 48%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .translation-history-rail-button { transition: none; }
+}

@@ -1,0 +1,222 @@
+/* PR-004: presentation only. All dimensions are CSS px, including at 150% scaling. */
+/* Keep these refinements out of the independent Arknote preferences surface. */
+.preferences-page--arkdown,
+.preferences-dialog,
+.preferences-select-menu {
+  --preferences-paper: #fff;
+  --preferences-surface: #fafafa;
+  --preferences-ink: #333;
+  --preferences-helper: #666;
+  --preferences-line: #e8e8e8;
+  --preferences-button-line: #c9c9c9;
+  --preferences-input-line: color-mix(in srgb, #8a8a8a 60%, var(--preferences-paper));
+  --preferences-hover: #f4f4f4;
+  --preferences-pressed: #ebebeb;
+  --preferences-error: #b42318;
+  --preferences-check-offset-y: -1px;
+  --preferences-on-accent: #fff;
+  font-family: var(--ui-font-family, inherit);
+  font-size: 13px;
+  line-height: 22px;
+  font-weight: var(--ui-font-weight-normal);
+}
+
+.preferences-page--arkdown { color: var(--preferences-ink); background: var(--preferences-paper); }
+.preferences-page--arkdown :is(button, input, output, small), .preferences-dialog :is(button, input, small), .preferences-select-menu button { font-family: inherit; font-size: 13px; line-height: 22px; font-weight: var(--ui-font-weight-normal); }
+.preferences-page--arkdown .preferences-page-content h1 { font-size: 28px; line-height: 40px; font-weight: 500; margin-bottom: 32px; }
+.preferences-page--arkdown .preferences-section h2,
+.preferences-dialog h2 { font-size: 16px; line-height: 24px; font-weight: 500; }
+.preferences-page--arkdown h3,
+.preferences-page--arkdown .preferences-theme-color legend { font-size: 14px; line-height: 22px; font-weight: 500; }
+.preferences-page--arkdown :is(.preferences-setting-label, .preferences-theme-custom, .preferences-range-control) { font-size: 13px; line-height: 22px; }
+.preferences-page--arkdown .preferences-section .preferences-custom-search-field { font-size: 13px; }
+.preferences-page--arkdown :is(small, .preferences-section > p, .preferences-font-option > span,
+  .preferences-screenshot-row > p, .sticky-note-control-description, .sticky-note-color-preference,
+  .preferences-choice-description, .document-conversion-preferences__description,
+  .document-conversion-preferences__meta, .large-model-feature-row > p,
+  .large-model-codex-cli-explanation,
+  .large-model-manager-heading p, .large-model-connections-heading p,
+  .large-model-feature-row dt, .large-model-card dt, .large-model-readonly-setting > span,
+  .large-model-assignment-controls .preferences-field > span):not(.preferences-error, .preferences-screenshot-error, .large-model-field-error) {
+  color: var(--preferences-helper); font-size: 13px; line-height: 22px; font-weight: var(--ui-font-weight-normal);
+}
+.preferences-dialog :is(small, .preferences-confirm-dialog__hint,
+  .arkdown-dialog__description, .large-model-capability-settings > p,
+  .large-model-capability-input-grid span, .large-model-capability-readonly-grid span):not(.preferences-error, .large-model-field-error) {
+  color: var(--preferences-helper); font-size: 13px; line-height: 22px; font-weight: var(--ui-font-weight-normal);
+}
+.preferences-page--arkdown :is(.preferences-error, .preferences-screenshot-error), .preferences-dialog :is(.preferences-error, .large-model-field-error) {
+  color: var(--preferences-error); font-size: 13px; line-height: 22px;
+}
+.preferences-page--arkdown .large-model-status { font-size: 13px; line-height: 22px; }
+.preferences-page--arkdown .large-model-primary-action { color: var(--preferences-on-accent); }
+.preferences-page--arkdown .preferences-section { padding: 28px 0 32px; border-color: var(--preferences-line); }
+.preferences-page--arkdown .preferences-section h2 { margin-bottom: 12px; }
+.preferences-page--arkdown .preferences-section label,
+.preferences-page--arkdown .preferences-section > .preferences-field,
+.preferences-page--arkdown .preferences-section .preferences-font-option { margin-bottom: 16px; }
+.preferences-page--arkdown .preferences-secondary-group + .preferences-secondary-group,
+.preferences-page--arkdown .sticky-note-preferences-section--arkdown-embedded > .sticky-note-preferences-group + .sticky-note-preferences-group,
+.preferences-page--arkdown .sticky-note-preferences-section--arkdown-embedded > .sticky-note-preferences-reset + .sticky-note-preferences-group {
+  margin-top: 32px;
+}
+.preferences-page--arkdown .preferences-section .preferences-secondary-control,
+.preferences-page--arkdown .preferences-section .preferences-tertiary-setting,
+.preferences-page--arkdown .preferences-section .preferences-custom-search-field,
+.preferences-page--arkdown .preferences-section .large-model-assignment-controls .preferences-field,
+.preferences-page--arkdown .preferences-shell-menu-choice > label { margin-bottom: 0; }
+.preferences-page--arkdown .preferences-section .preferences-search-provider { margin-bottom: 16px; }
+.preferences-page--arkdown .preferences-subsection { margin-top: 32px; }
+.preferences-page--arkdown .preferences-secondary-heading, .preferences-page--arkdown .preferences-font-heading, .preferences-page--arkdown .preferences-tertiary-title { color: var(--preferences-ink); }
+.preferences-page--arkdown .preferences-toc { font-size: 13px; line-height: 22px; color: var(--preferences-helper); }
+.preferences-page--arkdown .preferences-toc-primary { font-weight: 700; }
+.preferences-page--arkdown .preferences-page-header, .preferences-page--arkdown .preferences-page-actions { border-color: var(--preferences-line); }
+.preferences-page--arkdown .preferences-page-actions { background: var(--preferences-surface); }
+.preferences-page--arkdown :is(.preferences-page-actions button, .preferences-background-open,
+  .preferences-screenshot-action, .document-conversion-preferences__cancel,
+  .sticky-note-preferences-reset) {
+  height: 32px; border: 1px solid var(--preferences-button-line); border-radius: 8px;
+  color: var(--preferences-ink); background: var(--preferences-paper);
+}
+.preferences-page--arkdown :is(.preferences-page-actions button, .preferences-background-open,
+  .preferences-screenshot-action, .document-conversion-preferences__cancel,
+  .sticky-note-preferences-reset):hover:not(:disabled):not([aria-disabled="true"]) { background: var(--preferences-hover); }
+.preferences-page--arkdown :is(.preferences-page-actions button, .preferences-background-open,
+  .preferences-screenshot-action, .document-conversion-preferences__cancel,
+  .sticky-note-preferences-reset):active:not(:disabled):not([aria-disabled="true"]) { background: var(--preferences-pressed); }
+.preferences-page--arkdown .preferences-back { border-radius: 8px; color: var(--preferences-ink); }
+.preferences-page--arkdown button:focus-visible:not(.preferences-select-trigger),
+.preferences-page--arkdown input:focus-visible:not([type="range"]) {
+  outline: 2px solid rgb(var(--theme-color-rgb, 198 40 40) / 60%); outline-offset: 2px;
+}
+.preferences-page--arkdown .preferences-section input:not([type="checkbox"]):not([type="radio"]):not([type="color"]):not([type="range"]),
+.preferences-dialog input:not([type="checkbox"]):not([type="radio"]):not([type="color"]):not([type="range"]) {
+  height: 32px; padding-block: 4px; border-color: var(--preferences-input-line);
+  color: var(--preferences-ink); background: var(--preferences-paper);
+}
+.preferences-page--arkdown .preferences-section input[aria-invalid="true"],
+.preferences-dialog input[aria-invalid="true"] { border-color: color-mix(in srgb, var(--preferences-error) 60%, var(--preferences-paper)); }
+.preferences-page--arkdown .preferences-select-trigger { font-family: inherit; line-height: 22px; }
+.preferences-page--arkdown .preferences-font-grid { gap: 16px 24px; }
+.preferences-page--arkdown .preferences-font-grid .preferences-font-option { margin: 0; }
+
+/* Paint only the glyph: the native input still owns focus, checked and mixed state. */
+.preferences-page--arkdown input[type="checkbox"] {
+  appearance: none; position: relative; box-sizing: border-box; flex: none;
+  width: 13px; height: 13px; min-height: 13px; padding: 0; margin: 0;
+  border: 1px solid var(--preferences-input-line); border-radius: 2px;
+  background: var(--preferences-paper);
+}
+.preferences-page--arkdown input[type="checkbox"]:is(:checked, :indeterminate) {
+  background: rgb(var(--theme-color-rgb, 198 40 40)); border-color: rgb(var(--theme-color-rgb, 198 40 40));
+}
+.preferences-page--arkdown input[type="checkbox"]:checked::after {
+  content: ''; position: absolute; left: 3px; top: 1px; width: 4px; height: 7px;
+  border: solid var(--preferences-on-accent); border-width: 0 1.5px 1.5px 0;
+  transform: translateY(var(--preferences-check-offset-y)) rotate(45deg);
+}
+.preferences-page--arkdown input[type="checkbox"]:indeterminate::after {
+  content: ''; position: absolute; left: 2px; top: 50%; width: 7px; height: 1.5px;
+  border: 0; background: var(--preferences-on-accent); transform: translateY(-50%);
+}
+.preferences-page--arkdown input[type="checkbox"]:disabled { opacity: var(--control-disabled-opacity, .4); }
+.preferences-page--arkdown .preferences-checkbox-description,
+.preferences-page--arkdown .sticky-note-lifecycle-checkbox { min-height: 32px; gap: 6px; align-items: center; }
+.preferences-page--arkdown .preferences-shell-menu-choice { margin-bottom: 4px; }
+.preferences-page--arkdown .preferences-shell-menu-choice .preferences-checkbox-description { align-items: start; padding-block: 5px; box-sizing: border-box; }
+.preferences-page--arkdown .preferences-shell-menu-choice input[type="checkbox"] { margin-top: 4.5px; }
+.preferences-page--arkdown .sticky-note-portable-warning { font-size: 13px; line-height: 22px; }
+.preferences-page--arkdown .sticky-note-material-options label { font-size: 13px; line-height: 22px; gap: 6px; }
+
+.preferences-page--arkdown .preferences-theme-color-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
+.preferences-page--arkdown .preferences-theme-swatches { flex-wrap: wrap; gap: 6px; }
+.preferences-page--arkdown .preferences-theme-swatch { box-sizing: border-box; width: 24px; height: 32px; background: transparent; border: 0; }
+.preferences-page--arkdown .preferences-theme-swatch::before { content: ''; position: absolute; width: 20px; height: 20px; border-radius: 3px; background: var(--theme-swatch-color); }
+.preferences-page--arkdown .preferences-theme-swatch span { position: relative; z-index: 1; font-size: 13px; }
+.preferences-page--arkdown .preferences-theme-swatch:hover:not(:disabled),
+.preferences-page--arkdown .preferences-theme-swatch:active:not(:disabled) { box-shadow: none; }
+.preferences-page--arkdown .preferences-theme-swatch:hover::before { filter: brightness(.93); }
+.preferences-page--arkdown .preferences-section .preferences-theme-custom input[type="color"] {
+  appearance: none; box-sizing: border-box; width: 32px; height: 32px; padding: 6px;
+  border: 0; background: transparent;
+}
+.preferences-page--arkdown .preferences-theme-custom input::-webkit-color-swatch-wrapper { padding: 0; }
+.preferences-page--arkdown .preferences-theme-custom input::-webkit-color-swatch { border: 0; border-radius: 3px; }
+.preferences-page--arkdown .preferences-theme-color-controls output { color: var(--preferences-helper); }
+.preferences-page--arkdown .preferences-range-input { height: 20px; }
+.preferences-page--arkdown .preferences-range-input::-webkit-slider-runnable-track { height: 7px; }
+.preferences-page--arkdown .preferences-range-input::-webkit-slider-thumb { width: 16px; height: 16px; margin-top: -4.5px; }
+.preferences-page--arkdown .preferences-range-value {
+  box-sizing: border-box; display: flex; align-items: center; justify-content: flex-end;
+  min-width: 86px; height: 32px; padding: 0 10px; border-radius: 8px;
+  border: 1px solid var(--preferences-input-line); color: var(--preferences-helper);
+}
+
+.preferences-page--arkdown .preferences-editor-layout .preferences-range-header { align-items: baseline; }
+.preferences-page--arkdown .preferences-editor-layout .preferences-range-value {
+  display: block; min-width: 0; height: auto; padding: 0; border: 0; border-radius: 0;
+}
+
+.preferences-page--arkdown .document-conversion-preferences__meta { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; }
+.preferences-page--arkdown .document-conversion-preferences__meta > p { min-width: 0; margin: 0; }
+.preferences-page--arkdown .document-conversion-preferences__meta .document-conversion-preferences__status {
+  flex: none; white-space: nowrap; text-align: right; color: inherit; font-size: 13px; line-height: 22px;
+}
+
+@media (max-width: 540px) {
+  .preferences-page--arkdown .preferences-font-grid { grid-template-columns: minmax(0, 1fr); }
+  .preferences-page--arkdown .preferences-page-layout, .preferences-page--arkdown .preferences-footer-layout { padding-inline: 20px; }
+  .preferences-page--arkdown .preferences-screenshot-row { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  .preferences-page--arkdown .preferences-screenshot-control { justify-items: end; }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-arkdown-theme]) .preferences-page--arkdown, :root:not([data-arkdown-theme]) .preferences-dialog, :root:not([data-arkdown-theme]) .preferences-select-menu {
+    color-scheme: dark;
+    --preferences-paper: #242424;
+    --preferences-surface: #2a2a2a;
+    --preferences-ink: #e6e6e6;
+    --preferences-helper: #b5b5b5;
+    --preferences-line: #404040;
+    --preferences-button-line: #656565;
+    --preferences-input-line: color-mix(in srgb, #858585 60%, var(--preferences-paper));
+    --preferences-hover: #303030;
+    --preferences-pressed: #383838;
+    --preferences-error: #ff9999;
+  }
+  :root:not([data-arkdown-theme]) .preferences-page--arkdown .preferences-select-trigger,
+  :root:not([data-arkdown-theme]) .preferences-page--arkdown .large-model-manager .preferences-compact-select,
+  :root:not([data-arkdown-theme]) .large-model-dialog .preferences-compact-select { color: #e6e6e6; background: #242424; border-color: #404040; }
+  :root:not([data-arkdown-theme]) .preferences-page--arkdown .preferences-select-trigger:hover:not(:disabled), :root:not([data-arkdown-theme]) .preferences-page--arkdown .preferences-select-trigger:focus-visible { background: #303030; border-color: #535353; }
+  :root:not([data-arkdown-theme]) .preferences-page--arkdown .preferences-select-trigger[aria-expanded="true"]:not(:disabled), :root:not([data-arkdown-theme]) .preferences-page--arkdown .preferences-select-trigger:active:not(:disabled) { background: #383838; border-color: #666; }
+  :root:not([data-arkdown-theme]) .preferences-select-menu { background: #242424; border-color: rgb(255 255 255 / 12%); }
+  :root:not([data-arkdown-theme]) .preferences-select-menu button { color: #e6e6e6; }
+  :root:not([data-arkdown-theme]) .preferences-select-menu button:hover:not(:disabled), :root:not([data-arkdown-theme]) .preferences-select-menu button:focus-visible { background: #303030; }
+  :root:not([data-arkdown-theme]) .preferences-select-menu button:active:not(:disabled) { background: #383838; }
+  :root:not([data-arkdown-theme]) .preferences-page--arkdown :is(.large-model-empty-state, .large-model-assignment, .large-model-codex-cli-explanation), :root:not([data-arkdown-theme]) .preferences-dialog .large-model-capability-settings { background: var(--preferences-surface); color: var(--preferences-helper); border-color: var(--preferences-line); }
+  :root:not([data-arkdown-theme]) .preferences-page--arkdown :is(.large-model-card, .large-model-feature-row) { background: var(--preferences-paper); border-color: var(--preferences-line); }
+  :root:not([data-arkdown-theme]) .preferences-page--arkdown .large-model-manager button:not(.preferences-select-trigger):not(.large-model-primary-action):not(.large-model-card-disclosure),
+  :root:not([data-arkdown-theme]) .preferences-dialog .large-model-catalog-controls > button { background: var(--preferences-paper); color: var(--preferences-ink); border-color: var(--preferences-button-line); }
+  :root:not([data-arkdown-theme]) .preferences-page--arkdown .large-model-manager button:not(.preferences-select-trigger):not(.large-model-primary-action):not(.large-model-card-disclosure):hover:not(:disabled) { background: var(--preferences-hover); }
+  :root:not([data-arkdown-theme]) .preferences-page--arkdown .large-model-manager button:not(.preferences-select-trigger):not(.large-model-primary-action):active:not(:disabled) { background: var(--preferences-pressed); }
+  :root:not([data-arkdown-theme]) .preferences-page--arkdown .large-model-readonly-setting strong,
+  :root:not([data-arkdown-theme]) .preferences-dialog .large-model-capability-readonly-grid output { color: var(--preferences-helper); background: var(--preferences-surface); border-color: var(--preferences-line); }
+  :root:not([data-arkdown-theme]) .preferences-page--arkdown .large-model-status { color: #ddd; background: #414141; }
+  :root:not([data-arkdown-theme]) .preferences-page--arkdown .large-model-status.is-connected { color: #a9e5bb; background: #204c30; }
+  :root:not([data-arkdown-theme]) .preferences-page--arkdown .large-model-connection-status.is-connected { color: #a9e5bb; }
+  :root:not([data-arkdown-theme]) .preferences-page--arkdown .large-model-connection-status:not(.is-connected) { color: #ffb5b5; }
+  :root:not([data-arkdown-theme]) .preferences-page--arkdown .large-model-status:not(.is-connected):not(.is-unknown) { color: #ffb5b5; background: #502630; }
+  :root:not([data-arkdown-theme]) .preferences-page--arkdown .large-model-card-actions button:last-child:not(:disabled) { color: #ff9999; }
+  :root:not([data-arkdown-theme]) .preferences-dialog .preferences-actions { background: var(--preferences-paper); }
+  :root:not([data-arkdown-theme]) .preferences-page--arkdown .preferences-range-input::-webkit-slider-runnable-track { background: linear-gradient(to right, rgb(var(--theme-color-rgb, 198 40 40)) 0 var(--preferences-range-progress, 0%), #454545 var(--preferences-range-progress, 0%) 100%); }
+}
+
+@media (forced-colors: active) {
+  .preferences-page--arkdown input[type="checkbox"] { appearance: auto; }
+  .preferences-page--arkdown input[type="checkbox"]::after { display: none; }
+}
+
+/* Use Chromium's native contrast selection when available. */
+@supports (color: contrast-color(red)) {
+  .preferences-page--arkdown { --preferences-on-accent: contrast-color(rgb(var(--theme-color-rgb, 198 40 40))); }
+}

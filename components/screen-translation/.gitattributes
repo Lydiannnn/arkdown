@@ -1,0 +1,3 @@
+# Preserve the exact bytes covered by the component manifest across Windows checkouts.
+/engine/** -text whitespace=cr-at-eol
+/licenses/** -text -whitespace

@@ -1,0 +1,203 @@
+{
+  "version": "2026-09-11-final",
+  "archive": "Arkdown-品牌资源包-20260911-final.zip",
+  "archiveSha256": "f2d3a7c2b6839d47ecd873a089c6921d8fcb1f3183a5288c20aa955d10eed73e",
+  "files": [
+    {
+      "source": "01-品牌Logo/svg/arkdown-app-rounded.svg",
+      "path": "assets/branding/arkdown-app-rounded.svg",
+      "bytes": 79391,
+      "sha256": "e3d9d38ce4fdf4f5eaa4becde25b014d8ecffe4078940f5318b266e6c11eefce"
+    },
+    {
+      "source": "01-品牌Logo/svg/arkdown-app-square.svg",
+      "path": "assets/branding/arkdown-app-square.svg",
+      "bytes": 79378,
+      "sha256": "11fcab29784ac2c4a4a62f7a095ce929971e33ee6df35568b263d03e0aea8f96"
+    },
+    {
+      "source": "01-品牌Logo/svg/arkdown-lockup-black.svg",
+      "path": "assets/branding/arkdown-lockup-black.svg",
+      "bytes": 112294,
+      "sha256": "16988470864a2e68d73b04be16f5e1621852fafce6471df554ab0fd218a078cf"
+    },
+    {
+      "source": "01-品牌Logo/svg/arkdown-lockup-color.svg",
+      "path": "assets/branding/arkdown-lockup-color.svg",
+      "bytes": 112344,
+      "sha256": "0476977f12260f5e8a60e9dbc8b392df334f822c5ab8d8a797e81f25d2348734"
+    },
+    {
+      "source": "01-品牌Logo/svg/arkdown-lockup-reverse.svg",
+      "path": "assets/branding/arkdown-lockup-reverse.svg",
+      "bytes": 112342,
+      "sha256": "284dbaaa3c1b0e17dab1f8fed6f22f80b731e86b3c52f6c6145d8e0aef6fa37a"
+    },
+    {
+      "source": "01-品牌Logo/svg/arkdown-lockup-white.svg",
+      "path": "assets/branding/arkdown-lockup-white.svg",
+      "bytes": 112320,
+      "sha256": "458108278f3c58eaf0754f44cd59b4e69c41df07e9af6b196141f6739426531b"
+    },
+    {
+      "source": "01-品牌Logo/svg/arkdown-symbol-black.svg",
+      "path": "assets/branding/arkdown-symbol-black.svg",
+      "bytes": 79259,
+      "sha256": "cfcdc765fb104010d7ba781e9e082c7014015b80391b0a64c04cafd8e7610c0e"
+    },
+    {
+      "source": "01-品牌Logo/svg/arkdown-symbol-color.svg",
+      "path": "assets/branding/arkdown-symbol-color.svg",
+      "bytes": 79309,
+      "sha256": "cd9b6c89cfa4ff82cae1476c16a2354fe74a5119a01d8c30734690d09857e720"
+    },
+    {
+      "source": "01-品牌Logo/svg/arkdown-symbol-reverse.svg",
+      "path": "assets/branding/arkdown-symbol-reverse.svg",
+      "bytes": 79307,
+      "sha256": "d573ee758a048270bdd6911a6980b2b076b8a24e558eeadf254b6d50f26dc5ba"
+    },
+    {
+      "source": "01-品牌Logo/svg/arkdown-symbol-white.svg",
+      "path": "assets/branding/arkdown-symbol-white.svg",
+      "bytes": 79285,
+      "sha256": "0364cbaa4ab1280de6d1612239a4952c7e687cf7899324a05eb5f471e65ba57b"
+    },
+    {
+      "source": "01-品牌Logo/ico/arkdown-app-square.ico",
+      "path": "assets/branding/arkdown-app-square.ico",
+      "bytes": 75328,
+      "sha256": "c41e2ae74c7d1706f774c52002f473d3d06a74e27069e2d745a518a46eed92c3"
+    },
+    {
+      "source": "01-品牌Logo/png/arkdown-app-square/arkdown-app-square-256.png",
+      "path": "assets/branding/arkdown-app-square-256.png",
+      "bytes": 4541,
+      "sha256": "03e09a8b24fbd20f2150d7c391e94bbd73143be195183aa75dcd48b8de098498"
+    },
+    {
+      "source": "02-关联文件图标/MD/ICO/ark-md.ico",
+      "path": "assets/branding/ark-md.ico",
+      "bytes": 109547,
+      "sha256": "e1def042ab1b25619ee4345d38d33d6fe4ee32fb5d4a35395fa2e98dcf27c996"
+    },
+    {
+      "source": "02-关联文件图标/TXT/ICO/ark-txt.ico",
+      "path": "assets/branding/ark-txt.ico",
+      "bytes": 109549,
+      "sha256": "12ac059d80bb6d742c96bb58c051f94744164b33a4b11a91ce6fd573219ddd19"
+    },
+    {
+      "source": "02-关联文件图标/DOCX/ICO/ark-docx.ico",
+      "path": "assets/branding/ark-docx.ico",
+      "bytes": 116067,
+      "sha256": "8718d8bfd907a9c9946f045305e7fdcff86c87d3b2f01069a406fecf9c467947"
+    },
+    {
+      "source": "02-关联文件图标/Other-Markdown/ICO/ark-markdown-other.ico",
+      "path": "assets/branding/ark-markdown-other.ico",
+      "bytes": 108337,
+      "sha256": "e6c1e11642349e57527e725c769380c5828347f48fcb76aa5b43845285c9a240"
+    },
+    {
+      "source": "03-文件树图标/MD/SVG/md.svg",
+      "path": "src/renderer/assets/file-icons/md.svg",
+      "bytes": 655,
+      "sha256": "44526df0fa0ebcbff4cccef1e96e4c42f06f01d54e414c0b99bbf6ec164e90a2"
+    },
+    {
+      "source": "03-文件树图标/TXT/SVG/txt.svg",
+      "path": "src/renderer/assets/file-icons/txt.svg",
+      "bytes": 652,
+      "sha256": "865fbd4770b9e12436271045ab9caf8550f296c7a143f7795f16ea847d03f42b"
+    },
+    {
+      "source": "03-文件树图标/DOCX/SVG/docx.svg",
+      "path": "src/renderer/assets/file-icons/docx.svg",
+      "bytes": 678,
+      "sha256": "6f46c3bc217b1041bf12cc9d658ff0dd458e16ef07a6ec86d07c3b4d75948e0a"
+    },
+    {
+      "source": "03-文件树图标/PDF/SVG/pdf.svg",
+      "path": "src/renderer/assets/file-icons/pdf.svg",
+      "bytes": 670,
+      "sha256": "c6e85fae6161b4efe418e40875ecd05444160139caf6ee4466381279022b3d8e"
+    },
+    {
+      "source": "03-文件树图标/XLSX/SVG/xlsx.svg",
+      "path": "src/renderer/assets/file-icons/xlsx.svg",
+      "bytes": 653,
+      "sha256": "0e97f88d80f9f4caf45876b868226c6bcd88518d9a12ee764e287a6b1c3da140"
+    },
+    {
+      "source": "03-文件树图标/PPTX/SVG/pptx.svg",
+      "path": "src/renderer/assets/file-icons/pptx.svg",
+      "bytes": 671,
+      "sha256": "757dc58c93545702a1aa4a077166630511245bd1cd950632eafe055241c2b875"
+    },
+    {
+      "source": "03-文件树图标/EPUB/SVG/epub.svg",
+      "path": "src/renderer/assets/file-icons/epub.svg",
+      "bytes": 665,
+      "sha256": "64d9080fb3143e28b62b4578ddcc52ca5136f47745b7567c1f3af98536136a98"
+    },
+    {
+      "source": "03-文件树图标/Other-Markdown/SVG/markdown-other.svg",
+      "path": "src/renderer/assets/file-icons/markdown-other.svg",
+      "bytes": 661,
+      "sha256": "3bf83fd4b3b185201472d3735fe69d732df2d16375c0a9b77839c02d264ecad0"
+    },
+    {
+      "source": "01-品牌Logo/svg/arkdown-lockup-color.svg",
+      "path": "guide-web/assets/arkdown-lockup-color.svg",
+      "bytes": 112344,
+      "sha256": "0476977f12260f5e8a60e9dbc8b392df334f822c5ab8d8a797e81f25d2348734"
+    },
+    {
+      "source": "01-品牌Logo/svg/arkdown-lockup-reverse.svg",
+      "path": "guide-web/assets/arkdown-lockup-reverse.svg",
+      "bytes": 112342,
+      "sha256": "284dbaaa3c1b0e17dab1f8fed6f22f80b731e86b3c52f6c6145d8e0aef6fa37a"
+    },
+    {
+      "source": "01-品牌Logo/ico/arkdown-app-rounded.ico",
+      "path": "assets/branding/arkdown-app-rounded.ico",
+      "bytes": 93890,
+      "sha256": "6e8f0cc746ed0d95de9c0bb84a57f441f58d96c55755481261d83264849dc553"
+    },
+    {
+      "source": "01-品牌Logo/png/arkdown-app-rounded/arkdown-app-rounded-256.png",
+      "path": "assets/branding/arkdown-app-rounded-256.png",
+      "bytes": 5783,
+      "sha256": "70fb4ffdd7b0dc0080e64c4ce536a1547ec093fb3af3160158bf6de732053359"
+    },
+    {
+      "source": "01-品牌Logo/svg/arkdown-app-rounded.svg",
+      "path": "guide-web/assets/favicon.svg",
+      "bytes": 79391,
+      "sha256": "e3d9d38ce4fdf4f5eaa4becde25b014d8ecffe4078940f5318b266e6c11eefce"
+    },
+    {
+      "source": "01-Windows/Arknote.ico",
+      "path": "assets/branding/arknote-app.ico",
+      "archive": "Arknote-图标资源包-20260912-red-rounded.rar",
+      "bytes": 221333,
+      "sha256": "cf290527935d30699ad1aefc1cdcac27c9b02b0d71a7769bc4fe1a84bc6f3d76"
+    },
+    {
+      "source": "02-PNG/Arknote-256.png",
+      "path": "assets/branding/arknote-app-256.png",
+      "archive": "Arknote-图标资源包-20260912-red-rounded.rar",
+      "bytes": 21658,
+      "sha256": "7499e180d351fa7dac90776c478dcd5d9b33c342526dd46ccd6fa0fefd7902c2"
+    }
+  ],
+  "applicationVariant": "rounded",
+  "additionalArchives": [
+    {
+      "archive": "Arknote-图标资源包-20260912-red-rounded.rar",
+      "archiveSha256": "3538c045a915efae3f08c6b3419ad9cd958f1d8df05a9ac3fba75bf572ac644d",
+      "design": "Arknote 柔弧回折 N，红圆角底、白色主体，2026-09-12 修正版"
+    }
+  ]
+}

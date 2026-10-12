@@ -1,0 +1,26 @@
+.app-icon {
+  display: block;
+  flex: 0 0 auto;
+  color: currentcolor;
+  opacity: var(--app-icon-opacity, .72);
+  pointer-events: none;
+}
+
+button:hover:not(:disabled) > .app-icon,
+button:focus-visible:not(:disabled) > .app-icon {
+  opacity: var(--app-icon-hover-opacity, .95);
+}
+
+button[aria-pressed="true"] > .app-icon,
+button[aria-selected="true"] > .app-icon,
+.app-icon.is-selected {
+  opacity: 1;
+}
+
+button:disabled > .app-icon,
+.app-icon.is-disabled {
+  opacity: .4;
+}
+
+.app-icon-ai { position: relative; display: inline-flex; vertical-align: middle; flex: 0 0 auto; }
+.app-icon-ai-label { position: absolute; right: -1px; bottom: -1px; padding: 0 1px; border-radius: 2px; background: var(--surface-background, #fff); color: inherit; font-family: inherit; font-size: 8px; font-weight: 700; line-height: 1; letter-spacing: -0.5px; }

@@ -1,0 +1,31 @@
+:where(.global-tooltip, .ai-quote-tooltip, .document-file-name-tooltip) {
+  padding: 5px 9px;
+  border: 1px solid #e6e6e6;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 4px 12px rgb(0 0 0 / 10%);
+  color: rgb(0 0 0 / 80%);
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.global-tooltip {
+  box-sizing: border-box;
+  position: fixed;
+  /* Base Tips stay below application menus (21000) and modal layers (22000). */
+  z-index: 20000;
+  max-width: min(320px, calc(100vw - 16px));
+  pointer-events: none;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.global-tooltip[data-tooltip-layer="modal"] {
+  /* Modal Tips sit above modal content and its 23000 select popup. */
+  z-index: 23500;
+}
+
+.global-tooltip[data-tooltip-layer="context-menu"] {
+  /* Context-menu Tips stay above the 24000/24001 root and submenu portals. */
+  z-index: 25000;
+}

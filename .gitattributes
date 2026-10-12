@@ -1,0 +1,14 @@
+.gitattributes text eol=lf
+assets/branding/*.svg -text
+src/renderer/assets/file-icons/*.svg -text
+guide-web/assets/arkdown-lockup-*.svg -text
+guide-web/assets/favicon.svg -text
+package.json text eol=lf
+scripts/build-markitdown-component.ts text eol=lf
+scripts/verify-markitdown-component.ts text eol=lf
+scripts/markitdown/*.py text eol=lf
+scripts/markitdown/*.json text eol=lf
+scripts/markitdown/*.in text eol=lf
+scripts/markitdown/*.md text eol=lf
+tests/scripts/build-markitdown-component.test.ts text eol=lf
+tests/scripts/verify-markitdown-component.test.ts text eol=lf

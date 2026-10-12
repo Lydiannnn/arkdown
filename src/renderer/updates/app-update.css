@@ -1,0 +1,36 @@
+.app-update-bubble {
+  -webkit-app-region: no-drag;
+  app-region: no-drag;
+  height: 26px;
+  max-width: 160px;
+  margin-left: 8px;
+  padding: 0 10px;
+  overflow: hidden;
+  border: 1px solid rgb(65 131 196 / 32%);
+  border-radius: 13px;
+  background: rgb(65 131 196 / 10%);
+  color: #286da8;
+  font: 13px var(--ui-font-family, sans-serif);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+.app-update-bubble:hover { background: rgb(65 131 196 / 18%); }
+.app-update-link { padding: 0; border: 0; background: none; color: #286da8; text-decoration: underline; font: inherit; cursor: pointer; }
+.required-update-dialog { position: relative; }
+.application-update-dialog { position: relative; }
+.application-update-dialog .arkdown-dialog__title { padding-right: 24px; }
+.application-update-progress { display: flex; flex-direction: column; gap: 8px; font-size: 13px; }
+.application-update-progress progress { width: 100%; height: 8px; accent-color: var(--arkdown-dialog-primary, #4183c4); }
+.application-update-skip { display: block; margin-top: 16px; font-size: 13px; }
+.required-update-dialog .arkdown-dialog__title { padding-right: 24px; }
+.required-update-close { position: absolute; top: 15px; right: 15px; width: 28px; height: 28px; padding: 0; border: 0; border-radius: 6px; background: transparent; color: inherit; font-size: 22px; cursor: pointer; }
+.required-update-close:hover { background: var(--control-hover-layer); }
+.required-update-version { margin: 0 0 8px; font-size: 13px; overflow-wrap: anywhere; }
+.required-update-message { max-height: 180px; overflow: auto; margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; font-size: 13px; line-height: 1.6; }
+.app-update-about-status { margin: 8px 0; font-size: 13px; line-height: 1.6; overflow-wrap: anywhere; }
+.app-update-error { color: var(--arkdown-dialog-error, #b42318); }
+[data-arkdown-theme="dark"] :is(.app-update-bubble, .app-update-link) { color: #8ec5ff; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-arkdown-theme]) :is(.app-update-bubble, .app-update-link) { color: #8ec5ff; }
+}

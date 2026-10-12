@@ -1,0 +1,60 @@
+export const MENU_COMMAND_CHANNEL = 'menu:command'
+
+export const MENU_COMMANDS = [
+  'new-document',
+  'open-workspace',
+  'save',
+  'save-as',
+  'export-docx',
+  'export-xlsx',
+  'print-document',
+  'close-window',
+  'preferences',
+  'shortcut-settings',
+  'search-workspace',
+  'toggle-document-outline',
+  'about',
+  'screenshot-translation-settings',
+  'toggle-sidebar',
+  'toggle-source-mode',
+  'toggle-spell-check',
+  'toggle-edit-indicators',
+  'editor-zoom-in',
+  'editor-zoom-out',
+  'editor-zoom-reset',
+  'select-editor-theme-minimal',
+  'select-editor-theme-system',
+  'select-editor-theme-dark',
+  'find-in-document',
+  'open-sticky-note-box',
+  'paragraph',
+  'toggle-document-find',
+  'heading-1',
+  'heading-2',
+  'heading-3',
+  'heading-4',
+  'heading-5',
+  'heading-6',
+  'unordered-list',
+  'ordered-list',
+  'task-list',
+  'blockquote',
+  'code-fence',
+  'strong',
+  'emphasis',
+  'strike',
+  'inline-code',
+  'link',
+  'list-indent',
+  'list-outdent',
+  'clear-formatting',
+  'heading-promote',
+  'heading-demote',
+] as const
+
+export type MenuCommand = typeof MENU_COMMANDS[number]
+
+export function isMenuCommand(value: unknown): value is MenuCommand {
+  return typeof value === 'string'
+    && (MENU_COMMANDS as readonly string[]).includes(value)
+}

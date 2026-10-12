@@ -1,0 +1,30 @@
+.sticky-note-preferences-section .sticky-note-preferences-group { margin: 0; }
+.sticky-note-preferences-section .sticky-note-preferences-group h3 { margin: 0 0 10px; font-size: 14px; line-height: 22px; }
+.sticky-note-preferences-section .sticky-note-default-appearance { margin-top: 32px; }
+.sticky-note-preferences-section > p { font-size: 13px; line-height: 22px; color: var(--preferences-helper, #666); }
+.sticky-note-preferences-section .sticky-note-material-options { display: flex; flex-wrap: wrap; gap: 8px 24px; }
+.sticky-note-preferences-section .sticky-note-material-options label,
+.sticky-note-preferences-section .sticky-note-color-option { display: inline-flex; align-items: center; gap: 6px; min-height: 32px; margin: 0; font-size: 13px; line-height: 22px; }
+.preferences-page .sticky-note-preferences-section .sticky-note-default-appearance label { max-width: none; margin: 0; }
+.preferences-page .preferences-section.sticky-note-preferences-section .sticky-note-default-appearance input[type="radio"] {
+  flex: none; width: 14px; height: 14px; min-height: 14px; margin: 0; padding: 0; border: 0; background: transparent;
+}
+.preferences-section.sticky-note-preferences-section .sticky-note-default-appearance input[type="radio"]:focus-visible { outline: 2px solid rgb(var(--theme-color-rgb, 198 40 40) / 40%); outline-offset: 2px; }
+.sticky-note-preferences-section .sticky-note-default-appearance .sticky-note-colors-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 24px; margin-top: 32px; }
+.sticky-note-preferences-section .sticky-note-colors-row h3 { flex-basis: 100%; margin: 0 0 2px; }
+.sticky-note-material-settings-action { margin-top: 12px; }
+.sticky-note-color-preference-grid { width: fit-content; }
+.sticky-note-color-preference-grid .sticky-note-color-preference { display: grid; grid-template-columns: auto 32px; gap: 8px; align-items: center; min-height: 32px; color: var(--preferences-helper, #666); font-size: 13px; line-height: 22px; }
+.sticky-note-color-preference-grid input[type="color"] { width: 32px; height: 26px; padding: 0; border: 0; background: transparent; }
+.sticky-note-color-preference-grid input[type="color"]::-webkit-color-swatch { border: 1px solid rgb(0 0 0 / 10%); border-radius: 5px; }
+.sticky-note-color-preference-grid input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
+.sticky-note-color-preference:has(input:disabled) { opacity: var(--control-disabled-opacity, .5); }
+.sticky-note-preferences-actions { display: flex; justify-content: flex-start; align-items: center; margin-top: 26px; }
+.sticky-note-preferences-actions .sticky-note-preferences-reset { margin: 0; }
+.sticky-note-lifecycle-preferences { margin-top: 28px; }
+.sticky-note-lifecycle-preferences h3 { margin: 0 0 12px; font-size: 14px; }
+.sticky-note-lifecycle-checkbox, .sticky-note-close-behavior label { display: flex; align-items: center; gap: 8px; min-height: 32px; }
+.sticky-note-portable-warning { margin: 4px 0 10px 24px; color: #c62828; font-size: 12px; }
+.sticky-note-close-behavior { display: grid; gap: 2px; margin: 18px 0 0; padding: 0; border: 0; }
+.sticky-note-close-behavior legend { margin-bottom: 6px; font-weight: 600; }
+.sticky-note-preferences-section--arknote-standalone .preferences-checkbox-description small { font-size: 13px; line-height: 22px; }

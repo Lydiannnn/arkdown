@@ -1,0 +1,18 @@
+.runtime-installer { box-sizing:border-box; width:100vw; height:100vh; padding:36px 28px 24px; background:#fff; color:#333; font:13px/22px var(--font-family-ui, 'Noto Sans SC', sans-serif); }
+.runtime-installer-drag { position:absolute; left:0; right:0; top:0; height:28px; -webkit-app-region:drag; }
+.runtime-installer h1 { margin:0 0 8px; font-size:18px; font-weight:500; line-height:28px; }
+.runtime-installer p { margin:0 0 24px; color:#666; }
+.runtime-installer-progress { height:4px; border-radius:4px; background:#eee; overflow:hidden; }
+.runtime-installer-progress span { display:block; height:100%; background:var(--runtime-theme,#c92327); transition:width 160ms; }
+.runtime-installer-status { min-height:44px; padding-top:10px; color:#666; }
+.runtime-installer footer { display:flex; justify-content:flex-end; gap:10px; margin-top:16px; }
+.runtime-installer button { min-width:76px; height:32px; padding:0 16px; font:inherit; color:inherit; border:1px solid #ddd; border-radius:8px; background:transparent; cursor:pointer; }
+.runtime-installer button:hover { background:#f2f2f2; }
+.runtime-installer button:active { background:#e8e8e8; }
+.runtime-installer button.runtime-installer-primary { background:var(--runtime-theme,#c92327); border-color:transparent; color:#fff; }
+html[data-theme='dark'] .runtime-installer { background:#181818; color:#eee; }
+html[data-theme='dark'] .runtime-installer p, html[data-theme='dark'] .runtime-installer-status { color:#bbb; }
+html[data-theme='dark'] .runtime-installer-progress { background:#383838; }
+html[data-theme='dark'] .runtime-installer button { border-color:#484848; }
+html[data-theme='dark'] .runtime-installer button:hover { background:#303030; }
+html[data-theme='dark'] .runtime-installer button:active { background:#383838; }
