@@ -109,18 +109,15 @@ Arkdown 提供浅色、深色和跟随系统主题，也可以设置自己的背
 
 发布日期：2026-10-11 · Stable · Windows x64
 
-| | 安装版 | 免安装版 |
-| --- | --- | --- |
-| 标准版 · 组件按需下载 | [下载 Setup](https://github.com/Lydiannnn/arkdown-releases/releases/download/v1.0.4/Arkdown-1.0.4-Lite-Windows-x64-Setup.exe) | [下载 ZIP](https://github.com/Lydiannnn/arkdown-releases/releases/download/v1.0.4/Arkdown-1.0.4-Lite-Windows-x64.zip) |
-| 内置组件版 | [下载 Setup](https://github.com/Lydiannnn/arkdown-releases/releases/download/v1.0.4/Arkdown-1.0.4-Full-Windows-x64-Setup.exe) | [下载 ZIP](https://github.com/Lydiannnn/arkdown-releases/releases/download/v1.0.4/Arkdown-1.0.4-Full-Windows-x64.zip) |
+请在仓库页面右侧的 **Releases（发行版本）** 中打开所需版本，再选择适合自己的安装版或免安装版进行下载。通常建议选择 **标准版 · 安装版**。
 
 两种版本的编辑器功能相同。标准版初始体积较小，相关组件在首次使用时按需下载；内置组件版包含文档转换、OCR 和 Codex CLI 等辅助组件，下载体积较大。不包含 AI 凭据，Codex CLI 仍需登录。
 
 ZIP 应完整解压到可写目录，运行 `Arkdown.exe`；独立便签运行 `Arknote.exe`。不要直接在 ZIP 中运行，也不要只复制单个 EXE。
 
-[完整更新说明](https://github.com/Lydiannnn/arkdown-releases/releases/download/v1.0.4/RELEASE-NOTES.md) · [下载与升级指南](https://github.com/Lydiannnn/arkdown-releases/releases/download/v1.0.4/README-zh-CN.md) · [SHA-256 校验清单](https://github.com/Lydiannnn/arkdown-releases/releases/download/v1.0.4/SHA256SUMS.txt) · [全部版本](https://github.com/Lydiannnn/arkdown-releases/releases)
+完整更新说明、下载与升级指南及 SHA-256 校验文件，请在对应的 Release 中查看。
 
-从 1.0.4 开始，Arkdown 支持应用内检查、下载与确认安装更新，保持原有的版本配置及安装／免安装类型。1.0.3 用户需要先手动升级；旧内置组件版 ZIP 建议解压至干净目录，仅迁移个人数据，具体操作见下载与升级指南。
+从 1.0.4 开始，Arkdown 支持应用内检查、下载与确认安装更新，保持原有的版本配置及安装／免安装类型。1.0.3 用户需要先手动升级；旧内置组件版 ZIP 建议解压至干净目录，仅迁移个人数据，具体操作见对应 Release 中的下载与升级指南。
 
 ## 常见问题
 
