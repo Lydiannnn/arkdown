@@ -6,8 +6,6 @@
 
 <p align="center"><a href="https://arkdown.cotax.tech/">访问 Arkdown 官网</a></p>
 
-<p align="center"><img src="assets/arkdown-workspace.png" alt="Arkdown 文档工作区：大纲、表格、Mermaid 图表与本地媒体" width="100%"></p>
-
 ---
 
 AI 给了你一份验收记录、一张路线图，或一篇写到一半的方案。接下来，你需要读懂它、修改它，再把它变成真正能用的成果。
