@@ -18,7 +18,7 @@ import { ScreenTranslationModule } from './screen-translation/module'
 import { createScreenTranslationComponentManager } from './screen-translation/component-manager'
 import { createOptionalRuntimeHost } from './components/optional-runtime-host'
 import { createRuntimeComponentOwner } from './components/runtime-component-owner'
-import { createGitHubMediumPreparer } from './screenshot-translation/screenshot-ocr-medium-source'
+import { createCosMediumPreparer } from './screenshot-translation/screenshot-ocr-medium-source'
 import { createCodexCliModelAdapter } from './codex/codex-cli-model-adapter'
 import { createCodexCliLoginService } from './codex/codex-cli-login-service'
 import { DOCUMENT_CONVERSION_COMPONENT_TREE_SHA256 } from '../shared/document-conversion-component-manifest'
@@ -35,7 +35,7 @@ import { realpath } from 'node:fs/promises'
 import { readSettingsFileBounded, parseSettingsJson } from './settings/settings-transaction-files'
 import { observeModelSettings } from './settings/settings-command-adapter'
 import writeFileAtomic from 'write-file-atomic'
-import { migrateInitialWorkspace, prepareInitialWorkspace } from './initial-workspace'
+import { prepareInitialWorkspace } from './initial-workspace'
 import {
   buildApplicationMenuTemplate,
   executeApplicationMenuModelItem,
@@ -69,7 +69,7 @@ import {
   registerScreenshotSelectionWindowIpc,
   type BackgroundIpcService,
 } from './ipc/register-ipc'
-import { GitHubReleaseArtifactSource } from './document-conversion/component-artifact-source'
+import { CosComponentArtifactSource } from './document-conversion/component-artifact-source'
 import { createDocumentConversionComponentManager } from './document-conversion/component-manager'
 import { createMarkItDownRunner } from './document-conversion/markitdown-runner'
 import { DocumentConversionService } from './document-conversion/document-conversion-service'
@@ -348,7 +348,7 @@ return app.whenReady().then(async () => {
   const screenshotOcrModels = createLazyScreenshotOcrModelManager({
     dataRoot: dataRoot.path,
     ...(app.isPackaged ? { bundledMediumRoot: path.join(process.resourcesPath, 'components', 'ocr-medium') } : {}),
-    prepareMedium: createGitHubMediumPreparer(),
+    prepareMedium: createCosMediumPreparer(),
     settings: settingsAuthority,
     onState: (state) => {
       for (const target of ocrModelSubscribers) {
@@ -380,6 +380,29 @@ return app.whenReady().then(async () => {
     () => arknote.ensureStarted())
   const getArknotePreferences = arknotePreferences.get
   const setArknotePreferences = arknotePreferences.set
+  const offerDefaultApplications = async (window: BrowserWindow, trigger: 'startup' | 'close') => {
+    if (window.isDestroyed()) return
+    const prompt = async (signal?: AbortSignal) => {
+      if (window.isDestroyed()) return false
+      const result = await businessDialogs.showMessageBox(window, {
+        type: 'question', title: '默认程序',
+        message: '是否将 Arkdown 设为默认程序？',
+        detail: '包括 *.md 和 *.txt 格式文件。',
+        buttons: ['是', '否'], defaultId: 0, cancelId: 1, noLink: true,
+      }, signal)
+      return result.response === 0 && !window.isDestroyed()
+    }
+    try {
+      if (trigger === 'close') await defaultApplicationsStartup.onClose(prompt)
+      else await defaultApplicationsStartup.onReady(prompt)
+    } catch (error) {
+      console.error('Could not offer default applications', error)
+      if (!(error instanceof DefaultApplicationsEnableError)) return
+      if (!window.isDestroyed()) await businessDialogs.showMessageBox(window, {
+        type: 'error', title: '默认程序', message: error.cause instanceof PublicError ? error.cause.message : '默认程序设置未能完成，请在偏好设置中重试。', buttons: ['确定'],
+      }).catch(() => undefined)
+    }
+  }
   const startupMaintenance = new DeferredStartupMaintenance({
     report: error => console.error('Could not finish startup maintenance', error),
     run: async () => {
@@ -388,22 +411,7 @@ return app.whenReady().then(async () => {
       await Promise.all([
         restoreArkdownContextMenus(shellIntegration, restoreArknoteIntegration, (message, error) => console.error(message, error)),
         defaultApplications.refreshOwnedRegistration().catch(error => console.error('Could not refresh owned file icons', error)),
-        defaultApplicationsStartup.onReady(async () => {
-          if (window.isDestroyed()) return false
-          const result = await businessDialogs.showMessageBox(window, {
-            type: 'question', title: '默认程序',
-            message: '是否将 Arkdown 设为默认程序？',
-            detail: '包括 *.md 和 *.txt 格式文件。',
-            buttons: ['是', '否'], defaultId: 0, cancelId: 1, noLink: true,
-          })
-          return result.response === 0 && !window.isDestroyed()
-        }).catch(async error => {
-          console.error('Could not offer default applications', error)
-          if (!(error instanceof DefaultApplicationsEnableError)) return
-          if (!window.isDestroyed()) await businessDialogs.showMessageBox(window, {
-            type: 'error', title: '默认程序', message: error.cause instanceof PublicError ? error.cause.message : '默认程序设置未能完成，请在偏好设置中重试。', buttons: ['确定'],
-          }).catch(() => undefined)
-        }),
+        offerDefaultApplications(window, 'startup'),
       ])
     },
   })
@@ -467,7 +475,7 @@ return app.whenReady().then(async () => {
     } } : {}),
   })
   const xlsx = new XlsxExportService({ tempRoot })
-  const documentConversionComponentSource = new GitHubReleaseArtifactSource(
+  const documentConversionComponentSource = new CosComponentArtifactSource(
     DOCUMENT_CONVERSION_COMPONENT_MANIFEST,
     DOCUMENT_CONVERSION_COMPONENT_RELEASE_BASE_URL,
   )
@@ -969,7 +977,10 @@ return app.whenReady().then(async () => {
       }),
       workspaceColorStore,
       ipcMain,
-      showOpenDialog: (_owner, options) => dialog.showOpenDialog(window, options),
+      showOpenDialog: (_owner, options) => {
+        defaultApplicationsStartup.deferStartupOffer()
+        return dialog.showOpenDialog(window, options)
+      },
       window,
       runtimeDependencies,
       documentConversions,
@@ -977,8 +988,15 @@ return app.whenReady().then(async () => {
       settingsAuthority,
       settingsPreferences,
       saveWindowBounds: bounds => settingsAuthority.saveWindowBounds(bounds),
-      claimWorkspaceIntroduction: seen => settingsAuthority.claimWorkspaceIntroduction(seen),
+      claimWorkspaceIntroduction: seen => {
+        defaultApplicationsStartup.deferStartupOffer()
+        return settingsAuthority.claimWorkspaceIntroduction(seen)
+      },
       confirmStopAi: windowCloseRecovery.confirmStopAi,
+      offerDefaultApplicationsOnClose: async () => {
+        if (!canInitializeDesktopRegistration() || updates.service.isWorkBlocked() || updateInstall?.active) return
+        await offerDefaultApplications(window, 'close')
+      },
       onCloseStateChanged: snapshot => {
         windowCloseRecovery.notify(snapshot); updateExit.onCloseState(shortcutOwnerId, snapshot)
         closeStates.set(shortcutOwnerId, snapshot.state); updateInstall?.onCloseState(shortcutOwnerId, snapshot)
@@ -1301,13 +1319,6 @@ return app.whenReady().then(async () => {
     documentsRoot: app.getPath('documents'),
     stateRoot: dataRoot.path,
     previousWorkspace: startupSettings.lastWorkspace,
-  }
-  if (!(process.env.ARKDOWN_E2E === '1' && process.env.ARKDOWN_E2E_WORKSPACE)) {
-    // Existing users often reopen a recent document instead of a blank window.
-    // A migration failure must not prevent that document from opening.
-    await migrateInitialWorkspace(initialWorkspaceOptions).catch((error) => {
-      console.error('Could not migrate initial workspace', error)
-    })
   }
   const startupWindowIntent = chooseStartupWindowIntent({
     explicitDocument: startupIntentPath,

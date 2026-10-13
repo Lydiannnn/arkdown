@@ -6,7 +6,7 @@ import { expect, it, vi } from 'vitest'
 import { createRuntimeComponentManager } from '../../src/main/components/runtime-component-manager'
 import { createScreenshotOcrProtocolHandler } from '../../src/main/screenshot-translation/screenshot-ocr-resources'
 import { createScreenshotOcrModelManager } from '../../src/main/screenshot-translation/screenshot-ocr-model-manager'
-import { createGitHubMediumPreparer } from '../../src/main/screenshot-translation/screenshot-ocr-medium-source'
+import { createCosMediumPreparer } from '../../src/main/screenshot-translation/screenshot-ocr-medium-source'
 import { RUNTIME_COMPONENT_DEFINITIONS } from '../../src/shared/optional-component-catalog'
 import { SCREENSHOT_OCR_MEDIUM_COMPONENT_DESCRIPTOR } from '../../src/shared/screenshot-ocr-medium-component-manifest'
 import { SettingsAuthority } from '../../src/main/settings/settings-authority'
@@ -40,7 +40,7 @@ it.skipIf(process.env.ARKDOWN_VALIDATE_OCR_COMPONENTS !== '1')('validates the ac
     }))
     const network = vi.fn(async () => { throw new Error('No network allowed for artifact reuse') })
     const mediumOptions = { dataRoot, settings, fetch: network,
-      prepareMedium: createGitHubMediumPreparer({ artifactSource: archiveSource(path.resolve('.components/public-ocr-medium-release', SCREENSHOT_OCR_MEDIUM_COMPONENT_DESCRIPTOR.archiveName)) }) }
+      prepareMedium: createCosMediumPreparer({ artifactSource: archiveSource(path.resolve('.components/public-ocr-medium-release', SCREENSHOT_OCR_MEDIUM_COMPONENT_DESCRIPTOR.archiveName)) }) }
     medium = await createScreenshotOcrModelManager(mediumOptions)
     expect((await medium.downloadMedium((await medium.getObservedState()).observed)).status).toBe('medium-installed')
     expect((await medium.resolveActiveResource('medium-rec.tar'))?.byteLength).toBe(76_718_080)

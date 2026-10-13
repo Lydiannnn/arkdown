@@ -1,7 +1,7 @@
 import type { DocumentConversionComponentDescriptor } from './document-conversion'
 
 export const SCREEN_TRANSLATION_COMPONENT_RELEASE_BASE_URL =
-  'https://github.com/Lydiannnn/arkdown-releases/releases/download/screen-translation-engine-1.0.0/'
+  'https://arkdown-downloads-1257382433.cos.ap-guangzhou.myqcloud.com/components/screen-translation-engine-1.0.0/'
 
 export const SCREEN_TRANSLATION_COMPONENT_MANIFEST_URL =
   `${SCREEN_TRANSLATION_COMPONENT_RELEASE_BASE_URL}manifest.json`

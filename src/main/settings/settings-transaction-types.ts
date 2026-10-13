@@ -94,6 +94,7 @@ export type SettingsTransactionOperation = PreferenceOperation | FeatureOperatio
   | { kind: 'screenshot-ocr.set-tier'; value: ScreenshotOcrTier; expected: ExpectedSetting<ScreenshotOcrTier> }
   | { kind: 'default-applications.record-start'; version: string; installationId: string | null }
   | { kind: 'default-applications.mark-handled'; expected: ExpectedSetting<DefaultApplicationsPromptState> }
+  | { kind: 'default-applications.mark-close-handled'; expected: ExpectedSetting<DefaultApplicationsPromptState> }
   | { kind: 'main-background.apply'; changes: CheckedSettingsPatch<BackgroundControls>; image: BackgroundImageChange }
   | { kind: 'model-connection.add'; connection: ModelConnectionSummary; expectedAbsentRevision: number }
   | {

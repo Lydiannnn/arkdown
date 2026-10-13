@@ -7,7 +7,7 @@ import { pipeline } from 'node:stream/promises'
 import { setTimeout as delay } from 'node:timers/promises'
 import { createGunzip } from 'node:zlib'
 import * as tar from 'tar'
-import { GitHubReleaseArtifactSource, type ComponentArtifactSource } from '../document-conversion/component-artifact-source'
+import { CosComponentArtifactSource, type ComponentArtifactSource } from '../document-conversion/component-artifact-source'
 import { parseDocumentConversionComponentDescriptor } from '../../shared/document-conversion'
 import { PublicError } from '../../shared/public-errors'
 import type { RuntimeComponentDefinition, RuntimeComponentState } from '../../shared/runtime-component'
@@ -168,7 +168,7 @@ export async function createRuntimeComponentManager(
     || !safeName(descriptor.archiveName) || descriptor.archiveName.includes('/')) throw invalid()
   const treeManifestSha256 = options.definition.treeManifestSha256
   if (!/^[0-9a-f]{64}$/u.test(treeManifestSha256)) throw invalid()
-  const artifactSource = options.artifactSource ?? new GitHubReleaseArtifactSource(
+  const artifactSource = options.artifactSource ?? new CosComponentArtifactSource(
     descriptor, (descriptor.url as string).slice(0, (descriptor.url as string).lastIndexOf('/') + 1),
   )
   if (artifactSource.kind !== descriptor.source) throw invalid()

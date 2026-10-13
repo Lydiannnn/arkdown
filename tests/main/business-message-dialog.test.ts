@@ -10,6 +10,8 @@ vi.mock('electron', () => ({ BrowserWindow: class { constructor(options: unknown
   electron.windows.push(window); return window as BrowserWindow
 } }, screen: { getDisplayMatching: () => ({ workArea: { x: 0, y: 0, width: 1280, height: 720 } }) } }))
 import { createBusinessMessageDialog } from '../../src/main/dialogs/business-message-dialog'
+import { DefaultApplicationsStartup } from '../../src/main/default-applications/startup'
+import { SettingsCoordinator } from '../../src/main/settings/settings-coordinator'
 
 class FakeWindow extends EventEmitter {
   destroyed = false
@@ -41,6 +43,79 @@ function setup() {
   return { host, handlers, child, event, get, ready, choose }
 }
 afterEach(() => { for (const host of hosts.splice(0)) host.dispose(); vi.useRealTimers() })
+
+it('cancels an optional prompt still loading when a workspace interaction takes priority', async () => {
+  const s = setup(), controller = new AbortController()
+  const result = s.host.showMessageBox(undefined, {
+    message: '是否将 Arkdown 设为默认程序？', buttons: ['是', '否'], cancelId: 1,
+  }, controller.signal)
+  const outcome = result.then(() => 'answered', error => error.name)
+  const loadingWindow = s.child()
+  controller.abort()
+  await Promise.resolve()
+  expect(loadingWindow.destroyed).toBe(true)
+  expect(loadingWindow.show).not.toHaveBeenCalled()
+  expect(await outcome).toBe('AbortError')
+})
+
+it('does not cancel an optional prompt that the user is already viewing', async () => {
+  const s = setup(), controller = new AbortController()
+  const result = s.host.showMessageBox(undefined, { message: '默认程序', buttons: ['是', '否'], cancelId: 1 }, controller.signal)
+  s.ready(); await Promise.resolve()
+  controller.abort()
+  expect(s.child().destroyed).toBe(false)
+  expect(s.child().show).toHaveBeenCalledOnce()
+  s.choose(1)
+  expect(await result).toEqual({ response: 1 })
+})
+
+it('does not create a view for an already deferred optional prompt', async () => {
+  const s = setup(), controller = new AbortController()
+  controller.abort()
+  await expect(s.host.showMessageBox(undefined, { message: '默认程序' }, controller.signal)).rejects.toMatchObject({ name: 'AbortError' })
+  expect(electron.windows).toHaveLength(0)
+})
+
+it('removes an aborted queued prompt without dismissing the currently visible dialog', async () => {
+  const s = setup(), controller = new AbortController()
+  const first = s.host.showMessageBox(undefined, { message: '正在处理工作区', buttons: ['确定'] })
+  s.ready(); await Promise.resolve()
+  const visible = s.child()
+  const queued = s.host.showMessageBox(undefined, { message: '默认程序' }, controller.signal)
+  const rejected = expect(queued).rejects.toMatchObject({ name: 'AbortError' })
+  controller.abort()
+  await rejected
+  expect(visible.destroyed).toBe(false)
+  expect(electron.windows).toHaveLength(1)
+  s.choose(0)
+  await first
+  expect(electron.windows).toHaveLength(1)
+})
+
+it('keeps a deferred startup reminder pending while the independent close reminder remains usable', async () => {
+  const s = setup()
+  const settings = new SettingsCoordinator({ save: async () => {} }, {
+    lastWorkspace: null, defaultApplicationsPrompt: { starts: 1, handled: false, version: '1.0.4' },
+  })
+  const startup = new DefaultApplicationsStartup(settings, {
+    getStatus: async () => ({ markdown: true, text: false }),
+    setEnabled: async () => ({ markdown: true, text: true }),
+  }, '1.0.4')
+  const prompt = async (signal?: AbortSignal) => {
+    const result = await s.host.showMessageBox(undefined, { message: '默认程序', buttons: ['是', '否'], cancelId: 1 }, signal)
+    return result.response === 0
+  }
+  const starting = startup.onReady(prompt)
+  await vi.waitFor(() => expect(electron.windows).toHaveLength(1))
+  startup.deferStartupOffer()
+  await starting
+  expect(settings.get().defaultApplicationsPrompt).toMatchObject({ starts: 2, handled: false })
+  const closing = startup.onClose(prompt)
+  await vi.waitFor(() => expect(electron.windows).toHaveLength(2))
+  s.ready(); await Promise.resolve(); s.choose(1)
+  await closing
+  expect(settings.get().defaultApplicationsPrompt).toMatchObject({ starts: 2, handled: false, closeHandled: true })
+})
 const recovery = { title: '保留的草稿', message: '是否恢复？', detail: '文档仍保留。', buttons: ['恢复', '暂不恢复'], defaultId: 0, cancelId: 1 }
 it('fits measured content before showing, keeps the width, and caps long content to the work area', async () => {
   const s = setup(); const result = s.host.showMessageBox(undefined, recovery)

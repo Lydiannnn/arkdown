@@ -20,8 +20,11 @@ registerHooks({ resolve(specifier, context, nextResolve) {
 
 const { GitHubReleaseArtifactSource } = await import('../src/main/document-conversion/component-artifact-source.ts')
 const { createDocumentConversionComponentManager } = await import('../src/main/document-conversion/component-manager.ts')
-const { DOCUMENT_CONVERSION_COMPONENT_MANIFEST: descriptor, DOCUMENT_CONVERSION_COMPONENT_RELEASE_BASE_URL: base } =
+const { DOCUMENT_CONVERSION_COMPONENT_MANIFEST: productionDescriptor, DOCUMENT_CONVERSION_COMPONENT_TREE_SHA256 } =
   await import('../src/shared/document-conversion-component-manifest.ts')
+// Historical verifier: keep the original GitHub URL/manifest pair after production moves to COS.
+const base = 'https://github.com/Lydiannnn/arkdown-releases/releases/download/markitdown-0.1.7-py3.12.10/'
+const descriptor = { ...productionDescriptor, url: `${base}${productionDescriptor.archiveName}` }
 const root = await mkdtemp(path.join(tmpdir(), 'arkdown-github-verification-'))
 const requests: { host: string; path: string; status: number }[] = []
 const networkFetch: typeof fetch = async (input, init) => {
@@ -53,7 +56,8 @@ try {
   const bytes = await readFile(archive)
   const hash = createHash('sha256').update(bytes).digest('hex')
   if (bytes.length !== descriptor.bytes || hash !== descriptor.sha256) throw new Error('Real archive identity mismatch')
-  const manager = await createDocumentConversionComponentManager({ userData: path.join(root, 'user-data'), descriptor, source })
+  const manager = await createDocumentConversionComponentManager({ userData: path.join(root, 'user-data'), descriptor, source,
+    treeManifestSha256: DOCUMENT_CONVERSION_COMPONENT_TREE_SHA256 })
   try {
     const installed = await manager.install('github-verification')
     if (installed.status !== 'installed') throw new Error(`Install failed: ${installed.errorCode}`)

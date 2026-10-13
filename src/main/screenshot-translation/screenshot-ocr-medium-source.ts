@@ -12,7 +12,7 @@ import {
   SCREENSHOT_OCR_MEDIUM_COMPONENT_DESCRIPTOR,
   SCREENSHOT_OCR_MEDIUM_COMPONENT_TREE_SHA256,
 } from '../../shared/screenshot-ocr-medium-component-manifest'
-import { GitHubReleaseArtifactSource, type ComponentArtifactSource } from '../document-conversion/component-artifact-source'
+import { CosComponentArtifactSource, type ComponentArtifactSource } from '../document-conversion/component-artifact-source'
 
 const PAYLOAD_FILES = ['medium-det.tar', 'medium-rec.tar', 'manifest.json', 'licenses/PaddleOCR-LICENSE.txt'] as const
 const TREE = 'component-manifest.json'
@@ -95,8 +95,8 @@ async function auditTree(root: string, version: string, treeHash: string, signal
   }
 }
 
-/** Downloads the pinned GitHub module, then supplies only model archives to the existing transaction. */
-export function createGitHubMediumPreparer(options: {
+/** Downloads the pinned COS module, then supplies only model archives to the existing transaction. */
+export function createCosMediumPreparer(options: {
   descriptor?: DocumentConversionComponentDescriptor
   treeManifestSha256?: string
   artifactSource?: ComponentArtifactSource
@@ -104,7 +104,7 @@ export function createGitHubMediumPreparer(options: {
   const descriptor = parseDocumentConversionComponentDescriptor(options.descriptor ?? SCREENSHOT_OCR_MEDIUM_COMPONENT_DESCRIPTOR)
   const treeHash = options.treeManifestSha256 ?? SCREENSHOT_OCR_MEDIUM_COMPONENT_TREE_SHA256
   if (!descriptor || descriptor.source !== 'https' || descriptor.bytes > MAX_ARCHIVE_BYTES || !/^[a-f0-9]{64}$/u.test(treeHash)) throw invalid()
-  const source = options.artifactSource ?? new GitHubReleaseArtifactSource(descriptor, descriptor.url!.slice(0, descriptor.url!.lastIndexOf('/') + 1))
+  const source = options.artifactSource ?? new CosComponentArtifactSource(descriptor, descriptor.url!.slice(0, descriptor.url!.lastIndexOf('/') + 1))
   return async (stagingRoot, signal, onProgress) => {
     let temporary: string | undefined
     const created: string[] = []

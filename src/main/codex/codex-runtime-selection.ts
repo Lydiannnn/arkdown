@@ -1,18 +1,24 @@
 import { execFile } from 'node:child_process'
 import path from 'node:path'
+import { compareUpdateVersions } from '../../shared/app-update'
+import { RUNTIME_COMPONENT_DEFINITIONS } from '../../shared/optional-component-catalog'
 import { discoverCodexCliExecutables } from './codex-cli-executable'
 
 const isExecutable = (value: unknown): value is string => typeof value === 'string'
   && path.win32.isAbsolute(value) && path.win32.extname(value).toLowerCase() === '.exe'
 
-/** Check only CLI identity/liveness; account state remains in the connection tester. */
+/** Reuse external CLIs only at the managed component's version floor; account state is checked separately. */
 export async function probeCodexExecutable(executable: string, signal: AbortSignal): Promise<boolean> {
   if (signal.aborted || !isExecutable(executable)) return false
   return new Promise(resolve => {
     execFile(executable, ['--version'], {
       shell: false, windowsHide: true, timeout: 2_000, maxBuffer: 4096, encoding: 'utf8', signal,
-    }, (error, stdout) => resolve(!error && !signal.aborted
-      && /^codex-cli \d+\.\d+\.\d+(?:[-+][0-9A-Za-z.-]+)?$/u.test(stdout.trim())))
+    }, (error, stdout) => {
+      const version = /^codex-cli (\S+)$/u.exec(stdout.trim())?.[1]
+      const order = version === undefined ? undefined
+        : compareUpdateVersions(version, RUNTIME_COMPONENT_DEFINITIONS['codex-cli'].descriptor.version)
+      resolve(!error && !signal.aborted && (order === 0 || order === 1))
+    })
   })
 }
 

@@ -63,7 +63,7 @@ class LifecycleWindow {
 
 afterEach(() => vi.restoreAllMocks())
 
-it.each(['idle AI', 'cancel then drain AI', 'AI drain failure', 'cleanup failure'] as const)('keeps document preparation after AI and live owner IPC before finalization: %s', async mode => {
+it.each(['idle AI', 'cancel then drain AI', 'AI drain failure', 'cleanup failure', 'cancel document', 'default offer failure'] as const)('keeps document preparation after AI and live owner IPC before finalization: %s', async mode => {
   const handlers = new Map<string, unknown>()
   const listeners = new Map<string, (event: unknown, payload: unknown) => void>()
   const ipcMain = {
@@ -183,6 +183,12 @@ it.each(['idle AI', 'cancel then drain AI', 'AI drain failure', 'cleanup failure
 
   const saveWindowBounds = vi.fn(async () => undefined)
   const confirmStopAi = vi.fn(async () => true)
+  let finishDefaultOffer!: () => void
+  const offerSettled = new Promise<void>(resolve => { finishDefaultOffer = resolve })
+  const offerDefaultApplicationsOnClose = vi.fn(async () => {
+    await offerSettled
+    if (mode === 'default offer failure') throw new Error('synthetic reminder failure')
+  })
   let finishAiDrain!: () => void
   const aiDrain = new Promise<void>(resolve => { finishAiDrain = resolve })
   const stopped = vi.fn()
@@ -232,6 +238,7 @@ it.each(['idle AI', 'cancel then drain AI', 'AI drain failure', 'cleanup failure
     settingsCoordinator: coordinator,
     saveWindowBounds,
     confirmStopAi,
+    offerDefaultApplicationsOnClose,
     onCloseStateChanged: vi.fn(),
     normalizeBounds: (bounds) => bounds,
     reportOperationError: vi.fn(),
@@ -512,6 +519,7 @@ it.each(['idle AI', 'cancel then drain AI', 'AI drain failure', 'cleanup failure
   await vi.waitFor(() => expect(startCodexCliLogin).toHaveBeenCalledOnce())
   if (mode === 'cleanup failure') wired.ai.registerOrdinaryCleanup(async () => { throw new Error('synthetic cleanup failure') })
   window.triggerClose()
+  expect(offerDefaultApplicationsOnClose).not.toHaveBeenCalled()
   if (mode === 'AI drain failure') {
     await vi.waitFor(() => expect(stopped).toHaveBeenCalledOnce())
     finishAiDrain()
@@ -542,10 +550,21 @@ it.each(['idle AI', 'cancel then drain AI', 'AI drain failure', 'cleanup failure
   await vi.waitFor(() => expect(window.webContents.send).toHaveBeenCalledWith(
     'arkdown:close-preparation:request', expect.any(Object),
   ))
-  const [requestChannel, request] = window.webContents.send.mock.calls.find(
+  let [requestChannel, request] = window.webContents.send.mock.calls.find(
     ([channel]) => channel === 'arkdown:close-preparation:request',
   )!
   expect(requestChannel).toBe('arkdown:close-preparation:request')
+  if (mode === 'cancel document') {
+    listeners.get('arkdown:close-preparation:event')?.(
+      { sender: window.webContents, senderFrame: window.webContents.mainFrame },
+      { ...request, sequence: 1, type: 'result', result: { status: 'cancelled' } },
+    )
+    await vi.waitFor(() => expect(wired.close.snapshot()?.state).toBe('cancelled'))
+    expect(offerDefaultApplicationsOnClose).not.toHaveBeenCalled()
+    window.triggerClose()
+    await vi.waitFor(() => expect(window.webContents.send.mock.calls.filter(([channel]) => channel === 'arkdown:close-preparation:request')).toHaveLength(2))
+    request = window.webContents.send.mock.calls.filter(([channel]) => channel === 'arkdown:close-preparation:request').at(-1)![1]
+  }
   listeners.get('arkdown:close-preparation:event')?.(
     { sender: window.webContents, senderFrame: window.webContents.mainFrame },
     { ...request, sequence: 1, type: 'stage', stage: 'settle-preferences' },
@@ -554,6 +573,13 @@ it.each(['idle AI', 'cancel then drain AI', 'AI drain failure', 'cleanup failure
     { sender: window.webContents, senderFrame: window.webContents.mainFrame },
     { ...request, sequence: 2, type: 'result', result: { status: 'ready' } },
   )
+  await vi.waitFor(() => expect(offerDefaultApplicationsOnClose).toHaveBeenCalledOnce())
+  expect(wired.close.snapshot()?.progress.stage).toBe('await-user')
+  expect(closeScreenshotOwner).not.toHaveBeenCalled()
+  expect(window.closeCalls).toBe(0)
+  window.triggerClose()
+  expect(offerDefaultApplicationsOnClose).toHaveBeenCalledOnce()
+  finishDefaultOffer()
   await vi.waitFor(() => expect(closeScreenshotOwner).toHaveBeenCalledOnce())
   expect(window.closeCalls).toBe(0)
   expect(handlers.size).toBeGreaterThan(0)

@@ -68,7 +68,7 @@ describe('screen translation component packaging', () => {
       for (const [relative, original] of t.helpers) expect(await readFile(path.join(target, relative))).toEqual(original)
       const descriptor = JSON.parse(await readFile(path.join(target, 'manifest.json'), 'utf8'))
       expect(descriptor.source).toBe('https')
-      expect(new URL(descriptor.url).hostname).toBe('github.com')
+      expect(descriptor.url).toBe('https://arkdown-downloads-1257382433.cos.ap-guangzhou.myqcloud.com/components/screen-translation-engine-1.0.0/arkdown-screen-translation-engine-1.0.0-win-x64.tar.gz')
       expect(descriptor.sha256).toMatch(/^[a-f0-9]{64}$/)
       expect(descriptor.bytes).toBeGreaterThan(0)
       await expect(access(path.join(target, 'engine'))).rejects.toThrow()

@@ -49,10 +49,10 @@ const convertedDocument = (overrides: Record<string, unknown> = {}) => ({
 })
 
 describe('document conversion component descriptor', () => {
-  it('publishes the exact approved GitHub release component manifest', () => {
+  it('publishes the exact approved Tencent COS component manifest', () => {
     expect(DOCUMENT_CONVERSION_COMPONENT_MANIFEST).toEqual(descriptor({
       source: 'https',
-      url: 'https://github.com/Lydiannnn/arkdown-releases/releases/download/markitdown-0.1.7-py3.12.10/arkdown-markitdown-0.1.7-py3.12.10-win-x64.tar.gz',
+      url: 'https://arkdown-downloads-1257382433.cos.ap-guangzhou.myqcloud.com/components/markitdown-0.1.7-py3.12.10/arkdown-markitdown-0.1.7-py3.12.10-win-x64.tar.gz',
     }))
   })
 

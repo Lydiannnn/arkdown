@@ -77,6 +77,21 @@ describe('finite main settings writes', () => {
     expect(test.current().settings.defaultApplicationsPrompt?.handled).toBe(false)
   })
 
+  it('persists the independent close offer without consuming the second-start reminder', async () => {
+    const test = reducerAuthority()
+    const first = await test.authority.recordApplicationStart('1.0.4')
+    await test.authority.markApplicationCloseOfferHandled(first)
+    expect(test.current().settings.defaultApplicationsPrompt).toMatchObject({ starts: 1, handled: false, closeHandled: true })
+    const second = await test.authority.recordApplicationStart('1.0.4')
+    expect(second.settings.defaultApplicationsPrompt).toMatchObject({ starts: 2, handled: false, closeHandled: true })
+    await test.authority.markApplicationOfferHandled(second)
+    expect(test.current().settings.defaultApplicationsPrompt).toMatchObject({ handled: true, closeHandled: true })
+    const upgraded = await test.authority.recordApplicationStart('1.0.5')
+    expect(upgraded.settings.defaultApplicationsPrompt?.handled).toBe(false)
+    expect(upgraded.settings.defaultApplicationsPrompt?.closeHandled).not.toBe(true)
+    await expect(test.authority.markApplicationCloseOfferHandled(second)).rejects.toThrow('SETTINGS_COMMAND_CONFLICT')
+  })
+
   it('does not replay an automatic command after an unknown storage failure', async () => {
     const { authority, port } = fixture()
     port.apply.mockRejectedValueOnce(new Error('unknown commit'))

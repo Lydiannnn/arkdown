@@ -308,7 +308,7 @@ describe('Arkdown package audit', () => {
     })).resolves.toMatchObject({ findings: [] })
   })
 
-  it('audits Lite without optional payloads and retains all eleven initial workspace documents', async () => {
+  it('audits Lite without optional payloads and retains exactly ten initial workspace guides', async () => {
     const updater = await buildApplicationUpdater(process.cwd())
     const root = await createFakePackage({ asarEntries: {
       '.vite/build/main.js': 'const updater = ' + JSON.stringify(updater.trust),
@@ -322,7 +322,7 @@ describe('Arkdown package audit', () => {
     const options = { ...legacyAuditOptions, allowMissingEditionMetadata: false }
     expect((await auditPackagedApplication(root, options)).findings).toEqual([])
     await rm(path.join(root, '初始工作区/01-欢迎使用.md'))
-    expect((await auditPackagedApplication(root, options)).findings).toContain('initial workspace must contain all eleven unchanged documents and their assets')
+    expect((await auditPackagedApplication(root, options)).findings).toContain('initial workspace must contain exactly the ten unchanged guide documents')
     await mkdir(path.join(root, 'pandoc'))
     await writeFile(path.join(root, 'pandoc/pandoc.exe'), 'unexpected bundled program')
     expect((await auditPackagedApplication(root, options)).findings).toContain('unexpected legacy component resources: pandoc')
@@ -778,11 +778,7 @@ describe('Arkdown package audit', () => {
         '使用说明书.html': '<main>Guide</main>',
         '使用说明书/assets/guide.css': 'body{}',
         '初始工作区/01-欢迎使用.md': '# 欢迎使用',
-        '初始工作区/11-遇到问题，从这里查.md': '# 遇到问题',
-        '初始工作区/assets/summer-sea-breeze/01-coastal-ride.png': 'image one',
-        '初始工作区/assets/summer-sea-breeze/02-sand-and-rest.png': 'image two',
-        '初始工作区/assets/summer-sea-breeze/03-postcard-cafe.png': 'image three',
-        '初始工作区/assets/summer-sea-breeze/04-blue-hour.png': 'image four',
+        '初始工作区/10-常用快捷键.md': '# 常用快捷键',
       },
     })
 
@@ -800,6 +796,7 @@ describe('Arkdown package audit', () => {
         'resources/app.asar.unpacked/debug.js': 'unpacked source',
         'temp/session.json': '{}',
         '初始工作区/debug.log': 'diagnostic',
+        '初始工作区/11-把夏天骑进海风里.md': 'retired example',
         '初始工作区/notes.md': 'unindexed document',
         '初始工作区/nested/01-欢迎使用.md': 'nested document',
         '初始工作区/assets/debug.log': 'diagnostic',
@@ -820,6 +817,7 @@ describe('Arkdown package audit', () => {
       path.join('unapproved package entry', 'temp'),
       path.join('unapproved package entry', 'temp', 'session.json'),
       path.join('unapproved package entry', '初始工作区', 'debug.log'),
+      path.join('unapproved package entry', '初始工作区', '11-把夏天骑进海风里.md'),
       path.join('unapproved package entry', '初始工作区', 'notes.md'),
       path.join('unapproved package entry', '初始工作区', 'nested'),
       path.join('unapproved package entry', '初始工作区', 'nested', '01-欢迎使用.md'),

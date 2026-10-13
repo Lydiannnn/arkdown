@@ -115,6 +115,14 @@ export class SettingsAuthority {
       } }] }))
   }
 
+  async markApplicationCloseOfferHandled(observed: SettingsTransactionSnapshot): Promise<void> {
+    this.requireCommitted(await this.apply({ baseRevision: observed.revision,
+      operations: [{ kind: 'default-applications.mark-close-handled', expected: {
+        value: normalizeDefaultApplicationsPrompt(observed.settings.defaultApplicationsPrompt),
+        revision: observed.fieldRevisions.fields.defaultApplicationsPrompt ?? 0,
+      } }] }))
+  }
+
   // Only automatic finite derivations may choose a fresh baseline. A user/native result must
   // retain its original observation. No command is replayed after conflict or unknown commit.
   private async applyAutomatic(operations: readonly Extract<SettingsTransactionOperation,

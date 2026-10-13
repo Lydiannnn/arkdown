@@ -10,6 +10,7 @@ import {
   isVisibleWorkspacePath,
 } from '../../shared/document-types'
 import { appError } from '../../shared/public-errors'
+import { INITIAL_WORKSPACE_MARKER } from '../initial-workspace'
 import { queryWindowsReparsePoint } from './windows-reparse-point'
 import { resolveExistingInside } from './workspace-path'
 
@@ -474,6 +475,8 @@ export class WorkspaceService {
         const verifiedMetadata = await lstat(canonicalTarget)
         if (verifiedMetadata.isSymbolicLink()) continue
         if (!verifiedMetadata.isDirectory() && (!verifiedMetadata.isFile() || !isVisibleWorkspacePath(entry.name))) continue
+        // Browsing and search share this list; keep initialization state on disk only.
+        if (verifiedMetadata.isFile() && entry.name.toLocaleLowerCase('en-US') === INITIAL_WORKSPACE_MARKER) continue
         visibleEntries.push({
           name: entry.name,
           relativePath: relativeForRenderer(root, canonicalTarget),

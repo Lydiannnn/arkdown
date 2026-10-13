@@ -9,8 +9,8 @@ const roots: string[] = []
 it('uses the versioned Astra-capable Codex input without changing its installed resource location', () => {
   const repo = path.resolve('fixture-repository')
   const component = editionComponents(repo).find(value => value.id === 'codex-cli')!
-  expect(component.version).toBe('0.154.0')
-  expect(component.sourceRoot).toBe(path.join(repo, '.components', 'codex-cli-0.154.0', 'runtime'))
+  expect(component.version).toBe('0.162.1')
+  expect(component.sourceRoot).toBe(path.join(repo, '.components', 'codex-cli-0.162.1', 'runtime'))
   expect(component.resourcePath).toBe('components/codex-cli')
 })
 afterEach(async () => { for (const root of roots.splice(0)) await rm(root, { recursive: true, force: true }) })

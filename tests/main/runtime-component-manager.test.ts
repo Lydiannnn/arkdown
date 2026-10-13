@@ -28,6 +28,44 @@ async function fixture() {
 afterEach(async () => { for (const root of owned.splice(0)) await rm(root, { recursive: true, force: true }) })
 
 describe('optional runtime component manager', () => {
+  it('installs through the default COS source after verifying its manifest', async () => {
+    const f = await fixture()
+    const descriptor = { ...f.definition.descriptor, url: 'https://arkdown-downloads-1257382433.cos.ap-guangzhou.myqcloud.com/components/test/tool.tar.gz' }
+    const archive = await readFile(path.join(f.root, 'tool.tar.gz'))
+    const calls: string[] = []
+    vi.stubGlobal('fetch', async (url: string, init: RequestInit) => {
+      calls.push(url)
+      expect(init.redirect).toBe('manual')
+      return url.endsWith('manifest.json') ? new Response(JSON.stringify(descriptor))
+        : new Response(archive, { headers: { 'content-length': String(archive.length) } })
+    })
+    const manager = await createRuntimeComponentManager({ dataRoot: f.root, definition: { ...f.definition, descriptor } })
+    try {
+      await manager.install()
+      expect(manager.getState().status).toBe('installed')
+      expect(await readFile((await manager.ensureRuntime())!, 'utf8')).toBe('verified executable fixture')
+      expect(calls).toEqual(['https://arkdown-downloads-1257382433.cos.ap-guangzhou.myqcloud.com/components/test/manifest.json', descriptor.url])
+    } finally { await manager.dispose(); vi.unstubAllGlobals() }
+  })
+
+  it('reuses a verified runtime installed with a historical GitHub descriptor after migration to COS', async () => {
+    const f = await fixture()
+    const old = await createRuntimeComponentManager({ dataRoot: f.root, definition: f.definition, artifactSource: f.source })
+    await old.install()
+    const entry = await old.ensureRuntime()
+    await old.dispose()
+    const fetchImpl = vi.fn(async () => { throw new Error('cached runtime must not download') })
+    vi.stubGlobal('fetch', fetchImpl)
+    const descriptor = { ...f.definition.descriptor, url: 'https://arkdown-downloads-1257382433.cos.ap-guangzhou.myqcloud.com/components/test/tool.tar.gz' }
+    const current = await createRuntimeComponentManager({ dataRoot: f.root, definition: { ...f.definition, descriptor } })
+    try {
+      expect(current.getState().status).toBe('installed')
+      expect(await current.ensureRuntime()).toBe(entry)
+      await current.install()
+      expect(fetchImpl).not.toHaveBeenCalled()
+    } finally { await current.dispose(); vi.unstubAllGlobals() }
+  })
+
   it('retries a transient activation sharing violation without downloading again', async () => {
     const f = await fixture()
     let attempts = 0

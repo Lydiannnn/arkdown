@@ -136,7 +136,7 @@ export interface VerifyPackagedDocumentConversionOptions {
 
 interface ProductionModules {
   PackagedArtifactSource: typeof import('../src/main/document-conversion/component-artifact-source.ts').PackagedArtifactSource
-  GitHubReleaseArtifactSource: typeof import('../src/main/document-conversion/component-artifact-source.ts').GitHubReleaseArtifactSource
+  CosComponentArtifactSource: typeof import('../src/main/document-conversion/component-artifact-source.ts').CosComponentArtifactSource
   releaseBaseUrl: string
   createDocumentConversionComponentManager: typeof import('../src/main/document-conversion/component-manager.ts').createDocumentConversionComponentManager
   createMarkItDownRunner: typeof import('../src/main/document-conversion/markitdown-runner.ts').createMarkItDownRunner
@@ -159,7 +159,7 @@ async function loadProductionModules(): Promise<ProductionModules> {
     import('../src/shared/document-conversion.ts'),
   ]).then(([artifactSource, componentManager, runner, service, lifecycle, manifest, shared]) => ({
     PackagedArtifactSource: artifactSource.PackagedArtifactSource,
-    GitHubReleaseArtifactSource: artifactSource.GitHubReleaseArtifactSource,
+    CosComponentArtifactSource: artifactSource.CosComponentArtifactSource,
     releaseBaseUrl: manifest.DOCUMENT_CONVERSION_COMPONENT_RELEASE_BASE_URL,
     createDocumentConversionComponentManager: componentManager.createDocumentConversionComponentManager,
     createMarkItDownRunner: runner.createMarkItDownRunner,
@@ -595,7 +595,7 @@ export async function verifyPackagedDocumentConversion(
   let harnessRootsRemaining = 1
   try {
     const source = descriptor.source === 'https'
-      ? new modules.GitHubReleaseArtifactSource(descriptor, modules.releaseBaseUrl)
+      ? new modules.CosComponentArtifactSource(descriptor, modules.releaseBaseUrl)
       : new modules.PackagedArtifactSource(descriptor, path.join(options.packageRoot, 'resources'))
     manager = await modules.createDocumentConversionComponentManager({
       userData,

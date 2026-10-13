@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto'
-import { isUpdateArtifactUrl, type UpdateArtifact } from './update-protocol'
+import { APP_UPDATE_COS_ORIGIN, isUpdateArtifactUrl, type UpdateArtifact } from './update-protocol'
 import type { UpdateTransport } from './update-http'
 import { UpdateCache, updateArtifactKey } from './update-cache'
 export interface DownloadProgress { phase: 'downloading' | 'verifying' | 'ready'; received: number; total: number }
@@ -46,6 +46,13 @@ export class UpdateDownloadManager {
         const location = response.headers.get('location')
         if (!location || redirects === 5) throw new Error('更新下载跳转无效，请稍后重试。')
         const next = new URL(location, url)
+        // COS release objects only redirect within the canonical release namespace. Validate before URL normalization.
+        if (new URL(url).origin === APP_UPDATE_COS_ORIGIN || next.origin === APP_UPDATE_COS_ORIGIN) {
+          const target = location.startsWith('/') ? `${new URL(url).origin}${location}` : location
+          if (next.origin !== APP_UPDATE_COS_ORIGIN || !isUpdateArtifactUrl(target)) {
+            throw new Error('更新下载被重定向到不受信任的地址，已停止下载。')
+          }
+        }
         const assetRedirect = new URL(url).hostname === 'github.com' && next.hostname === 'release-assets.githubusercontent.com'
           && next.protocol === 'https:' && !next.port && !next.username && !next.password && !next.hash
           && next.pathname.startsWith('/github-production-release-asset/')

@@ -121,12 +121,14 @@ function applyPrompt(draft: SettingsTransactionDraft, operation: Record<string, 
       ...(operation.installationId === null ? {} : { installationId: operation.installationId }) }
     if (!settingsValuesEqual(candidate, normalizeDefaultApplicationsPrompt(candidate))) draft.invalid('invalid-value')
     const changed = current.version !== operation.version || (current.installationId ?? null) !== operation.installationId
-    const next = { ...candidate, starts: Math.min(2, current.starts + 1), handled: changed ? false : current.handled }
+    const next = { ...candidate, starts: Math.min(2, current.starts + 1), handled: changed ? false : current.handled,
+      ...(!changed && current.closeHandled ? { closeHandled: true } : {}) }
     draft.writeField('defaultApplicationsPrompt', current, next, () => { draft.next.settings.defaultApplicationsPrompt = next })
   } else {
     if (!hasSettingsKeys(operation, ['kind', 'expected'])) draft.invalid()
     draft.checkField('defaultApplicationsPrompt', operation.expected, normalizeDefaultApplicationsPrompt(draft.latest.settings.defaultApplicationsPrompt))
-    const next = { ...current, starts: 2, handled: true }
+    const next = operation.kind === 'default-applications.mark-close-handled'
+      ? { ...current, closeHandled: true } : { ...current, starts: 2, handled: true }
     draft.writeField('defaultApplicationsPrompt', current, next, () => { draft.next.settings.defaultApplicationsPrompt = next })
   }
 }
@@ -164,6 +166,7 @@ function applyOperation(draft: SettingsTransactionDraft, operation: Record<strin
     case 'shortcuts.patch': patchShortcuts(draft, operation); return
     case 'main-background.apply': applyBackground(draft, operation); return
     case 'default-applications.record-start':
+    case 'default-applications.mark-close-handled':
     case 'default-applications.mark-handled': applyPrompt(draft, operation); return
     case 'migration.font-defaults': migrateFonts(draft, operation); return
     case 'shell-integration.set': {

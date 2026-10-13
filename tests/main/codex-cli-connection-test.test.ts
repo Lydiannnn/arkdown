@@ -146,6 +146,20 @@ afterEach(() => {
 })
 
 describe('Codex CLI connection test', () => {
+  it('lets a successful CLI probe finish its normal shutdown without premature forced termination', async () => {
+    vi.useFakeTimers()
+    const { tester, terminateProcessTree } = createTester(['C:\\tools\\codex.exe'], call => {
+      respondToSuccessfulProbe(call, { lingerAfterStdinClose: true })
+      if (call.args.at(-1) === 'app-server') {
+        call.child.stdin.once('finish', () => setTimeout(() => call.child.emit('close', 0, null), 5_000))
+      }
+    })
+    const pending = tester.test()
+    await vi.advanceTimersByTimeAsync(5_000)
+    await expect(pending).resolves.toEqual({ status: 'connected', cliVersion: 'codex-cli 1.2.3', models: [] })
+    expect(terminateProcessTree).not.toHaveBeenCalled()
+    await tester.dispose()
+  })
   it('uses the injected executable for every probe without independent discovery', async () => {
     const fake = fakeSpawn(call => respondToSuccessfulProbe(call))
     const discoverCommands = vi.fn(async () => ['C:\\other\\codex.exe'])

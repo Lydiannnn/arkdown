@@ -85,12 +85,52 @@ it('ignores a late cancelled installation even when a new operation already sele
   expect(await h.selection.resolve()).toBe('C:\\new\\codex.exe')
 })
 it('bounds the external version probe and never invokes a shell', async () => {
-  execute.mockImplementation((_command, _args, _options, callback) => { callback(null, 'codex-cli 0.144.1\r\n', '') })
+  execute.mockImplementation((_command, _args, _options, callback) => { callback(null, 'codex-cli 0.162.1\r\n', '') })
   const controller = new AbortController()
   expect(await probeCodexExecutable('C:\\external path\\codex.exe', controller.signal)).toBe(true)
   expect(execute).toHaveBeenCalledWith('C:\\external path\\codex.exe', ['--version'], expect.objectContaining({ shell: false, windowsHide: true, timeout: 2000, maxBuffer: 4096, signal: controller.signal }), expect.any(Function))
   execute.mockImplementation((_command, _args, _options, callback) => { callback(new Error('private diagnostic'), '', '') })
   expect(await probeCodexExecutable('C:\\external\\codex.exe', controller.signal)).toBe(false)
+})
+it.each(['0.144.1', '0.154.0', '0.162.0', '0.162.1-alpha.1'])('does not let external CLI %s bypass the current managed component', async version => {
+  execute.mockImplementation((_command, _args, _options, callback) => { callback(null, `codex-cli ${version}\r\n`, '') })
+  const selection = createCodexRuntimeSelection({
+    resolveManaged: async () => undefined,
+    discoverCommands: async () => ['C:\\npm\\codex.exe'],
+    installManaged: async () => 'C:\\managed\\codex.exe',
+  })
+  expect(await selection.ensure()).toBe('C:\\managed\\codex.exe')
+  expect(await selection.resolve()).toBe('C:\\managed\\codex.exe')
+})
+it.each(['0.162.1', '0.162.1+build.2', '0.163.0', '1.0.0'])('reuses external CLI %s when it meets the component version floor', async version => {
+  execute.mockImplementation((_command, _args, _options, callback) => { callback(null, `codex-cli ${version}\r\n`, '') })
+  const selection = createCodexRuntimeSelection({
+    resolveManaged: async () => undefined,
+    discoverCommands: async () => ['C:\\current\\codex.exe'],
+    installManaged: async () => { throw new Error('Should reuse the available current runtime') },
+  })
+  expect(await selection.ensure()).toBe('C:\\current\\codex.exe')
+})
+it('does not fall back to the outdated system CLI after the managed download is cancelled', async () => {
+  execute.mockImplementation((_command, _args, _options, callback) => { callback(null, 'codex-cli 0.144.1\r\n', '') })
+  const selection = createCodexRuntimeSelection({
+    resolveManaged: async () => undefined,
+    discoverCommands: async () => ['C:\\npm\\codex.exe'],
+    installManaged: async () => undefined,
+  })
+  expect(await selection.ensure()).toBeUndefined()
+  expect(await selection.resolve()).toBeUndefined()
+})
+it('checks later candidates when the first external CLI is too old', async () => {
+  execute.mockImplementation((command, _args, _options, callback) => {
+    callback(null, command.includes('old') ? 'codex-cli 0.144.1\n' : 'codex-cli 0.162.1\n', '')
+  })
+  const selection = createCodexRuntimeSelection({
+    resolveManaged: async () => undefined,
+    discoverCommands: async () => ['C:\\old\\codex.exe', 'C:\\current\\codex.exe'],
+    installManaged: async () => { throw new Error('A current external runtime is available') },
+  })
+  expect(await selection.ensure()).toBe('C:\\current\\codex.exe')
 })
 it('rejects unrelated version output, wrappers and already-aborted probes', async () => {
   execute.mockImplementation((_command, _args, _options, callback) => { callback(null, 'some other application 1.2.3', '') })

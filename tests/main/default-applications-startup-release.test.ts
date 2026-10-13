@@ -31,7 +31,10 @@ function observedFixture() {
   const observed = createSettingsTransactionSnapshot({ lastWorkspace: null, defaultApplicationsPrompt: { starts: 2, handled: false, version: '1.0.4' } })
   const recordApplicationStart = vi.fn(async () => structuredClone(observed))
   const markApplicationOfferHandled = vi.fn(async (_snapshot: SettingsTransactionSnapshot) => {})
-  const authority = { recordApplicationStart, markApplicationOfferHandled }
+  const authority = { recordApplicationStart, markApplicationOfferHandled,
+    markApplicationCloseOfferHandled: vi.fn(async (_snapshot: SettingsTransactionSnapshot) => {}),
+    readFresh: vi.fn(async () => structuredClone(observed)),
+  }
   const service = { getStatus: vi.fn(async () => ({ markdown: false, text: false })),
     setEnabled: vi.fn(async () => ({ markdown: true, text: true })) }
   const startup = new DefaultApplicationsStartup({ authority }, service, '1.0.4')

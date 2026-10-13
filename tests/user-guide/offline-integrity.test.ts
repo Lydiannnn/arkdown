@@ -13,7 +13,7 @@ describe('offline user-guide integrity', () => {
     const guideRoot = join(root, '使用说明书')
     const pages = (await readdir(guideRoot)).filter((name) => name.endsWith('.html'))
 
-    expect(pages).toHaveLength(12)
+    expect(pages).toHaveLength(10)
     for (const page of pages) {
       const pagePath = join(guideRoot, page)
       const html = await readFile(pagePath, 'utf8')

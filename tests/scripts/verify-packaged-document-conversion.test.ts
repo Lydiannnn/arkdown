@@ -43,6 +43,7 @@ const AUTHORIZED_SAMPLES = [
 
 afterEach(async () => {
   vi.restoreAllMocks()
+  vi.unstubAllGlobals()
   await Promise.all(roots.splice(0).map(async (root) => {
     await rm(root, { recursive: true, force: true })
   }))
@@ -243,11 +244,22 @@ function controlledSpawn(): { spawn: MarkItDownSpawn; convertedInputs: string[] 
 }
 
 describe('packaged document conversion verifier', () => {
-  it('runs the real packaged source, manager, runner, service, and lifecycle without leaking document data', async () => {
+  it.each(['packaged', 'COS'] as const)('runs the real %s source, manager, runner, service, and lifecycle without leaking document data', async source => {
     const packageRoot = await temporaryRoot('arkdown-packaged-verifier-package-')
     const sampleRoot = await temporaryRoot('arkdown-packaged-verifier-samples-')
     const tempParent = await temporaryRoot('arkdown-packaged-verifier-parent-')
-    const descriptor = await createPackagedComponentFixture(packageRoot)
+    let descriptor = await createPackagedComponentFixture(packageRoot)
+    if (source === 'COS') {
+      const archive = await readFile(path.join(packageRoot, 'resources/document-conversion', descriptor.archiveName))
+      const base = 'https://arkdown-downloads-1257382433.cos.ap-guangzhou.myqcloud.com/components/markitdown-0.1.7-py3.12.10/'
+      descriptor = { ...descriptor, source: 'https', url: `${base}${descriptor.archiveName}` }
+      vi.stubGlobal('fetch', async (url: string, init: RequestInit) => {
+        expect(init.redirect).toBe('manual')
+        if (url === `${base}manifest.json`) return new Response(JSON.stringify(descriptor))
+        if (url === descriptor.url) return new Response(archive, { headers: { 'content-length': String(archive.length) } })
+        throw new Error('Unexpected component verification URL')
+      })
+    }
     await createAuthorizedSamples(sampleRoot)
     const fake = controlledSpawn()
 

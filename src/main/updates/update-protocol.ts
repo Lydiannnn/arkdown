@@ -11,12 +11,20 @@ const record = (value: unknown): value is Record<string, unknown> => !!value && 
 const text = (value: unknown, max: number): value is string => typeof value === 'string' && value.length <= max
 const date = (value: unknown): boolean => typeof value === 'string' && value.length <= 40
   && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,3})?(?:Z|[+-]\d{2}:\d{2})$/.test(value) && Number.isFinite(Date.parse(value))
+export const APP_UPDATE_COS_ORIGIN = 'https://arkdown-downloads-1257382433.cos.ap-guangzhou.myqcloud.com'
 
 /** Only initial URLs authenticated by the fixed update service. Redirects have a separate policy. */
 export function isUpdateArtifactUrl(value: string): boolean {
   try {
     const url = new URL(value)
     if (url.protocol !== 'https:' || url.username || url.password || url.port || url.hash) return false
+    if (url.origin === APP_UPDATE_COS_ORIGIN) {
+      // Compare the original spelling too: URL parsing normalizes dot traversal, default ports and backslashes.
+      if (value !== `${APP_UPDATE_COS_ORIGIN}${url.pathname}`) return false
+      const match = /^\/releases\/([^/]+)\/([A-Za-z0-9][A-Za-z0-9._-]*\.(?:exe|zip))$/i.exec(url.pathname)
+      return !!match && !!parseUpdateVersion(match[1].replace(/^v/, '')) && match[2].length <= 300
+        && !match[2].includes('..') && !/^(?:con|prn|aux|nul|com[1-9]|lpt[1-9])(?:\.|$)/i.test(match[2])
+    }
     if (url.hostname === 'download.cotax.tech') return true
     return url.hostname === 'github.com' && /^\/Lydiannnn\/arkdown-releases\/releases\/download\/[^/]+\/[^/]+$/i.test(url.pathname)
   } catch { return false }
@@ -56,9 +64,10 @@ export function parseUpdateDecision(value: unknown, identity: UpdateIdentity): U
     || release.platform !== 'Windows x64' || !date(release.publishedAt)
     || !text(release.title, 1000) || !text(release.notes, 100_000)
     || !validPackage(release) || release.edition !== identity.edition || release.kind !== identity.kind
-    || !Array.isArray(release.packages) || release.packages.length !== 4 || !release.packages.every(validPackage)) return undefined
+    || !Array.isArray(release.packages) || ![2, 4].includes(release.packages.length) || !release.packages.every(validPackage)) return undefined
   const pairs = new Set(release.packages.map(item => `${item.edition}:${item.kind}`))
-  if (pairs.size !== 4 || !release.packages.some(item => ['kind', 'edition', 'filename', 'bytes', 'sha256', 'url']
+  if (pairs.size !== release.packages.length || (release.packages.length === 2 && !release.packages.every(item => item.edition === 'Lite'))
+    || !release.packages.some(item => ['kind', 'edition', 'filename', 'bytes', 'sha256', 'url']
     .every(key => item[key] === release[key]))) return undefined
   return { candidate: { version: value.version as string, mode: value.mode as UpdateCandidate['mode'],
     required: value.required, message: value.message }, artifact: {

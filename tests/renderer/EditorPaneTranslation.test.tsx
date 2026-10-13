@@ -1822,6 +1822,27 @@ describe('stream ordering and cancellation races', () => {
     })
   })
 
+  it('clears a retained translation waiting on cancellation when the parent replaces the document', async () => {
+    const cancellation = deferred<ApiResult<null>>()
+    const { api } = installTranslationApi()
+    vi.mocked(api.cancelTranslation).mockImplementation(() => cancellation.promise)
+    const pane = (markdown: string) => <EditorPane modelPreferences={modelPreferences}
+      documentKey="note.md" markdown={markdown} onChange={vi.fn()} onOpenLargeModelSettings={() => undefined} />
+    const view = render(pane('# Before discard'))
+    reportSelection(selection('first'))
+    fireEvent.click(screen.getByRole('button', { name: '翻译选中的文本' }))
+    await waitFor(() => expect(api.startTranslation).toHaveBeenCalledOnce())
+    reportSelection(selection('second'))
+    fireEvent.click(screen.getByRole('button', { name: '翻译选中的文本' }))
+    expect(api.cancelTranslation).toHaveBeenCalledWith(REQUEST_ONE)
+    view.rerender(pane('# Saved content'))
+    await act(async () => { cancellation.resolve({ ok: true, value: null }) })
+    expect(api.startTranslation).toHaveBeenCalledOnce()
+    finishRightSidebarExitIfPresent()
+    expect(screen.queryAllByTestId('translation-ui-state').map(state =>
+      JSON.parse(state.textContent ?? '{}').status)).not.toContain('starting')
+  })
+
   it('waits for an invalidated start and its late request cancellation before replacement invoke', async () => {
     const pendingStart = deferred<ApiResult<TranslationStarted>>()
     const cancellation = deferred<ApiResult<null>>()

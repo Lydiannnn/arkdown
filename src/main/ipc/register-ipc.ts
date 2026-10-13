@@ -2340,6 +2340,16 @@ export function createIpcOperations(deps: {
         const previousWorkspace = deps.getLastWorkspace()
         const previousFolderPickerPath = deps.getLastFolderPickerPath?.() ?? null
         const activation = await deps.workspace.validateRoot(root)
+        const activeRoot = currentWorkspaceRootOrNull()
+        if (activeRoot !== null
+          && path.normalize(activeRoot).toLocaleLowerCase('en-US')
+            === path.normalize(activation.summary.absolutePath).toLocaleLowerCase('en-US')) {
+          // The renderer keeps this workspace's editor. Preserve its document,
+          // draft and activation together, but never trust path equality alone.
+          await deps.workspace.getValidatedActivationSnapshot()
+          // null means no workspace transition; do not reset renderer/AI authority.
+          return { ok: true as const, value: null }
+        }
         try {
           await deps.setLastWorkspace(activation.summary.absolutePath)
           await deps.setLastFolderPickerPath?.(activation.summary.absolutePath)

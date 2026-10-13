@@ -215,6 +215,86 @@ export class HttpsArtifactSource implements ComponentArtifactSource {
   }
 }
 
+/** A pinned COS manifest is evidence, never a new trust root or fallback configuration. */
+export class CosComponentArtifactSource implements ComponentArtifactSource {
+  readonly kind = 'https' as const
+
+  constructor(
+    private readonly descriptor: DocumentConversionComponentDescriptor,
+    private readonly releaseBaseUrl: string,
+    private readonly fetchImpl: FetchArtifact = fetch,
+  ) {}
+
+  private async fetchAsset(url: string, signal: AbortSignal): Promise<Response> {
+    signal.throwIfAborted()
+    const response = await this.fetchImpl(url, { method: 'GET', redirect: 'manual', signal })
+    if (response.status !== 200 || response.redirected || !response.body
+      || (response.url && response.url !== url)) {
+      await response.body?.cancel().catch(() => undefined)
+      throw appError('DOCUMENT_CONVERSION_DOWNLOAD_FAILED')
+    }
+    return response
+  }
+
+  async copyTo(
+    targetPath: string,
+    signal: AbortSignal,
+    onProgress: (progress: ComponentInstallProgress) => void,
+  ): Promise<void> {
+    try {
+      signal.throwIfAborted()
+      const descriptor = validatedDescriptor(this.descriptor, 'https')
+      if (!canonicalHttpsUrl(this.releaseBaseUrl)
+        || !/^https:\/\/arkdown-downloads-1257382433\.cos\.ap-guangzhou\.myqcloud\.com\/components\/[A-Za-z0-9_-][A-Za-z0-9_.-]*\/$/u.test(this.releaseBaseUrl)
+        || !/^[A-Za-z0-9_-][A-Za-z0-9_.-]*$/u.test(descriptor.archiveName)
+        || !descriptor.url || !canonicalHttpsUrl(descriptor.url)
+        || descriptor.url !== `${this.releaseBaseUrl}${descriptor.archiveName}`) {
+        throw appError('DOCUMENT_CONVERSION_COMPONENT_INVALID')
+      }
+      const manifestResponse = await this.fetchAsset(`${this.releaseBaseUrl}manifest.json`, signal)
+      const chunks: Buffer[] = []
+      let bytes = 0
+      try {
+        signal.throwIfAborted()
+        for await (const chunk of manifestResponse.body!) {
+          signal.throwIfAborted()
+          bytes += chunk.byteLength
+          if (bytes > 16 * 1024) throw appError('DOCUMENT_CONVERSION_COMPONENT_INVALID')
+          chunks.push(Buffer.from(chunk))
+        }
+        signal.throwIfAborted()
+      } finally {
+        if (!manifestResponse.body!.locked) await manifestResponse.body!.cancel().catch(() => undefined)
+      }
+      let remote: DocumentConversionComponentDescriptor | undefined
+      try {
+        remote = parseDocumentConversionComponentDescriptor(JSON.parse(
+          Buffer.concat(chunks).toString('utf8').replace(/^\uFEFF/u, ''),
+        ))
+      } catch { throw appError('DOCUMENT_CONVERSION_COMPONENT_INVALID') }
+      if (!remote || Object.keys(descriptor).some(key => (
+        descriptor[key as keyof typeof descriptor] !== remote[key as keyof typeof remote]
+      ))) throw appError('DOCUMENT_CONVERSION_COMPONENT_INVALID')
+
+      const response = await this.fetchAsset(descriptor.url, signal)
+      try {
+        signal.throwIfAborted()
+        if (response.headers.get('content-length') !== String(descriptor.bytes)) {
+          throw appError('DOCUMENT_CONVERSION_COMPONENT_INVALID')
+        }
+        await writeChunks(response.body!, targetPath, descriptor, 'downloading', signal, onProgress)
+      } finally {
+        // Failures before stream iteration must also release the network body.
+        if (!response.body!.locked) await response.body!.cancel().catch(() => undefined)
+      }
+    } catch (error) {
+      if (signal.aborted) throw signal.reason
+      if (error instanceof PublicError) throw error
+      throw appError('DOCUMENT_CONVERSION_DOWNLOAD_FAILED')
+    }
+  }
+}
+
 /** A pinned GitHub Release manifest is evidence, never a new trust root. */
 export class GitHubReleaseArtifactSource implements ComponentArtifactSource {
   readonly kind = 'https' as const

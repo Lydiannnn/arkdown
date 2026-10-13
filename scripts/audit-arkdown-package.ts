@@ -136,13 +136,7 @@ function approvedPackageEntry(
   if (segments.length === 1) return approvedPackageFiles.has(topLevel)
   if (topLevel === '使用说明书') return true
   if (topLevel === '初始工作区') {
-    const assetPath = segments.slice(1).join('/')
-    if (directory) return assetPath === 'assets' || assetPath === 'assets/summer-sea-breeze'
-    if (segments.length === 4 && segments[1] === 'assets' && segments[2] === 'summer-sea-breeze') {
-      return ['01-coastal-ride.png', '02-sand-and-rest.png', '03-postcard-cafe.png', '04-blue-hour.png']
-        .includes(segments[3] ?? '')
-    }
-    return segments.length === 2 && !directory && /^\d{2}-.+\.md$/u.test(segments[1] ?? '')
+    return segments.length === 2 && !directory && /^(?:0[1-9]|10)-.+\.md$/u.test(segments[1] ?? '')
   }
   if (topLevel === 'locales') {
     return segments.length === 2 && !directory && folded[1]?.endsWith('.pak') === true
@@ -629,9 +623,9 @@ export async function auditPackagedApplication(root: string, options: {
     try {
       const expected = await componentTreeFiles(path.resolve(import.meta.dirname, '../initial-workspace'))
       const actual = await componentTreeFiles(path.join(packageRoot, '初始工作区'))
-      if (expected.filter(file => file.path.endsWith('.md')).length !== 11
+      if (expected.filter(file => file.path.endsWith('.md')).length !== 10
         || JSON.stringify(actual) !== JSON.stringify(expected)) throw new Error('mismatch')
-    } catch { findings.push('initial workspace must contain all eleven unchanged documents and their assets') }
+    } catch { findings.push('initial workspace must contain exactly the ten unchanged guide documents') }
   }
   const screenTranslation = await auditScreenTranslationResources(packageRoot, options.screenTranslationSourceRoot, edition.approvedEntries)
   const approvedComponentEntries = new Map([...screenTranslation.approvedEntries, ...edition.approvedEntries])

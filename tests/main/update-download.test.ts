@@ -13,8 +13,45 @@ const artifact: UpdateArtifact = { version: '1.0.5', channel: 'stable', edition:
   filename: 'Arkdown.zip', url: 'https://download.cotax.tech/Arkdown.zip', bytes: data.length,
   sha256: createHash('sha256').update(data).digest('hex') }
 const roots: string[] = []
+const cosArtifact: UpdateArtifact = { ...artifact, edition: 'Lite',
+  url: 'https://arkdown-downloads-1257382433.cos.ap-guangzhou.myqcloud.com/releases/1.0.5-cos-r1/Arkdown.zip' }
 afterEach(async () => { for (const root of roots.splice(0)) await rm(root, { recursive: true, force: true }) })
 async function setup() { const root = await mkdtemp(path.join(os.tmpdir(), 'arkdown-download-test-')); roots.push(root); return new UpdateCache(root) }
+it('downloads and verifies a COS release with manual redirects and omitted credentials', async () => {
+  const cache = await setup()
+  const transport = vi.fn(async (_url: string, init: RequestInit) => {
+    expect(init.redirect).toBe('manual'); expect(init.credentials).toBe('omit')
+    return new Response(data, { headers: { 'content-length': String(data.length) } })
+  })
+  const file = await new UpdateDownloadManager(cache, transport).start(cosArtifact)
+  expect(await readFile(file)).toEqual(data)
+  expect(await cache.getVerified(cosArtifact)).toBe(file)
+})
+it.each([
+  '/releases/1.0.5-cos-r1/Arkdown-final.zip',
+  'https://arkdown-downloads-1257382433.cos.ap-guangzhou.myqcloud.com/releases/1.0.5-cos-r1/Arkdown-final.zip',
+])('verifies an approved same-origin COS redirect %s', async location => {
+  const cache = await setup()
+  const transport = vi.fn(async (url: string) => url.endsWith('Arkdown-final.zip') ? new Response(data)
+    : new Response(null, { status: 302, headers: { location } }))
+  const file = await new UpdateDownloadManager(cache, transport).start(cosArtifact)
+  expect(await readFile(file)).toEqual(data)
+  expect(transport).toHaveBeenCalledTimes(2)
+})
+it.each([
+  'https://evil.example/Arkdown.zip', 'https://download.cotax.tech/Arkdown.zip',
+  'https://github.com/Lydiannnn/arkdown-releases/releases/download/v1.0.5/Arkdown.zip',
+  '/components/1.0.5/Arkdown.zip', '/releases/1.0.5/Arkdown.zip?token=test',
+  '/releases/%31.0.5/Arkdown.zip', '/releases/1.0.5/%2e%2e/1.0.6/Arkdown.zip',
+])('stops a COS redirect to %s before contacting it or publishing a package', async location => {
+  const cache = await setup(), progress: string[] = []
+  const transport = vi.fn(async () => new Response(null, { status: 302, headers: { location } }))
+  await expect(new UpdateDownloadManager(cache, transport, state => progress.push(state.phase)).start(cosArtifact))
+    .rejects.toThrow('不受信任')
+  expect(transport).toHaveBeenCalledTimes(1)
+  expect(progress).not.toContain('ready')
+  expect(await readdir(cache.root)).toEqual([])
+})
 it('streams, verifies, persists and revalidates before reusing a package', async () => {
   const cache = await setup(), progress: string[] = []
   const transport = vi.fn(async () => new Response(data))

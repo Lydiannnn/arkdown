@@ -1,206 +1,58 @@
-// New handbook content, written against the current application sources.
-// No dependency on the legacy user-guide content or templates.
-import { DOCUMENT_TYPES } from '../src/shared/document-types.ts';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
+import React from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
+import Markdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
-export const updated = '2026-09-29';
-export const version = '1.0.3';
-export const esc = s => String(s).replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;');
-const p = text => `<p>${text}</p>`;
-const note = (title, text) => `<aside class="note"><strong>${title}</strong><p>${text}</p></aside>`;
-const steps = items => `<ol class="steps">${items.map(([title, text]) => `<li><strong>${title}</strong><p>${text}</p></li>`).join('')}</ol>`;
-const list = items => `<ul>${items.map(t => `<li>${t}</li>`).join('')}</ul>`;
-const table = (headers, rows) => `<div class="table-scroll" tabindex="0" role="region" aria-label="${headers.join('与')}"><table><thead><tr>${headers.map(t => `<th scope="col">${t}</th>`).join('')}</tr></thead><tbody>${rows.map(row => `<tr>${row.map(t => `<td>${t}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
-const code = (label, text) => `<div class="code-example"><div><span>${label}</span><button type="button" data-copy>复制示例</button></div><pre><code>${esc(text)}</code></pre></div>`;
-const section = (id, title, summary, body, keywords = '') => ({id, title, summary, body, keywords});
-const exts = predicate => DOCUMENT_TYPES.filter(predicate).map(t => `<code>.${t.extension}</code>`).join('、');
-
-export const chapters = [
-  {id:'start', title:'开始第一篇文档', short:'快速开始', icon:'RocketLaunch', group:'从这里开始', intro:'打开文件夹，写下第一行，再把它保存到自己的电脑里。', sections:[
-    section('start-open','打开 Arkdown','免安装运行、新建文档与打开文件夹。',
-      steps([['运行软件','完整解压程序文件夹，双击 <code>Arkdown.exe</code>。首次启动会将包内“初始工作区”复制到系统文档目录的 Arkdown 文件夹，并打开“欢迎使用”。这些文档可编辑、可保存。请将程序和随附文件放在一起。'],['选择你的起点','已有笔记：使用“文件 → 打开文件夹…”（<kbd>Ctrl + Shift + O</kbd>）。只想写一篇：使用“文件 → 新建文档”（<kbd>Ctrl + N</kbd>）。'],['开始编辑','在文件树点击文档，或在新文档中直接输入。用标题、列表和段落组织内容。']]) +
-      note('工作区就是普通文件夹','不需要建立专有笔记库。选择你存放文档的文件夹，文件依然可以用资源管理器管理。'), '第一次 启动 安装 打开 工作区'),
-    section('start-write','试写一段 Markdown','复制示例，在源码模式粘贴，再切回渲染模式。',
-      p('按 <kbd>Ctrl + /</kbd> 切到源码模式，粘贴下面的示例，再按一次查看排版效果。') +
-      code('MARKDOWN · 写作示例','# 今天的笔记\n\n把重要的事写下来。\n\n## 待办\n\n- [ ] 整理资料\n- [ ] 完成初稿\n\n**记得保存。**') +
-      p('你也可以一直留在即时渲染模式中编辑，使用上方工具栏或“段落”“格式”菜单设置样式。'), '示例 教程 Markdown 源码'),
-    section('start-save','保存你的第一篇文档','Ctrl+S 才会把编辑内容写回文档文件。',
-      steps([['按 Ctrl + S','首次保存新文档时，选择文件夹并输入文件名，例如“今天的笔记.md”。'],['确认已保存','检查保存状态。下次打开这个文件，就能继续写作。']]) +
-      note('记住这一点','普通文档会自动备份临时草稿，但不会自动覆盖原文件。写完后仍要按 Ctrl + S。便签的实时保存另有说明。') +
-      p('<a href="saving.html#saving-draft">了解临时草稿和手动保存的区别 →</a>'), '保存 未保存 自动保存 草稿'),
-    section('start-orientation','找到常用操作','用文件区、工具栏、右侧栏和状态信息定位功能。',
-      table(['位置','可以做什么'],[['左侧文件区','浏览文件树，搜索文件夹中的内容。正文左上角“大纲”可展开当前文档的标题目录。'],['顶部菜单与工具栏','新建、保存、设置格式、切换源码模式，打开便签盒子。'],['正文编辑区','写作、选中文字、插入资源；右键菜单随当前对象变化。'],['右侧栏','在 AI 对话、翻译与文档查看之间切换；通过文档查看只读预览相对链接的目标。'],['文件名旁的保存状态','确认文档是否有未保存的修改；保存失败或冲突会在编辑区上方提示。']]) + p('可拖动侧栏边缘调整宽度；按 <kbd>Ctrl + Shift + L</kbd> 显示或隐藏左侧栏。') +
-      '<figure class="app-figure"><button type="button" data-zoom aria-label="放大编辑器实拍"><img src="assets/editor.png" width="1805" height="1082" loading="lazy" alt="最新 Arkdown 包打开示例文档，左侧为文件和文档区域，中间为 Markdown 编辑器"></button><figcaption>最新包实拍 · 用一篇示例文档认识编辑器。点击图片可放大。</figcaption></figure>', '界面 工具栏 侧边栏 大纲')
-  ]},
-  {id:'workspace', title:'管理文件与工作区', short:'文件与工作区', icon:'FolderOpen', group:'写作与整理', intro:'用熟悉的文件夹组织笔记，在文件树中浏览，在正文大纲中定位。', sections:[
-    section('workspace-open','打开文档与文件夹','打开单个文档、文件夹，或使用拖入操作。',
-      table(['你的目的','操作'],[['打开一篇文档','文件 → 打开文档…，或按 <kbd>Ctrl + O</kbd>。'],['打开工作区','文件 → 打开文件夹…，或按 <kbd>Ctrl + Shift + O</kbd>。'],['另开一个窗口','文件 → 新建窗口，或按 <kbd>Ctrl + Shift + N</kbd>。'],['继续最近的写作','文件 → 最近编辑的文档…。']]) +
-      p('也可以把文件或文件夹拖入窗口。将文件或文件夹拖入正文可插入路径链接；拖入文件夹时，也可按提示选择切换工作区。'), '拖入 多窗口 最近文档'),
-    section('workspace-organize','新建、重命名与颜色标记','通过工作区右键菜单管理文件。',
-      p('在工作区根部或空白处右键，可以“新建文档”“新建文件夹”或“刷新”。文档名称没有扩展名时会补上 <code>.md</code>。') +
-      p('右键某个文档或文件夹，可以在新窗口打开、打开所在文件夹、复制绝对路径、标记颜色、重命名或查看属性。文档还可“创建副本”。') +
-      note('删除前看清对象','“移到回收站”作用于实际文件或文件夹。它与隐藏侧栏、关闭窗口不同。请确认选中的对象后再操作。'), '右键 新建 重命名 删除 颜色 属性 副本'),
-    section('workspace-find','浏览、大纲与搜索','区分文档内查找和工作区搜索。',
-      table(['方式','适合场景'],[['文件','按文件夹层级浏览和定位文档。'],['大纲','点击正文左上角“大纲”，按当前文档的标题跳转，折叠不需要的层级。'],['工作区搜索','在左侧搜索入口输入关键词，点击“搜索”或按回车；需要搜索子目录时按提示继续。'],['在文档中搜索','按 <kbd>Ctrl + F</kbd>，只查找当前文档。']]) +
-      p('如果刚在资源管理器中添加或移动了文件，请先刷新工作区，再确认搜索目录是否正确。'), '全文搜索 子目录 查找 文件树 刷新'),
-    section('workspace-document-view','用文档查看追踪相对链接','保留正文编辑位置，在右侧只读查看报告、数据与代码。',
-      p('按住 <kbd>Ctrl</kbd> 单击正文中的相对链接，例如 <code>./reports/result.md</code> 或 <code>../data/result.json</code>，在右侧“文档查看”打开目标。相对链接用浅蓝色区分；普通单击仍用于编辑，绝对路径和网页链接沿用原有打开方式。') +
-      p('Markdown 显示排版，TXT 显示原文，代码显示源码与行号。面包屑记录当前阅读路径；右键面包屑选择“使用新窗口打开”可编辑该文件。返回原文档时保留未保存内容；侧窗中的任务列表不可勾选。') +
-      p('侧窗中的相对文件链接使用 Ctrl＋单击在新窗口打开；已经打开的文档会聚焦已有窗口。侧窗保留当前内容和阅读位置，纯章节链接仍在侧窗内跳转。正文右键提供“复制”和“在新窗口打开该文档”；未选中文字时“复制”禁用。') +
-      p('侧窗支持独立查找、选择和复制。外部修改会显示刷新提示；点击刷新才替换预览。相对路径按链接所在文档的目录解析，因此转交报告时也需保留其引用文件与目录结构。'), '文档查看 代码预览 相对链接 Codex 面包屑 JSON TS CJS'),
-    section('workspace-types','哪些文件会被识别','文件类型直接来自 Arkdown 当前支持清单。',
-      p('<strong>直接编辑：</strong><code>.md</code>、<code>.txt</code><br>' + exts(t=>t.openAsDocument && !['md','txt'].includes(t.extension))) +
-      p('<strong>Word 导入：</strong>' + exts(t=>t.importWithPandoc)) +
-      p('<strong>转换为 Markdown：</strong>' + exts(t=>t.convertWithMarkItDown)) +
-      p('代码文档默认进入源码模式，保留原始文本，不执行代码或注册系统文件关联。也支持 Dockerfile、Makefile、CMakeLists.txt、.gitignore、.gitattributes、.editorconfig、.env 和 .env.*；SVG 通过“打开文档”可编辑源码，拖入正文仍作为图片。代码文档和文档查看限 UTF-8 / UTF-8 BOM、8 MiB 以内。') +
-      note('扩展名不等于完整语法支持','例如 .mdx 可以作为文本文档打开，但并不表示会运行其中的组件或程序。') +
-      p('<a href="saving.html#saving-convert">查看导入和转换步骤 →</a>'), '格式 支持 md txt mdx docx PDF PPTX XLSX EPUB')
-  ]},
-  {id:'writing', title:'编辑与排版', short:'编辑与排版', icon:'TextT', group:'写作与整理', intro:'从标题和列表到表格与流程图，用 Markdown 把内容表达清楚。', sections:[
-    section('writing-modes','在两种编辑模式间切换','即时渲染和源码模式编辑的是同一篇文档。',
-      p('<strong>即时渲染模式</strong>直接呈现标题、列表、引用等排版效果，适合日常写作。<strong>源码模式</strong>显示完整 Markdown 标记，适合调整缩进、链接和代码。') +
-      p('点击工具栏“源码模式/渲染模式”，或按 <kbd>Ctrl + /</kbd> 切换。') +
-      note('撤销历史按模式分别记录','切换后会建立当前模式的撤销历史。Ctrl + Z 不会跨模式回到切换前的编辑步骤。'), '模式 所见即所得 源码 撤销'),
-    section('writing-format','常用格式，一边写一边用','标题、强调、引用、代码与任务列表。',
-      table(['内容','Markdown 示例','菜单或快捷键'],[['一级标题','<code># 标题</code>','段落 → 一级标题 / <kbd>Ctrl + 1</kbd>'],['加粗','<code>**重点**</code>','格式 → 加粗 / <kbd>Ctrl + B</kbd>'],['斜体','<code>*强调*</code>','格式 → 斜体 / <kbd>Ctrl + I</kbd>'],['链接','<code>[文字](地址)</code>','格式 → 链接… / <kbd>Ctrl + K</kbd>'],['任务列表','<code>- [ ] 待办事项</code>','段落 → 任务列表'],['引用','<code>&gt; 引用内容</code>','段落 → 引用']]) +
-      p('引用、代码块和列表按钮会显示当前位置的状态；再次点击已启用的结构按钮，可取消相应结构。'), '标题 加粗 斜体 列表 引用 格式'),
-    section('writing-context','右键菜单会随对象变化','正文、图片、链接和表格拥有不同操作。',
-      list(['<strong>选中文字：</strong>剪切、复制、格式设置、建立便签，以及主动使用默认浏览器搜索。','<strong>链接：</strong>打开、复制或编辑地址，也可移除文档中的链接。','<strong>图片：</strong>调整显示、替代文本，复制或另存副本，移除图片引用。','<strong>表格：</strong>插入或删除行列、调整对齐、移动、复制和格式化。','<strong>源码模式：</strong>搜索、撤销、剪贴板、格式操作与整行移动。']) +
-      p('代码块和任务列表使用文本与结构菜单。图片的删除操作移除的是正文中的引用；复制或另存只建立副本。'), '右键 表格 图片 代码块'),
-    section('writing-mermaid','用 Mermaid 写流程图','将 Mermaid 源码放在围栏中，即可本地生成图形。',
-      code('MERMAID · 流程图示例','```mermaid\nflowchart LR\n  A[收集资料] --> B[整理笔记]\n  B --> C[完成初稿]\n```') +
-      p('在即时渲染模式查看图形；使用图表工具栏的“编辑源码”和“显示图形”往返切换。保存的始终是 Mermaid 源码，生成的图形不会替代文档文本。图形渲染无需联网。') +
-      p('单击已经生成的 Mermaid 图像，可在独立窗口查看当前图形快照。初始按最小可见文字 14 CSS 像素选择阅读比例；大图可拖动平移、滚轮缩放，也可使用“适合窗口”“阅读大小”和放大、缩小按钮。按 Esc 关闭查看窗口，不会修改文档。') +
-      note('图形没有出现','先检查 Mermaid 语法。单块最多 20,000 字符和 100 条边，每个编辑器最多 30 个图块；单次生成预算为 2.5 秒，过于复杂时请拆分图表。') +
-      p('打印时会等待图形准备完成。DOCX 导出保留 Mermaid 源码块，不会自动嵌入流程图图片。'), '流程图 mermaid 语法错误 图形 离线'),
-    section('writing-view','调整阅读空间','收起侧栏、调整字号或使用全屏。',
-      p('“视图”菜单提供侧栏开关、源码编辑提示、编辑区缩放、整体缩放和全屏。“源码编辑提示”仅控制源码模式的行变更标记，在即时渲染模式也可切换此开关；即时渲染模式不显示编辑提示。仅调整编辑区大小时，菜单和侧栏大小保持不变。') +
-      p('编辑区缩放范围为 70%～200%，可用“恢复编辑区大小”回到 100%。字体、正文宽度和最小边距则在偏好设置中调整。') +
-      p('<a href="settings.html#settings-layout">设置适合自己的版面 →</a>'), '缩放 全屏 源码编辑提示 字号')
-  ]},
-  {id:'saving', title:'保存、转换与导出', short:'保存与导出', icon:'FloppyDisk', group:'写作与整理', intro:'分清临时草稿、原文件和转换结果，让每次保存都有明确去处。', sections:[
-    section('saving-draft','先分清三种保存','文档草稿、手动保存和便签实时保存各有用途。',
-      table(['内容','何时写入','保存到哪里'],[['普通文档的临时草稿','编辑后自动备份','程序的 temp 临时草稿目录'],['普通文档原文件','按 Ctrl + S 或选择保存','原文件；新文档需先选择位置'],['便签','停止输入后实时保存','便签自己的存储目录']]) +
-      note('“已备份到临时草稿”不等于原文件已更新','想让其他软件读到这次修改，或者准备交付文件时，请先手动保存。'), '自动保存 temp 原文件 备份 未保存'),
-    section('saving-manual','保存、另存与关闭','保存到原位置，或建立一个新的文件。',
-      steps([['保存当前文件','按 <kbd>Ctrl + S</kbd>。新文档会要求选择保存位置。'],['保留另一份版本','按 <kbd>Ctrl + Shift + S</kbd> 使用“另存为…”，选择新的文件名。'],['处理未保存提示','关闭或切换文档时如有未保存修改，按提示选择保存、不保存或取消。取消会让你返回当前操作。']]) +
-      p('保存失败时，先保留当前窗口。检查写入权限、磁盘空间，必要时另存到可写位置。'), '另存为 关闭 保存失败'),
-    section('saving-recovery','恢复草稿与处理冲突','异常退出后恢复内容，遇到外部修改时保护两个版本。',
-      p('异常退出后再次启动，如果出现“恢复未保存的内容”，先恢复并检查草稿，再手动保存到需要的位置。临时草稿不是长期备份，请另外保留重要文档副本。') +
-      note('遇到保存冲突时','这通常表示磁盘上的文件已被其他程序修改。不要急着覆盖。先把当前编辑内容另存一份，再比较磁盘版本与新副本，确认后合并。') +
-      p('Arkdown 会保留文件的 UTF-8 / UTF-8 BOM 编码形式和 LF / CRLF 换行形式。遇到其他编码的文档，请先用熟悉的文本工具确认编码。'), '恢复 崩溃 冲突 外部修改 编码 BOM'),
-    section('saving-convert','把其他文档转成 Markdown','DOCX 导入以及 PDF、PPTX、XLSX、EPUB 转换。',
-      p('<strong>DOCX：</strong>打开 Word 文档后，Arkdown 会将其转换成 Markdown 编辑内容。源 DOCX 不会直接改写；编辑后保存为 Markdown。') +
-      steps([['选择需要转换的文档','在工作区打开 PDF、PPTX、XLSX 或 EPUB，进入“转换文档预览”。'],['按提示安装转换组件','首次使用需主动安装。当前组件由程序随附的本地归档提供，也可在偏好设置的“文档转换”中管理。'],['检查预览，再创建文档','确认文字与结构后点击“新建 Markdown”。结果成为未保存的新草稿，最后按 Ctrl + S 选择位置。']]) +
-      note('转换侧重内容提取','原始分页、复杂版式和图片不保证保留。转换仅在本机读取来源文件，不上传或修改它；请保留原文件用于核对。'), '转换 文档转换 PDF PPTX XLSX EPUB Word DOCX 新建 Markdown'),
-    section('saving-export','导出 DOCX、XLSX 或打印','把内容交给 Word、Excel 或 Windows 打印。',
-      table(['目标','入口','需要了解'],[['Word 文档','文件 → 导出... → DOCX...','选择新的目标文件；Mermaid 保留源码，不转成图片。'],['Excel 工作簿','文件 → 导出... → XLSX...','将文字和表格输出为工作表内容，不是原页面的截图。'],['纸张或 PDF','文件 → 打印… / Ctrl + P','在 Windows 打印对话框中选择打印机；打印为 PDF 时选择对应的 PDF 打印机。']]) +
-      p('PDF 通过 Windows 打印完成。当前没有单独的 HTML 导出入口。'), '导出 打印 PDF Excel Word xlsx docx')
-  ]},
-  {id:'media', title:'图片与本地资源', short:'图片与附件', icon:'Image', group:'扩展你的笔记', intro:'把图像、音频、视频和文件链接放进笔记，同时了解它们实际存放的位置。', sections:[
-    section('media-insert','将资源拖入正文','拖入图片、音频、视频以及可链接的附件。',
-      p('将支持的本地资源拖到正文中的目标位置。图片显示为图片引用，音频和视频使用媒体元素，PDF 和 XLSX 可以作为文件链接插入。') +
-      p('<strong>图片：</strong>' + exts(t=>t.category==='image')) +
-      p('<strong>音频：</strong>' + exts(t=>t.category==='audio')) +
-      p('<strong>视频：</strong>' + exts(t=>t.category==='video')) +
-      note('文件扩展名受支持，不保证所有编码都能播放','如果音频或视频不能预览，先用系统播放器检查文件是否正常、编码是否受当前运行环境支持。'), '媒体 拖入 图片 音频 视频 格式'),
-    section('media-paths','理解本地引用','区分拖入的本地文件与粘贴的剪贴板图片。',
-      p('拖入本地文件时，资源保留原位置，文档记录其绝对路径。移动或删除源资源会导致预览和链接失效。') +
-      p('从剪贴板粘贴图片时，Arkdown 会先暂存图片；保存文档时，将这些图片放入文档旁的 <code>assets</code> 文件夹，并写入相对引用。迁移这类文档时，请带上对应的 <code>assets</code> 文件夹。') +
-      p('图片右键中的另存或复制到新位置只会创建副本，不会移动、重命名、删除或覆盖原资源。新建副本后，如果要改用新位置，还需要更新正文引用。') +
-      note('准备迁移或分享笔记','请同时检查正文里的资源路径。不要只复制 Markdown 文件就认为图片已经包含在内。便签导入本地资源的复制规则请见便签章节。'), '绝对路径 资源 丢失 副本 图片复制 迁移'),
-    section('media-open','打开链接与定位文件','Ctrl+点击本地链接，或从右键菜单查找资源。',
-      p('按住 <kbd>Ctrl</kbd> 再点击正文中的 PDF 链接，Windows 会用默认 PDF 程序打开它。文件已被移动或删除时，请修正链接地址或重新插入资源。') +
-      p('需要查看实际文件时，可使用链接或图片对应的右键菜单。不要把“移除文档引用”与“删除磁盘文件”混为一谈。'), 'PDF 默认程序 Ctrl 点击 链接')
-  ]},
-  {id:'notes', title:'用便签收纳零散想法', short:'便签与 Arknote', icon:'Note', group:'扩展你的笔记', intro:'把待办和片段放进便签盒子，需要时打开为桌面便签。', sections:[
-    section('notes-create','创建或导入便签','便签盒子管理活跃便签和归档内容。',
-      steps([['打开便签盒子','点击编辑工具栏中的“便签盒子”。'],['创建一张便签','选择“创建新便签”，确认名称，再打开卡片编辑。'],['也可以从现有内容开始','选中正文后右键“建立便签”，或把 .md、.markdown、.txt 文件拖进便签盒子。']]) +
-      note('创建的是独立副本','从正文建立便签不移动或改写原文档。导入 Markdown 时，会把引用的本地资源复制到便签资源目录，源文件和源资源保持不变。'), '便签 创建 导入 建立便签'),
-    section('notes-save','编辑与实时保存','便签停止输入后自动保存，无需像正文一样手动写回。',
-      p('便签会在停止输入后实时保存；请留意“实时保存中...”和“已保存”。关闭前等待保存完成。便签的实时保存只作用于这张便签，不会同步回创建它的原文档。') +
-      p('当前便签提供 Mica、Acrylic 和颜色材质。在偏好设置中选择新便签的默认材质和颜色；已有便签保持原样。'), '实时保存 样式 颜色 材质 Mica Acrylic'),
-    section('notes-desktop','打开桌面便签与置顶','点击便签卡片切换桌面展示，置顶与归档分别处理。',
-      table(['操作','效果'],[['点击便签卡片','切换这张便签的桌面展示状态。'],['置顶便签 / 取消置顶','使窗口始终位于其他窗口上方；不会锁定编辑。'],['关闭便签','关闭桌面展示，保留便签内容。'],['归档','收纳暂时不用的便签；需要编辑时先恢复。']]) +
-      p('便签卡片右键提供“改变颜色”“材质”“设置背景...”“重命名”“归档”和“删除”。当前便签功能由 Arknote 配合提供。可在“文件 → 偏好设置 → Arknote”配置开机启动、默认材质和颜色；桌面创建入口位于“右键菜单”设置。'), '桌面 置顶 Pin 关闭 Arknote'),
-    section('notes-organize','搜索、归档与容量','活跃便签最多 35 个，归档不占用活跃位置。',
-      p('在便签盒子按 <kbd>Ctrl + F</kbd> 搜索活跃便签；切换到归档后，单独搜索归档内容。活跃搜索不会包含归档。') +
-      p('活跃便签达到 35 个时，先归档暂时不用的内容，再创建新便签。删除与归档不同，长期留存建议先备份。') +
-      note('开机启动与移动程序','启用开机启动后，移动程序文件夹会让原有启动路径失效。移动后请检查并重新设置开机启动。'), '归档 搜索 35 容量 启动')
-  ]},
-  {id:'translation', title:'划词翻译与截图识别', short:'翻译与截图', icon:'Translate', group:'扩展你的笔记', intro:'为文字配置翻译模型，也可以从屏幕截取内容，在本机识别文字后再翻译。', sections:[
-    section('translation-setup','先配置使用的模型','划词翻译和截图翻译需要分别指定模型。',
-      steps([['进入大模型设置','文件 → 偏好设置 → 大模型设置，点击“管理大模型”。'],['添加并连接模型','按服务商提供的信息填写接口地址、模型 ID 和 API Key，选择匹配的协议，再执行连接。连接操作会保存并测试配置。'],['分配给翻译功能','分别设置“划词翻译配置”和“截图翻译配置”的使用模型、目标语言与推理强度。修改会即时保存，完成后关闭设置。']]) +
-      note('翻译会访问配置的模型服务','本地编辑不需要联网；调用翻译时，相关文字会发送给你配置的模型服务。是否收费及可用额度由服务商决定。'), 'API Key 模型 设置 配置 连接 目标语言'),
-    section('translation-selection','选中文字，发起翻译','在编辑器中选择需要翻译的文字，再主动点击翻译。',
-      p('选中需要翻译的正文，点击出现的翻译入口。结果可以在翻译浮层或右侧栏查看，并可复制。需要查阅以前的结果时，打开“翻译记录”。') +
-      p('翻译过程中可停止；失败时可重试。出现“尚未配置划词翻译使用的大模型”时，请回到模型管理页，确认已经为划词翻译分配模型。') +
-      note('原文仍由你决定','查看和复制译文不会自动把译文写进原文。需要替换时，请自行检查后编辑并保存文档。'), '划词 翻译 选中 记录 复制'),
-    section('translation-screenshot','截取屏幕并识别文字','工具菜单或 Ctrl+Shift+Q 启动截图翻译。',
-      steps([['开始截图','选择“工具 → 截图翻译”，或按 <kbd>Ctrl + Shift + Q</kbd>。'],['框选需要的区域','选择文字所在区域，等待文字识别完成。'],['查看识别与译文','在截图翻译窗口检查内容，按界面入口翻译或重新翻译。']]) +
-      p('截图和文字识别在本机进行；翻译只将识别出的文字发送给指定模型。未配置模型时，截图和提取文字仍可在本机使用。') +
-      note('识别效果不理想','尽量截取清晰、字号较大的文字。在“截图OCR识别”设置中，可按需下载 PP-OCRv6 Medium 模型以提升识别效果。模型下载需要网络。'), '截图 OCR 识别 Ctrl Shift Q PP-OCRv6'),
-    section('translation-errors','连接失败时检查什么','按认证、模型、网络与额度四类问题排查。',
-      table(['状态','下一步'],[['认证失败','检查 API Key 是否正确、有效。'],['模型不存在 / 接口地址无效','核对模型 ID、接口地址及兼容协议。'],['请求超时 / 服务商限流','检查连接状态，稍后再试，避免连续重复提交。'],['余额或配额不足','到所用服务商检查余额和可用额度。']]) +
-      p('AI 对话另有独立的模型配置；翻译配置不能替代 AI 对话配置。'), '报错 超时 认证 配额')
-  ]},
-  {id:'ai', title:'与 AI 一起处理文档', short:'AI 对话', icon:'ChatCircleText', group:'扩展你的笔记', intro:'在右侧栏提问、讨论内容，按自己的授权范围让 AI 协助处理工作区文档。', sections:[
-    section('ai-start','打开 AI 对话','展开右侧栏，切换到 AI 对话标签。',
-      steps([['准备模型','文件 → 偏好设置 → 大模型设置 → 管理大模型，在“AI 对话配置”中选择模型和推理强度。'],['打开对话面板','点击正文工具栏“打开右侧栏”，切换到“AI 对话”标签。'],['输入你的问题','在“向 AI 提问…”输入框中描述任务，再点击“发送”。生成过程中可以“停止生成”。']]) +
-      p('例如：“概括这篇文档的要点”，或“帮我整理一份写作提纲”。这些是提问示例，不代表软件会自动读取所有文件。'), 'AI 聊天 对话 模型 发送'),
-    section('ai-permission','理解写入许可','按操作、文档或工作区决定 AI 的写入范围。',
-      table(['写入策略','范围'],[['每次询问','每一次写入动作都提示。'],['按文档许可','当前会话中，对某篇文档申请一次许可。'],['按工作区许可','当前会话中，对工作区文档申请一次许可。']]) +
-      p('出现“AI 写入许可申请”时，查看申请的范围与文件路径，再选择“允许”或“拒绝”。AI 可通过工具编辑、创建、重命名或将文档移至回收站，操作结果会显示在对话中。') +
-      note('先看清范围，再允许','对话会使用你配置的模型服务。只有在你愿意将任务所需内容交给该服务处理时再发送；允许工作区写入比允许一次操作的范围更大。'), '许可 授权 写入 编辑 工作区 每次询问'),
-    section('ai-manage','切换模型与查看上下文','在对话区查看模型和上下文占用。',
-      p('面板底部可快速选择已添加的模型；生成期间请先等待完成或停止。上下文占用信息帮助判断会话长度，自动压缩发生时会在对话中留下记录。') +
-      p('需要调整空间时，可拖动右侧栏边缘，或调整输入框高度。没有配置模型时，按照面板提示进入设置。'), '上下文 压缩 切换 模型 输入框')
-  ]},
-  {id:'settings', title:'把 Arkdown 调整得顺手', short:'偏好设置', icon:'SlidersHorizontal', group:'查阅与帮助', intro:'设置字体、版面、主题颜色与工具选项，让阅读和写作适合自己的习惯。', sections:[
-    section('settings-appearance','主题颜色与字体','自定义强调颜色，并分别选择中英文字体。',
-      p('打开“文件 → 偏好设置”。“主题 → 主题颜色”提供预设和自定义颜色；编辑器主题菜单当前提供“简约”。主题颜色设置不等于新增一套编辑器主题。') +
-      p('在“编辑器 → 字体选择”分别设置标题中文、标题英文、正文中文、正文英文字体。列表来自本机已安装字体，字体变化只影响显示，不修改 Markdown 内容。') +
-      p('本说明网页右上角的深浅色切换只改变说明书外观，不会修改软件设置。') +
-      '<figure class="app-figure"><button type="button" data-zoom aria-label="放大偏好设置实拍"><img src="assets/preferences.png" width="1805" height="1082" loading="lazy" alt="最新 Arkdown 包的偏好设置，包含主题颜色、背景、编辑器字体与正文宽度"></button><figcaption>最新包实拍 · 偏好设置中的有效修改即时保存。</figcaption></figure>', '主题 红色 颜色 字体 中文 英文 深色'),
-    section('settings-background','为编辑器添加背景','选择背景图片，调整不透明度、对齐和遮罩。',
-      steps([['打开背景设置','主题 → 设置背景...；也可以在偏好设置的“设置背景”下点击“打开设置窗口”。'],['选择图片并预览','点击“添加图片”，再调整图片不透明度、图片对齐方式和遮罩类型。按需修改遮罩区域不透明度、过渡速度与强度。'],['应用或取消','点击“应用”保留设置，点击“取消”放弃这次背景调整。需要清除时使用“移除背景”。']]) +
-      '<figure class="app-figure narrow"><button type="button" data-zoom aria-label="放大背景设置实拍"><img src="assets/background-settings.png" width="605" height="1003" loading="lazy" alt="最新 Arkdown 包的背景设置窗口，包含图片和遮罩控制"></button><figcaption>最新包实拍 · 背景设置使用独立的“应用”按钮。</figcaption></figure>', '背景 图片 透明度 遮罩 对齐'),
-    section('settings-layout','正文宽度、边距与换行','设置最大正文宽度和最小左右留白。',
-      table(['设置','作用'],[['最小边距：30～150 px','控制正文左右各自保留的最小距离。'],['正文宽度：600～1200 px','控制正文最大宽度；窗口变窄时正文随之收窄。'],['保留单个换行','开启后，源码中的真实换行会在即时渲染中显示。关闭则按标准 Markdown 合并段落中的单换行。'],['拼写检查','在偏好设置或“编辑 → 拼写检查”开启或关闭。']]) +
-      note('新版设置即时生效','偏好设置中的有效修改会即时保存，完成后点击“关闭”或返回箭头。关闭页面不是撤销修改。背景设置窗口则需单独点击“应用”。'), '边距 正文宽度 换行 拼写 设置保存'),
-    section('settings-search','使用默认浏览器搜索','由你主动将选中文字交给浏览器搜索。',
-      p('先选中文字，再从右键菜单选择“使用默认浏览器搜索”。在“浏览器搜索”设置中可以选择百度、Bing、Google，或含 <code>{query}</code> 的自定义 HTTPS 搜索地址。最新包的默认项为百度。') +
-      note('默认浏览器与默认搜索引擎是两回事','Arkdown 可以打开 Windows 默认浏览器，但不能读取浏览器内部的默认搜索引擎。希望一致时，请手动选择相同提供商。'), 'Bing 百度 Google 搜索引擎 浏览器'),
-    section('settings-windows','Windows 右键与默认程序','注册打开、新建文档和创建便签的快捷入口。',
-      p('在偏好设置的“右键菜单”中，分别开关：md/txt 文档上的“使用Arkdown打开”、桌面右键中的“创建新便签”、右键“新建”中的 Markdown 文档。') +
-      p('“md/txt默认程序”用于进入 Windows 默认应用设置。按系统提示，将 .md 与 .txt 都设为 Arkdown，再回到软件检查状态。只设置一种类型时，不会显示为全部完成。') +
-      note('默认应用由 Windows 确认','启动时遇到默认程序提示，可以选择“稍后”，以后再从偏好设置进入。移动免安装程序后，应重新核对这些路径相关的设置。'), '右键 新建 默认程序 md txt 关联 Windows'),
-    section('settings-components','按需管理可选组件','文档转换与 OCR 模型各有独立的安装管理入口。',
-      p('“文档转换”用于安装、查看和删除转换组件，支持 PDF、PPTX、XLSX、EPUB 的 Markdown 预览。“截图OCR识别”用于下载或管理识别模型。请按界面状态等待安装完成。') +
-      p('删除转换组件后，相应转换功能会不可用，但源文档不会删除。程序随附的本地归档与用户目录中已安装组件是不同的文件。'), '安装 删除 组件 OCR 文档转换')
-  ]},
-  {id:'shortcuts', title:'常用快捷键', short:'快捷键速查', icon:'Keyboard', group:'查阅与帮助', intro:'把高频操作留在手边。以下为 Windows 版 Arkdown 的默认快捷键；自定义后以“编辑 → 快捷键”中的设置为准。', sections:[
-    section('shortcuts-file','文件与窗口','新建、打开、保存和打印。',
-      table(['操作','快捷键'],[['新建文档','<kbd>Ctrl + N</kbd>'],['新建窗口','<kbd>Ctrl + Shift + N</kbd>'],['打开文档','<kbd>Ctrl + O</kbd>'],['打开文件夹','<kbd>Ctrl + Shift + O</kbd>'],['保存','<kbd>Ctrl + S</kbd>'],['另存为','<kbd>Ctrl + Shift + S</kbd>'],['打印','<kbd>Ctrl + P</kbd>'],['关闭窗口','<kbd>Ctrl + W</kbd>']]), '快捷键 新建 保存 打印'),
-    section('shortcuts-writing','编辑与视图','格式、搜索、模式和侧栏。',
-      table(['操作','快捷键'],[['在文档中搜索','<kbd>Ctrl + F</kbd>'],['在文件夹中搜索','<kbd>Ctrl + Shift + F</kbd>'],['显示或隐藏大纲','<kbd>Ctrl + Shift + E</kbd>'],['加粗 / 斜体','<kbd>Ctrl + B</kbd> / <kbd>Ctrl + I</kbd>'],['插入链接','<kbd>Ctrl + K</kbd>'],['一级至六级标题','<kbd>Ctrl + 1</kbd> 至 <kbd>Ctrl + 6</kbd>'],['正文','<kbd>Ctrl + `</kbd>'],['切换源码模式','<kbd>Ctrl + /</kbd>'],['显示或隐藏侧栏','<kbd>Ctrl + Shift + L</kbd>'],['截图翻译','<kbd>Ctrl + Shift + Q</kbd>']]) +
-      note('自定义快捷键','打开“编辑 → 快捷键”，点击“修改”后按下组合键，修改后立即保存。支持清除和恢复默认；通用编辑、格式与导航键固定显示。按 Esc 取消录入。') +
-      note('快捷键的作用取决于当前窗口','例如便签盒子中的 Ctrl + F 搜索便签；文档编辑器中的 Ctrl + F 查找当前文档。本说明网页的搜索可按 Ctrl + K 打开。'), '快捷键 Ctrl 截图 模式 标题')
-  ]},
-  {id:'help', title:'遇到问题，从这里查', short:'问题排查', icon:'Lifebuoy', group:'查阅与帮助', intro:'先确认现象，再按步骤检查。保存相关的问题优先保护当前内容。', sections:[
-    section('help-save','修改好像没有保存','临时草稿和磁盘文件的区别，是最先要检查的地方。',
-      steps([['检查状态','“已备份到临时草稿”只说明存在恢复副本。按 Ctrl + S，等待保存完成。'],['确认文件位置','检查正在编辑和在其他软件中查看的是否为同一个文件。新文档和转换草稿需先选择保存位置。'],['若出现失败或冲突','先另存一份当前内容，再检查权限、磁盘空间或外部修改。']]), '没保存 丢失 保存失败 冲突'),
-    section('help-files','文件、图片或链接不见了','先检查目录、刷新状态与资源路径。',
-      steps([['文件树没有文档','确认打开的文件夹正确，刷新工作区，并检查扩展名是否受支持。'],['图片不显示','检查资源是否被移动或删除，以及引用是否仍指向原位置。'],['PDF 不能打开','按住 Ctrl 再点击链接；检查文件存在，并确认 Windows 已设置可用的 PDF 默认程序。']]), '不显示 图片 丢失 文件树 PDF'),
-    section('help-conversion','转换或翻译无法完成','区分本地组件问题和模型连接问题。',
-      p('转换文档失败：确认转换组件已安装，文件未损坏、未被移动，并重新选择来源文件。结果版式不同不一定是失败；转换主要提取文字和结构。') +
-      p('翻译失败：先检查是否为对应功能分配模型，再查看认证、接口地址、模型 ID、网络和服务商额度。截图识别失败时，缩小截图范围或提高文字清晰度。') +
-      p('<a href="translation.html#translation-errors">查看模型连接状态说明 →</a>'), '转换失败 翻译失败 模型 OCR'),
-    section('help-portable','移动程序与备份','程序、设置、文档和资源需要分别确认。',
-      p('请保持程序随附文件完整。设置优先保存在程序旁的 <code>portable-data</code>，临时草稿保存在 <code>temp</code>；具体写入还取决于所在目录是否可写。') +
-      p('备份时，保留自己的文档文件夹、文档引用的资源，以及需要保留的程序数据。移动后重新检查便签开机启动设置与本地资源路径。') +
-      note('临时草稿不能代替长期备份','重要文件请另存到独立备份位置。不要在有待恢复内容时随意清理 temp。'), '免安装 移动 备份 portable-data temp'),
-    section('help-boundaries','当前的功能边界','已实现的入口与尚未支持的能力。',
-      list(['当前面向 Windows；没有安装器和自动更新。','当前编辑器提供“简约”主题、主题颜色与背景设置；没有专注模式、打字机模式。','支持 DOCX、XLSX 导出；PDF 走 Windows 打印，没有独立 HTML 导出入口。','AI 对话、划词翻译、截图翻译需要分别配置使用模型。','本地编辑、图表渲染与文档转换不依赖模型服务；调用远程模型和下载 OCR 模型需要网络。']) +
-      p('本说明依据当前 Arkdown 0.1.0 的功能与界面编写，更新于 2026-09-07。'), '限制 功能 版本 不支持 专注 打字机 离线')
-  ]}
+// The editable workspace chapters are also the source of the packaged HTML handbook.
+export const version = JSON.parse(readFileSync(resolve(import.meta.dirname, '..', 'package.json'), 'utf8')).version;
+export const updated = '2026-10-13';
+export const esc = value => String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const definitions = [
+  ['index', '01-欢迎使用.md', '欢迎使用', 'BookOpenText'],
+  ['ai', '02-与 AI 一起处理文档.md', '与 AI 一起处理文档', 'Sparkle'],
+  ['workspace', '03-管理文件与工作区.md', '管理文件与工作区', 'FolderOpen'],
+  ['writing', '04-编辑与排版.md', '编辑与排版', 'PencilLine'],
+  ['saving', '05-保存、转换与导出.md', '保存、转换与导出', 'FloppyDisk'],
+  ['media', '06-图片与本地资源.md', '图片与本地资源', 'Image'],
+  ['notes', '07-用便签收纳零散想法.md', '桌面便签', 'Note'],
+  ['translation', '08-划词翻译与截图识别.md', '翻译与文字识别', 'Translate'],
+  ['settings', '09-把 Arkdown 调整得顺手.md', '偏好设置', 'SlidersHorizontal'],
+  ['shortcuts', '10-常用快捷键.md', '常用快捷键', 'Keyboard'],
 ];
+const links = new Map(definitions.map(([id, file]) => [file, `${id}.html`]));
+function render(markdown) {
+  return renderToStaticMarkup(React.createElement(Markdown, {
+    remarkPlugins: [remarkGfm],
+    components: {
+      a: ({ href, children }) => {
+        if (href?.startsWith('arkdown:')) return React.createElement('span', { title: '请在 Arkdown 中使用这个入口' }, children);
+        const target = href ? (links.get(decodeURIComponent(href)) ?? href) : undefined;
+        return React.createElement('a', { href: target }, children);
+      },
+      table: ({ children }) => React.createElement('div', { className: 'table-scroll' }, React.createElement('table', null, children)),
+      pre: ({ children }) => React.createElement('div', { className: 'code-example' },
+        React.createElement('div', null, React.createElement('span', null, '示例'), React.createElement('button', { type: 'button', 'data-copy': '' }, '复制')),
+        React.createElement('pre', null, children)),
+    },
+    // Keep internal app links until the component above converts them to plain text.
+    urlTransform: url => /^(?:https?:|arkdown:|#)/i.test(url) || !/^[a-z][a-z0-9+.-]*:/i.test(url) ? url : '',
+    children: markdown,
+  }));
+}
+export const chapters = definitions.map(([id, sourceFile, short, icon]) => {
+  const markdown = readFileSync(resolve(import.meta.dirname, '..', 'initial-workspace', sourceFile), 'utf8');
+  const titleMatch = markdown.match(/^# (.+)\r?$/m);
+  if (!titleMatch) throw new Error(`Missing chapter title: ${sourceFile}`);
+  const headings = [...markdown.matchAll(/^## (.+)\r?$/gm)];
+  const intro = markdown.slice(titleMatch.index + titleMatch[0].length, headings[0]?.index).trim();
+  const sections = headings.map((heading, index) => {
+    const bodyMarkdown = markdown.slice(heading.index + heading[0].length, headings[index + 1]?.index).trim();
+    const title = heading[1].replace(/^\d{2}\s+/, '').trim();
+    return { id: `${id}-${String(index + 1).padStart(2, '0')}`, title, body: render(bodyMarkdown),
+      summary: bodyMarkdown.split('\n').find(line => line.trim())?.replace(/[*`]/g, '').slice(0, 140) || title,
+      keywords: short };
+  });
+  return { id, sourceFile, markdown, short, icon, group: '使用指南', title: titleMatch[1].trim(), intro, introHtml: render(intro), sections };
+});

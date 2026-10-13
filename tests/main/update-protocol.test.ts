@@ -1,8 +1,89 @@
 import { expect, it } from 'vitest'
-import { parseUpdateDecision } from '../../src/main/updates/update-protocol'
+import { isUpdateArtifactUrl, parseUpdateDecision } from '../../src/main/updates/update-protocol'
 import { updateFixture } from '../helpers/app-update-fixture'
 
 const identity = { version: '1.0.4', channel: 'stable', edition: 'Full', kind: 'portable' } as const
+const cosOrigin = 'https://arkdown-downloads-1257382433.cos.ap-guangzhou.myqcloud.com'
+function standardFixture(kind: 'installer' | 'portable' = 'portable') {
+  const fixture = updateFixture()
+  fixture.release.packages = fixture.release.packages.filter(item => item.edition === 'Lite')
+  for (const item of fixture.release.packages) item.url = `${cosOrigin}/releases/1.0.5-cos-r1/${item.filename}`
+  Object.assign(fixture.release, fixture.release.packages.find(item => item.kind === kind))
+  return fixture
+}
+it.each(['installer', 'portable'] as const)('accepts a complete standard-only manifest for the matching %s installation', kind => {
+  expect(parseUpdateDecision(standardFixture(kind), { ...identity, edition: 'Lite', kind })).toMatchObject({
+    artifact: { version: '1.0.5', edition: 'Lite', kind, url: `${cosOrigin}/releases/1.0.5-cos-r1/Arkdown-1.0.5-Lite-${kind}.${kind === 'installer' ? 'exe' : 'zip'}` },
+  })
+})
+it('keeps existing download.cotax.tech URLs compatible with a standard-only manifest', () => {
+  const fixture = standardFixture()
+  for (const item of fixture.release.packages) item.url = 'https://download.cotax.tech/package.zip'
+  fixture.release.url = 'https://download.cotax.tech/package.zip'
+  expect(parseUpdateDecision(fixture, { ...identity, edition: 'Lite' })?.artifact?.edition).toBe('Lite')
+})
+it('keeps a complete four-package manifest compatible when its selected package uses COS', () => {
+  const fixture = updateFixture()
+  fixture.release.url = `${cosOrigin}/releases/1.0.5/${fixture.release.filename}`
+  fixture.release.packages[1].url = fixture.release.url
+  expect(parseUpdateDecision(fixture, identity)?.artifact?.url)
+    .toBe(`${cosOrigin}/releases/1.0.5/Arkdown-1.0.5-Full-portable.zip`)
+})
+it.each([
+  (x: ReturnType<typeof standardFixture>) => { x.release.packages.pop() },
+  x => { x.release.packages.push(updateFixture().release.packages[0]) },
+  x => { x.release.packages[1] = { ...x.release.packages[0] } },
+  x => { x.release.packages[0].edition = 'Full' },
+  x => { x.release.packages[0].url = 'https://evil.example/package.exe' },
+  x => { x.release.packages[0].sha256 = 'bad' },
+  x => { x.release.bytes++ },
+  x => { x.release.filename = 'different.zip' },
+  x => { x.release.url = `${cosOrigin}/releases/1.0.5/different.zip` },
+])('rejects an incomplete, duplicate, invalid or mismatched standard-only manifest %#', change => {
+  const fixture = standardFixture(); change(fixture)
+  expect(parseUpdateDecision(fixture, { ...identity, edition: 'Lite' })).toBeUndefined()
+})
+it('does not offer standard-only packages to a Full installation', () => {
+  expect(parseUpdateDecision(standardFixture(), identity)).toBeUndefined()
+})
+it('rejects a two-package Full-only manifest', () => {
+  const fixture = updateFixture(); fixture.release.packages = fixture.release.packages.filter(item => item.edition === 'Full')
+  expect(parseUpdateDecision(fixture, identity)).toBeUndefined()
+})
+it('rejects duplicated identities in the existing four-package manifest', () => {
+  const fixture = updateFixture(); fixture.release.packages[3] = { ...fixture.release.packages[2] }
+  expect(parseUpdateDecision(fixture, identity)).toBeUndefined()
+})
+it.each([
+  '/releases/1.0.5/Arkdown-1.0.5-Lite-Windows-x64.zip',
+  '/releases/1.0.4-cos-r1/Arkdown-1.0.4-Lite-Windows-x64-Setup.exe',
+  '/releases/v1.0.5/Arkdown-1.0.5-Lite-Windows-x64.zip',
+])('trusts a canonical COS release artifact %s', pathname => {
+  expect(isUpdateArtifactUrl(`${cosOrigin}${pathname}`)).toBe(true)
+})
+it.each([
+  '/components/1.0.5/Arkdown.zip', '/releases/Arkdown.zip', '/releases/1.0.5/nested/Arkdown.zip',
+  '/releases/latest/Arkdown.zip', '/releases/../releases/1.0.5/Arkdown.zip',
+  '/releases/1.0.5/../1.0.6/Arkdown.zip', '/releases/%31.0.5/Arkdown.zip',
+  '/releases/1.0.5/%2e%2e/1.0.6/Arkdown.zip', '/releases/1.0.5/Arkdown%2fother.zip',
+  '/releases/1.0.5/Arkdown%5cother.zip', '/releases/1.0.5/Arkdown%252fother.zip',
+  '/releases/1.0.5/Arkdown.zip?token=test', '/releases/1.0.5/Arkdown.zip?',
+  '/releases/1.0.5/Arkdown.zip#hash', '/releases/1.0.5/Arkdown.zip#',
+  '/releases/1.0.5/CON.zip', '/releases/1.0.5/Arkdown.tar.gz',
+  '/releases/1.0.5/.Arkdown.zip', '/releases/1.0.5/Arkdown..zip',
+])('rejects unsafe or non-release COS paths %s', pathname => {
+  expect(isUpdateArtifactUrl(`${cosOrigin}${pathname}`)).toBe(false)
+})
+it.each([
+  `${cosOrigin}.evil.example/releases/1.0.5/Arkdown.zip`,
+  cosOrigin.replace('1257382433', '1257382434') + '/releases/1.0.5/Arkdown.zip',
+  cosOrigin.replace('https:', 'http:') + '/releases/1.0.5/Arkdown.zip',
+  cosOrigin.replace('https://', 'https://user:password@') + '/releases/1.0.5/Arkdown.zip',
+  `${cosOrigin}:443/releases/1.0.5/Arkdown.zip`, `${cosOrigin}:8443/releases/1.0.5/Arkdown.zip`,
+  `${cosOrigin}/releases/1.0.5\\Arkdown.zip`, ` ${cosOrigin}/releases/1.0.5/Arkdown.zip`,
+])('rejects a noncanonical or different COS origin %s', url => {
+  expect(isUpdateArtifactUrl(url)).toBe(false)
+})
 it('admits a matching higher candidate without using its URLs or notes as actions', () => {
   expect(parseUpdateDecision(updateFixture(), identity)).toMatchObject({ candidate: {
     version: '1.0.5', mode: 'optional', required: false, message: '',

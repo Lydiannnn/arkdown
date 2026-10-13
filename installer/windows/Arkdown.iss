@@ -15,14 +15,14 @@
 AppId={#StableAppId}
 AppName=Arkdown
 AppVersion={#AppVersion}
-AppVerName=Arkdown {#AppVersion} {#Edition}
+AppVerName=Arkdown {#AppVersion}
 AppPublisher=Miterh
 AppPublisherURL=https://github.com/Lydiannnn/arkdown-releases
 AppSupportURL=https://github.com/Lydiannnn/arkdown-releases/issues
 AppUpdatesURL=https://github.com/Lydiannnn/arkdown-releases/releases/latest
 VersionInfoVersion={#AppVersion}.0
 VersionInfoCompany=Miterh
-VersionInfoDescription=Arkdown {#Edition} 安装程序
+VersionInfoDescription=Arkdown 安装程序
 VersionInfoCopyright=Copyright (c) 2026 Miterh
 DefaultDirName={localappdata}\Programs\Arkdown
 AppendDefaultDirName=no
@@ -59,7 +59,7 @@ ChangesAssociations=no
 Name: "chinesesimplified"; MessagesFile: "compiler:Languages\ChineseSimplified.isl"
 
 [Messages]
-WelcomeLabel2=即将安装 Arkdown {#AppVersion} {#Edition}。%n%n覆盖升级会保留设置、便签、下载组件、文档和未保存草稿。%n%n如果此前使用解压版，请在下一步选择原 Arkdown.exe 所在的文件夹。安装前请退出 Arkdown 和托盘中的 Arknote。
+WelcomeLabel2=即将安装 Arkdown {#AppVersion}。%n%n覆盖升级会保留设置、便签、下载组件、文档和未保存草稿。%n%n如果此前使用解压版，请在下一步选择原 Arkdown.exe 所在的文件夹。安装前请退出 Arkdown 和托盘中的 Arknote。
 SelectDirDesc=选择安装位置；升级解压版时，请选择原程序所在目录。
 SelectDirLabel3=首次安装默认使用当前用户的程序目录。%n升级已有解压版时请选择原 Arkdown.exe 所在文件夹，以继续使用原有设置和便签。
 FinishedLabel=Arkdown 安装完成。%n%n卸载仅移除程序，用户数据和初始工作区会保留。

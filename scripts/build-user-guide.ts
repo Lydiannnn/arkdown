@@ -9,8 +9,8 @@ const defaultSourceRoot = join(projectRoot, 'guide-web')
 const defaultOutputRoot = join(projectRoot, 'user-guide', 'dist')
 const execFileAsync = promisify(execFile)
 const GUIDE_PAGES = [
-  'index.html', 'start.html', 'workspace.html', 'writing.html', 'saving.html', 'media.html',
-  'notes.html', 'translation.html', 'ai.html', 'settings.html', 'shortcuts.html', 'help.html',
+  'index.html', 'workspace.html', 'writing.html', 'saving.html', 'media.html',
+  'notes.html', 'translation.html', 'ai.html', 'settings.html', 'shortcuts.html',
 ] as const
 const GUIDE_FILES = [...GUIDE_PAGES, 'guide.css', 'guide.js', 'search-index.js'] as const
 

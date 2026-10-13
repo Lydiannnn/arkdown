@@ -4,7 +4,7 @@ export const DOCUMENT_CONVERSION_COMPONENT_TREE_SHA256 =
   'f3a1dc705f8c76a5fab3d06c9b945ae43a826faab8ae5039759b0f200b979028'
 
 export const DOCUMENT_CONVERSION_COMPONENT_RELEASE_BASE_URL =
-  'https://github.com/Lydiannnn/arkdown-releases/releases/download/markitdown-0.1.7-py3.12.10/'
+  'https://arkdown-downloads-1257382433.cos.ap-guangzhou.myqcloud.com/components/markitdown-0.1.7-py3.12.10/'
 
 export const DOCUMENT_CONVERSION_COMPONENT_MANIFEST: DocumentConversionComponentDescriptor = Object.freeze({
   source: 'https',

@@ -4,8 +4,8 @@ import { expect, test } from '@playwright/test'
 import { createServer, type ViteDevServer } from 'vite'
 
 const pages = [
-  'index.html', 'start.html', 'workspace.html', 'writing.html', 'saving.html', 'media.html',
-  'notes.html', 'translation.html', 'ai.html', 'settings.html', 'shortcuts.html', 'help.html',
+  'index.html', 'workspace.html', 'writing.html', 'saving.html', 'media.html',
+  'notes.html', 'translation.html', 'ai.html', 'settings.html', 'shortcuts.html',
 ]
 let vite: ViteDevServer
 let url: string

@@ -17,7 +17,6 @@ const expected = [
   '08-划词翻译与截图识别.md',
   '09-把 Arkdown 调整得顺手.md',
   '10-常用快捷键.md',
-  '11-把夏天骑进海风里.md',
 ]
 const actual = (await readdir(source)).filter(name => name.endsWith('.md')).sort()
 if (JSON.stringify(actual) !== JSON.stringify([...expected].sort())) {
@@ -26,15 +25,5 @@ if (JSON.stringify(actual) !== JSON.stringify([...expected].sort())) {
 for (const name of expected) {
   const markdown = await readFile(path.join(source, name), 'utf8')
   if (!markdown.trim()) throw new Error(`Initial workspace chapter is empty: ${name}`)
-}
-const article = await readFile(path.join(source, '11-把夏天骑进海风里.md'), 'utf8')
-const images = [...article.matchAll(/!\[[^\]]*\]\((assets\/summer-sea-breeze\/[^)]+)\)/g)].map(match => match[1])
-if (images.length !== 4 || new Set(images).size !== 4) {
-  throw new Error('Summer article must reference four distinct bundled images')
-}
-for (const relativePath of images) {
-  if (!(await readFile(path.join(source, relativePath))).length) {
-    throw new Error(`Initial workspace image is empty: ${relativePath}`)
-  }
 }
 console.log(`Initial workspace: validated ${expected.length} hand-maintained Markdown documents`)

@@ -131,6 +131,7 @@ export function wireDesktopLifecycle(options: {
   normalizeBounds: (bounds: WindowBounds) => WindowBounds | undefined
   saveWindowBounds(bounds: WindowBounds): Promise<void>
   confirmStopAi(attempt: Readonly<ClosePreparationAttempt>): Promise<boolean>
+  offerDefaultApplicationsOnClose?(): Promise<void>
   onCloseStateChanged(snapshot: CloseAttemptSnapshot): void
   reportOperationError: (error: unknown) => void
   reportCloseError: (error: unknown) => void
@@ -578,7 +579,19 @@ export function wireDesktopLifecycle(options: {
       if (options.window.isDestroyed()) return { status: 'blocked', code: 'editor-unavailable' }
       progress.enter('prepare-editor')
       const humanWait = nativeCloseUserWait.observe(progress.enter)
-      try { return await closeRequester!.prepare(attempt, { ...progress, enter: humanWait.enter }) }
+      try {
+        const result = await closeRequester!.prepare(attempt, { ...progress, enter: humanWait.enter })
+        if (result.status === 'ready' && closeRequester!.isCurrent(attempt)
+          && !options.window.isDestroyed() && options.offerDefaultApplicationsOnClose) {
+          progress.enter('await-user')
+          try { await options.offerDefaultApplicationsOnClose() }
+          catch (error) {
+            // An optional association offer must never invalidate a completed save or prevent exit.
+            try { options.reportOperationError(error) } catch { /* diagnostics only */ }
+          }
+        }
+        return result
+      }
       finally { humanWait.dispose() }
     },
     restorePreparation: async () => {

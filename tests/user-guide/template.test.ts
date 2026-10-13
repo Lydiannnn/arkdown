@@ -57,7 +57,7 @@ describe('user-guide template', () => {
     expect(() => renderGuidePage(duplicate[0]!, duplicate)).toThrow(/duplicate section id/i)
   })
 
-  it('writes the approved twelve-page offline site behind the public guide entry', async () => {
+  it('writes the ten-chapter offline site behind the public guide entry', async () => {
     const root = await mkdtemp(join(tmpdir(), 'arkdown-guide-build-'))
     await buildUserGuide(root)
 
@@ -68,14 +68,12 @@ describe('user-guide template', () => {
     const pageNames = (await readdir(guideRoot)).filter((name) => name.endsWith('.html')).sort()
     expect(pageNames).toEqual([
       'ai.html',
-      'help.html',
       'index.html',
       'media.html',
       'notes.html',
       'saving.html',
       'settings.html',
       'shortcuts.html',
-      'start.html',
       'translation.html',
       'workspace.html',
       'writing.html',

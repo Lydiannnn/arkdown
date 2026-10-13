@@ -592,6 +592,7 @@ export const EditorPane = forwardRef<EditorPaneHandle, EditorPaneProps>(
     const stickyNoteSelectionRef = useRef<StickyNoteSelectionExport | null>(null)
     const latestMarkdownRef = useRef(markdown)
     const lastParentMarkdownRef = useRef(markdown)
+    const pendingParentReplacementRef = useRef(false)
     const onChangeRef = useRef(onChange)
     const onModeChangeRef = useRef(onModeChange)
     const initialModeReportedRef = useRef(false)
@@ -621,6 +622,10 @@ export const EditorPane = forwardRef<EditorPaneHandle, EditorPaneProps>(
     translationHistoryIdentityRef.current = translationHistoryIdentity
     activeModeRef.current = boundary.mode
     if (markdown !== lastParentMarkdownRef.current) {
+      // Local edit echoes must keep the live editor and its undo/selection.
+      // A session replacement (e.g. discard) must also replace the visual
+      // surface, which consumes its markdown only when it is mounted.
+      pendingParentReplacementRef.current = markdown !== latestMarkdownRef.current
       lastParentMarkdownRef.current = markdown
       latestMarkdownRef.current = markdown
     }
@@ -1227,11 +1232,20 @@ export const EditorPane = forwardRef<EditorPaneHandle, EditorPaneProps>(
     }, [documentKey, sendFindAction])
 
     useLayoutEffect(() => {
-      if (previousDocumentKeyRef.current === documentKey) return
+      const documentChanged = previousDocumentKeyRef.current !== documentKey
+      const replaceVisual = pendingParentReplacementRef.current && activeModeRef.current === 'visual'
+      pendingParentReplacementRef.current = false
+      if (!documentChanged && !replaceVisual) return
       previousDocumentKeyRef.current = documentKey
       setTranslationHistoryRailCenterRequest(null)
-      invalidateTranslationLifecycle()
-      clearTranslation()
+      if (!documentChanged && retainedSelectionRef.current?.awaitingSettings) {
+        // Keep the retained source so its existing validator can explain that
+        // the user must reselect; it must never resume on the replaced text.
+        invalidateTranslationLifecycle(true)
+      } else {
+        invalidateTranslationLifecycle()
+        clearTranslation()
+      }
       activeModeRef.current = 'visual'
       setBoundary((current) => ({
         mode: 'visual',
@@ -1240,7 +1254,7 @@ export const EditorPane = forwardRef<EditorPaneHandle, EditorPaneProps>(
         position: null,
       }))
       onModeChangeRef.current?.('visual')
-    }, [clearTranslation, documentKey, invalidateTranslationLifecycle])
+    }, [clearTranslation, documentKey, invalidateTranslationLifecycle, markdown])
 
     useEffect(() => {
       if (!findOpen) return

@@ -318,7 +318,7 @@ export function buildApplicationMenuModel(
         label: '截图翻译',
         action: 'beginScreenshotTranslation',
         accelerator: SCREENSHOT_TRANSLATION_ACCELERATOR,
-      }, { kind: 'action', id: 'tools.screen-translation', label: '悬浮翻译窗…', action: 'openScreenTranslation' }],
+      }, { kind: 'action', id: 'tools.screen-translation', label: '悬浮翻译窗（实验功能）', action: 'openScreenTranslation' }],
     },
     {
       id: 'help',

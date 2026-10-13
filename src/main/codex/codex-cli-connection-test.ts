@@ -12,6 +12,8 @@ const VERSION_VALUE_LIMIT_CHARACTERS = 512
 const APP_SERVER_STREAM_LIMIT_BYTES = 1024 * 1024
 const DEFAULT_TIMEOUT_MS = 10_000
 const DEFAULT_CLEANUP_TIMEOUT_MS = 1_000
+// Newer app-server builds can take several seconds to drain after a successful model list.
+const DEFAULT_SUCCESS_CLEANUP_TIMEOUT_MS = 10_000
 const DEFAULT_DISCOVERY_TIMEOUT_MS = 2_000
 const DEFAULT_TERMINATION_TIMEOUT_MS = 2_000
 
@@ -408,7 +410,7 @@ function probeAppServer(
   spawnProcess: CodexCliSpawn,
   trackChild: (child: CodexCliSpawnedChild) => CodexCliSpawnedChild,
   timeoutMs: number,
-  cleanupTimeoutMs: number,
+  cleanupTimeoutMs: number | undefined,
   terminateChild: (child: CodexCliSpawnedChild) => Promise<ChildTerminationResult>,
 ): Promise<Omit<CodexCliProbeResult, 'cliVersion'>> {
   let child: CodexCliSpawnedChild
@@ -464,7 +466,7 @@ function probeAppServer(
             ? 'launch-failed'
             : result === 'timeout' ? 'timeout' : status,
         ))
-      }, cleanupTimeoutMs)
+      }, cleanupTimeoutMs ?? (status === 'connected' ? DEFAULT_SUCCESS_CLEANUP_TIMEOUT_MS : DEFAULT_CLEANUP_TIMEOUT_MS))
     }
     const rejectProtocol = (): void => beginShutdown('incompatible-response')
     const parseLine = (line: Buffer): void => {
@@ -588,7 +590,7 @@ export function createCodexCliConnectionTester(
   options: CodexCliConnectionTesterOptions = {},
 ): CodexCliConnectionTester {
   const timeoutMs = options.timeoutMs ?? DEFAULT_TIMEOUT_MS
-  const cleanupTimeoutMs = options.cleanupTimeoutMs ?? DEFAULT_CLEANUP_TIMEOUT_MS
+  const cleanupTimeoutMs = options.cleanupTimeoutMs
   const discoveryTimeoutMs = options.discoveryTimeoutMs ?? DEFAULT_DISCOVERY_TIMEOUT_MS
   const terminationTimeoutMs = options.terminationTimeoutMs ?? DEFAULT_TERMINATION_TIMEOUT_MS
   const discoverCommands = options.resolveExecutable

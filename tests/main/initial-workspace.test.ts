@@ -1,8 +1,8 @@
-import { mkdtemp, mkdir, readFile, writeFile, readdir, rename, rm, symlink } from 'node:fs/promises'
+import { mkdtemp, mkdir, readFile, writeFile, readdir, rm, symlink } from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
 import { afterEach, expect, it } from 'vitest'
-import { INITIAL_WORKSPACE_MARKER, prepareInitialWorkspace, migrateInitialWorkspace } from '../../src/main/initial-workspace'
+import { INITIAL_WORKSPACE_MARKER, prepareInitialWorkspace } from '../../src/main/initial-workspace'
 
 const roots: string[] = []
 afterEach(async () => { for (const root of roots.splice(0)) await rm(root, { recursive: true, force: true }) })
@@ -75,92 +75,51 @@ it('copies nested article images once and preserves user resources across portab
   expect(await readdir(destination)).not.toContain('11-把夏天骑进海风里.md')
 })
 
-const articleName = '11-把夏天骑进海风里.md'
-const articleImages = ['01-coastal-ride.png', '02-sand-and-rest.png', '03-postcard-cafe.png', '04-blue-hour.png']
-async function legacyFixture() {
+it('does not redeliver retired sample content into a marked user workspace', async () => {
   const options = await fixture()
-  options.templateRoot = path.resolve('initial-workspace')
   const destination = path.join(options.documentsRoot, 'Arkdown', '初始工作区')
   await mkdir(destination, { recursive: true })
-  await mkdir(options.stateRoot, { recursive: true })
-  await writeFile(path.join(destination, INITIAL_WORKSPACE_MARKER), '\ufeff{"version":1}', 'utf8')
-  await writeFile(path.join(options.stateRoot, 'initial-workspace-v1.json'), '{"version":1}', 'utf8')
-  await writeFile(path.join(destination, '01-欢迎使用.md'), '# 我的欢迎页', 'utf8')
-  return { options, destination }
-}
+  await writeFile(path.join(destination, INITIAL_WORKSPACE_MARKER), '{"version":1}')
+  await writeFile(path.join(destination, '01-欢迎使用.md'), '# 用户的修改')
+  const templateRoot = path.resolve('initial-workspace')
+  expect(await prepareInitialWorkspace({ ...options, templateRoot, previousWorkspace: destination })).toBeNull()
+  expect(await readdir(destination)).toEqual([INITIAL_WORKSPACE_MARKER, '01-欢迎使用.md'])
+  expect(await readFile(path.join(destination, '01-欢迎使用.md'), 'utf8')).toBe('# 用户的修改')
+})
 
-it('installs all eleven real chapters with resolvable article images for a new user', async () => {
+it('initializes exactly the ten real guides without a retired story or image directory', async () => {
   const options = await fixture()
   options.templateRoot = path.resolve('initial-workspace')
   const welcome = (await prepareInitialWorkspace(options))!
-  const destination = path.dirname(welcome)
-  expect((await readdir(destination)).filter(name => name.endsWith('.md'))).toHaveLength(11)
-  const article = await readFile(path.join(destination, articleName), 'utf8')
-  for (const image of articleImages) {
-    const relative = `assets/summer-sea-breeze/${image}`
-    expect(article).toContain(`](${relative})`)
-    expect((await readFile(path.join(destination, relative))).equals(await readFile(path.join(options.templateRoot, relative)))).toBe(true)
-  }
+  const files = await readdir(path.dirname(welcome))
+  expect(files.filter(name => name.endsWith('.md'))).toHaveLength(10)
+  expect(files).not.toContain('11-把夏天骑进海风里.md')
+  expect(files).not.toContain('assets')
 })
 
-it('migrates a selected legacy initial workspace despite its profile marker, preserving edits and omitted old chapters', async () => {
-  const { options, destination } = await legacyFixture()
-  const assetFolder = path.join(destination, 'assets/summer-sea-breeze')
-  await mkdir(assetFolder, { recursive: true })
-  await writeFile(path.join(assetFolder, articleImages[0]), 'user image', 'utf8')
-  const selected = { ...options, previousWorkspace: destination }
-  expect(await prepareInitialWorkspace(selected)).toBeNull()
-  expect((await readFile(path.join(destination, articleName))).equals(await readFile(path.join(options.templateRoot, articleName)))).toBe(true)
-  expect(await readFile(path.join(destination, '01-欢迎使用.md'), 'utf8')).toBe('# 我的欢迎页')
-  expect((await readdir(destination)).filter(name => name.endsWith('.md'))).toEqual(['01-欢迎使用.md', articleName])
-  expect(await readFile(path.join(assetFolder, articleImages[0]), 'utf8')).toBe('user image')
-  for (const image of articleImages.slice(1)) expect((await readFile(path.join(assetFolder, image))).equals(await readFile(path.join(options.templateRoot, 'assets/summer-sea-breeze', image)))).toBe(true)
-  await rm(path.join(destination, articleName))
-  await rm(path.join(assetFolder, articleImages[1]))
-  await migrateInitialWorkspace({ ...selected, stateRoot: path.join(options.stateRoot, 'another-profile') })
-  expect(await readdir(destination)).not.toContain(articleName)
-  expect(await readdir(assetFolder)).not.toContain(articleImages[1])
+it('leaves an existing user-edited sample untouched instead of deleting user data', async () => {
+  const options = await fixture()
+  const destination = path.join(options.documentsRoot, 'Arkdown', '初始工作区')
+  await mkdir(destination, { recursive: true })
+  await writeFile(path.join(destination, INITIAL_WORKSPACE_MARKER), '{"version":2}')
+  await writeFile(path.join(destination, '11-把夏天骑进海风里.md'), '# 我的改写')
+  expect(await prepareInitialWorkspace({ ...options, previousWorkspace: destination })).toBeNull()
+  expect(await readFile(path.join(destination, '11-把夏天骑进海风里.md'), 'utf8')).toBe('# 我的改写')
 })
 
-it('keeps an existing edited article while filling only its missing shipped dependencies', async () => {
-  const { options, destination } = await legacyFixture()
-  await writeFile(path.join(destination, articleName), '# 我的散文', 'utf8')
-  await migrateInitialWorkspace(options)
-  expect(await readFile(path.join(destination, articleName), 'utf8')).toBe('# 我的散文')
-  expect(await readdir(path.join(destination, 'assets/summer-sea-breeze'))).toEqual(articleImages)
-})
-
-it('does not migrate an arbitrary selected workspace or a default folder without a recognized marker', async () => {
-  const { options, destination } = await legacyFixture()
-  await migrateInitialWorkspace({ ...options, previousWorkspace: path.join(options.documentsRoot, 'Other') })
-  expect(await readdir(destination)).not.toContain(articleName)
-  for (const marker of ['', '{"version":99}', '{"version":"1"}', 'broken']) {
-    await writeFile(path.join(destination, INITIAL_WORKSPACE_MARKER), marker)
-    await migrateInitialWorkspace(options)
-    expect(await readdir(destination)).not.toContain(articleName)
-  }
-  await rm(path.join(destination, INITIAL_WORKSPACE_MARKER))
-  await migrateInitialWorkspace(options)
-  expect(await readdir(destination)).not.toContain(articleName)
-})
-
-it('leaves legacy migration retryable when a shipped dependency is missing', async () => {
-  const { options, destination } = await legacyFixture()
-  const incomplete = await fixture()
-  await expect(migrateInitialWorkspace({ ...options, templateRoot: incomplete.templateRoot })).rejects.toThrow()
-  expect(JSON.parse((await readFile(path.join(destination, INITIAL_WORKSPACE_MARKER), 'utf8')).replace(/^\uFEFF/, '')).version).toBe(1)
-  await migrateInitialWorkspace(options)
-  expect(await readdir(destination)).toContain(articleName)
-})
-
-it.each(['parent', 'workspace', 'assets'])('does not follow a %s junction in the migration destination', async (location) => {
-  const { options, destination } = await legacyFixture()
-  const outside = path.join(options.documentsRoot, 'user-assets')
-  const linkedPath = location === 'parent' ? path.dirname(destination) : location === 'workspace' ? destination : path.join(destination, 'assets')
-  if (location === 'assets') await mkdir(outside)
-  else await rename(linkedPath, outside)
-  const before = await readdir(outside, { recursive: true })
-  await symlink(outside, linkedPath, 'junction')
-  await expect(migrateInitialWorkspace(options)).rejects.toThrow(/symbolic|link|directory/i)
-  expect(await readdir(outside, { recursive: true })).toEqual(before)
+it.each(['parent', 'workspace', 'assets'])('does not initialize through a %s junction', async location => {
+  const options = await fixture()
+  const outside = path.join(path.dirname(options.stateRoot), 'outside')
+  const parent = path.join(options.documentsRoot, 'Arkdown')
+  const destination = path.join(parent, '初始工作区')
+  const linked = location === 'parent' ? parent : location === 'workspace' ? destination : path.join(destination, 'assets')
+  await mkdir(path.dirname(linked), { recursive: true })
+  await mkdir(outside)
+  await writeFile(path.join(outside, 'user.md'), '# Keep me')
+  await mkdir(path.join(options.templateRoot, 'assets'))
+  await writeFile(path.join(options.templateRoot, 'assets', 'example.png'), 'image')
+  await symlink(outside, linked, 'junction')
+  await expect(prepareInitialWorkspace(options)).rejects.toThrow(/symbolic|link|directory/i)
+  expect(await readdir(outside)).toEqual(['user.md'])
+  expect(await readFile(path.join(outside, 'user.md'), 'utf8')).toBe('# Keep me')
 })

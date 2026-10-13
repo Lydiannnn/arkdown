@@ -15,6 +15,8 @@ interface Request {
   ready: boolean
   shown: boolean
   settled: boolean
+  signal?: AbortSignal
+  abortBeforeShown?(): void
 }
 
 /** Independent of the document renderer: usable before startup recovery and in tray-only Arknote. */
@@ -30,15 +32,16 @@ export function createBusinessMessageDialog(options: {
   const queue: Request[] = []
   const unavailable = () => new Error('提示窗口暂不可用，未收到确认。请重试。')
 
-  function finish(request: Request, response?: number) {
+  function finish(request: Request, response?: number, error?: Error) {
     if (request.settled) return
     request.settled = true
     if (request.timer) clearTimeout(request.timer)
     request.owner?.removeListener('closed', request.ownerClosed)
+    if (request.abortBeforeShown) request.signal?.removeEventListener('abort', request.abortBeforeShown)
     const index = queue.indexOf(request)
     if (index >= 0) queue.splice(index, 1)
     if (active === request) active = undefined
-    if (response === undefined) request.reject(unavailable())
+    if (response === undefined) request.reject(error ?? unavailable())
     else request.resolve({ response })
     // Create any queued view first: briefly having no windows must not quit the application.
     pump()
@@ -126,7 +129,8 @@ export function createBusinessMessageDialog(options: {
     return true
   })
   return {
-    async showMessageBox(owner: BrowserWindow | undefined, input: MessageOptions): Promise<{ response: number }> {
+    async showMessageBox(owner: BrowserWindow | undefined, input: MessageOptions, signal?: AbortSignal): Promise<{ response: number }> {
+      if (signal?.aborted) throw new DOMException('Prompt deferred before presentation', 'AbortError')
       if (disposed || owner?.isDestroyed()) return Promise.reject(unavailable())
       const buttons = input.buttons?.length ? [...input.buttons] : ['确定']
       const state = parseBusinessMessageState({ requestId: randomUUID(), title: input.title || 'Arkdown',
@@ -136,7 +140,11 @@ export function createBusinessMessageDialog(options: {
       if (!state) return Promise.reject(unavailable())
       return new Promise((resolve, reject) => {
         const request: Request = { owner, state, resolve, reject, loaded: false, ready: false, shown: false, settled: false,
-          ownerClosed: () => finish(request) }
+          ownerClosed: () => finish(request), signal }
+        request.abortBeforeShown = () => {
+          if (!request.shown) finish(request, undefined, new DOMException('Prompt deferred before presentation', 'AbortError'))
+        }
+        signal?.addEventListener('abort', request.abortBeforeShown, { once: true })
         owner?.once('closed', request.ownerClosed)
         queue.push(request)
         pump()

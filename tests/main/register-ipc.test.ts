@@ -498,6 +498,7 @@ it('validates and delegates current-window control actions', async () => {
 
 it('calls every service operation with validated inputs', async () => {
   const dependencies = createDependencies()
+  dependencies.workspace.getRoot.mockReturnValueOnce('C:\\previous\\notes')
   const operations = createIpcOperations(dependencies as never)
   const saveInput = {
     relativePath: 'note.md', markdown: '# changed', expectedRevision: revision,
@@ -748,6 +749,7 @@ it('rejects malformed save revisions, enums, and extra keys before saving', asyn
 
 it('does not report workspace selection success when settings persistence fails', async () => {
   const dependencies = createDependencies()
+  dependencies.workspace.getRoot.mockReturnValueOnce('C:\\previous\\notes')
   dependencies.setLastWorkspace.mockRejectedValue(new Error('C:\\private\\settings.json is locked'))
   const operations = createIpcOperations(dependencies as never)
   await expect(operations.chooseWorkspace()).resolves.toEqual({
@@ -1420,6 +1422,7 @@ it('pauses new requests and drains operations that already entered the handler',
 
 it('registerIpc adapts the dialog and services to the owned handlers', async () => {
   const dependencies = createDependencies()
+  dependencies.workspace.getRoot.mockReturnValueOnce('C:\\previous\\notes')
   const ipcMain = createRegistrar()
   const mainFrame = {}
   const webContents = { mainFrame }

@@ -1,4 +1,4 @@
-"""Prepare a new, separately owned Codex 0.154.0 module. Never touch old release inputs."""
+"""Prepare a new, separately owned Codex 0.162.1 module. Never touch old release inputs."""
 import concurrent.futures
 import hashlib
 import importlib.util
@@ -12,11 +12,11 @@ import urllib.request
 import zipfile
 
 REPO = Path(__file__).resolve().parents[1]
-NEW = REPO / '.components/codex-0.154.0-preparation'
+NEW = REPO / '.components/codex-0.162.1-preparation'
 INPUT = NEW / 'inputs'
 RUNTIME = NEW / '.components/codex-cli/runtime'
 PUBLIC = NEW / '.components/public-codex-cli-release'
-VERSION = '0.154.0'
+VERSION = '0.162.1'
 INPUT.mkdir(parents=True, exist_ok=True)
 PUBLIC.mkdir(parents=True, exist_ok=True)
 SOURCES = REPO / '.components/optional-component-sources'
@@ -37,14 +37,14 @@ def fetch(name, url, expected=None):
 
 def inputs():
     jobs = [
-        ('codex-package-0.154.0-windows-x64.tar.gz','https://github.com/openai/codex/releases/download/rust-v0.154.0/codex-package-x86_64-pc-windows-msvc.tar.gz','94cc5b3632769504c809f6c0364b693c0dfddc5c30c8361095d2263a07ac45a4'),
-        ('codex-0.154.0-source.tar.gz','https://codeload.github.com/openai/codex/tar.gz/refs/tags/rust-v0.154.0','1c4cdc3b87ba290b5d110425b4f6ff21663e236580bc760d1e149bd2d9f9519f'),
-        ('codex-package_SHA256SUMS','https://github.com/openai/codex/releases/download/rust-v0.154.0/codex-package_SHA256SUMS','c6efb14f673ecb83d0196b5f4e0cdefbfe4f732c0d5a28cbc4eeb159c001b272'),
+        ('codex-package-0.162.1-windows-x64.tar.gz','https://github.com/openai/codex/releases/download/rust-v0.162.1/codex-package-x86_64-pc-windows-msvc.tar.gz','3e993a82ff393f4530558dcaadb36bb4f0fd1ea7243e621348e40b469f900f6a'),
+        ('codex-0.162.1-source.tar.gz','https://codeload.github.com/openai/codex/tar.gz/refs/tags/rust-v0.162.1','e709bda93494c000a69d4c07a85a1975ce433f5541e737d1a5feddd399c97c60'),
+        ('codex-package_SHA256SUMS','https://github.com/openai/codex/releases/download/rust-v0.162.1/codex-package_SHA256SUMS','828b09736925c615d115fc77b328a6cacd7e23d80c278612d98859fbe4f46108'),
     ]
     with concurrent.futures.ThreadPoolExecutor(max_workers=3) as pool:
         records = list(pool.map(lambda j:fetch(*j),jobs))
     sums=(INPUT/'codex-package_SHA256SUMS').read_text('utf-8')
-    if '94cc5b3632769504c809f6c0364b693c0dfddc5c30c8361095d2263a07ac45a4  codex-package-x86_64-pc-windows-msvc.tar.gz' not in sums:
+    if '3e993a82ff393f4530558dcaadb36bb4f0fd1ea7243e621348e40b469f900f6a  codex-package-x86_64-pc-windows-msvc.tar.gz' not in sums:
         raise ValueError('Official checksum list mismatch')
     (INPUT/'input-manifest.json').write_text(json.dumps(records,indent=2)+'\n',encoding='utf-8')
     with tarfile.open(INPUT/jobs[0][0]) as archive:
@@ -60,7 +60,7 @@ def inputs():
         (NEW/'upstream-payload-inventory.json').write_text(json.dumps(files,indent=2)+'\n',encoding='utf-8')
     with tarfile.open(INPUT/jobs[1][0]) as archive:
         for name in ['LICENSE','NOTICE']:
-            target=RUNTIME/'licenses'/name;target.parent.mkdir(exist_ok=True);target.write_bytes(archive.extractfile('codex-rust-v0.154.0/'+name).read())
+            target=RUNTIME/'licenses'/name;target.parent.mkdir(exist_ok=True);target.write_bytes(archive.extractfile('codex-rust-v0.162.1/'+name).read())
     shutil.copyfile(INPUT/jobs[1][0],PUBLIC/jobs[1][0])
     metadata=json.loads((RUNTIME/'codex-package.json').read_text('utf-8'))
     if metadata['version']!=VERSION or metadata['entrypoint']!='bin/codex.exe':raise ValueError('Package metadata mismatch')
@@ -70,10 +70,10 @@ def sources():
     spec=importlib.util.spec_from_file_location('upstream_source_builder',REPO/'scripts/prepare-optional-component-sources.py')
     module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
     module.REPO=NEW;module.CACHE=NEW/'source-cache';module.CACHE.mkdir(exist_ok=True)
-    main=INPUT/'codex-0.154.0-source.tar.gz'
-    if hashlib.sha256(main.read_bytes()).hexdigest()!='1c4cdc3b87ba290b5d110425b4f6ff21663e236580bc760d1e149bd2d9f9519f':raise ValueError('Main source checksum mismatch')
+    main=INPUT/'codex-0.162.1-source.tar.gz'
+    if hashlib.sha256(main.read_bytes()).hexdigest()!='e709bda93494c000a69d4c07a85a1975ce433f5541e737d1a5feddd399c97c60':raise ValueError('Main source checksum mismatch')
     with tarfile.open(main) as archive:
-        lock=tomllib.loads(archive.extractfile('codex-rust-v0.154.0/codex-rs/Cargo.lock').read().decode())
+        lock=tomllib.loads(archive.extractfile('codex-rust-v0.162.1/codex-rs/Cargo.lock').read().decode())
     rg_source=fetch('ripgrep-15.2.0-source.tar.gz','https://codeload.github.com/BurntSushi/ripgrep/tar.gz/refs/tags/15.2.0','7605249d3eb0d5f170e3414498e3344e26b1e7a147aec518b57090b80036a562')
     with tarfile.open(INPUT/rg_source['name']) as archive:
         rg_lock=tomllib.loads(archive.extractfile('ripgrep-15.2.0/Cargo.lock').read().decode())
@@ -88,6 +88,11 @@ def sources():
         elif origin:raise ValueError('Unsupported source origin')
     rg_name=rg_source['name'];shutil.copyfile(INPUT/rg_name,module.CACHE/rg_name)
     jobs[rg_name]=(rg_name,rg_source['url'],rg_source['sha256'])
+    # Preserve the new upstream voice payload and ship its pinned corresponding sources.
+    voice_sources=json.loads((RUNTIME/'codex-resources/voice/sources.json').read_text('utf-8'))
+    for item in voice_sources['sources']:
+        filename='voice/'+item['archive']
+        jobs[filename]=(filename,item['url'],item['sha256'])
     reused=0
     for name,url,expected in jobs.values():
         cached=SOURCES/name;dest=module.CACHE/name
